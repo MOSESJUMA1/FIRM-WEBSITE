@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Securely book a legal consultation with Apex Legal Advocates in Kisumu, Kenya via M-Pesa.">
+    <title>Book Consultation | Apex Legal Advocates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Sharing the same premium next-gen team stylesheet for unified design components -->
+    <link rel="stylesheet" href="team.css">
+    <!-- Link to your upcoming dedicated contact styles -->
+    <link rel="stylesheet" href="contact.css">
+</head>
+<body>
+
+    <!-- Top Info Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fa-solid fa-location-dot"></i> Lakebasin Mall, Kisumu-Kakamega Road, Kisumu</span>
+            <span><i class="fa-solid fa-phone"></i> +254 741801897</span>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <a href="index.html">Apex<span>Legal</span></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="index.html#services">Practice Areas</a></li>
+                    <li><a href="team.html">Our Team</a></li>
+                    <li><a href="contact.html" class="btn-nav active">Book Consultation</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Title / Banner -->
+    <section class="page-banner">
+        <div class="container">
+            <h1>Secure Portal</h1>
+            <p>Schedule your professional advocate session instantly with secure M-Pesa STK automation.</p>
+        </div>
+    </section>
+
+    <!-- Booking Interface Section -->
+    <section class="booking-section">
+        <div class="container booking-container">
+            
+            <!-- Glassmorphic Booking Form Wrapper -->
+            <div class="glass-form-card">
+                <div class="form-header">
+                    <h2>Consultation Intake</h2>
+                    <p>A standard consultation reservation fee of <strong>KSh 3,000</strong> applies to finalize your booking schedule.</p>
+                </div>
+
+                <form id="consultationForm" class="cyber-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="clientName">Full Name</label>
+                            <input type="text" id="clientName" placeholder="e.g. Kennedy Ochieng" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="clientEmail">Email Address</label>
+                            <input type="email" id="clientEmail" placeholder="e.g. ochieng@domain.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="mpesaPhone">M-Pesa Mobile Number (STK Push Target)</label>
+                            <!-- Enforces strict Safaricom number formatting (07... or 01...) via standard RegEx validation pattern -->
+                            <input type="tel" id="mpesaPhone" placeholder="e.g. 0712345678" pattern="^(07|01)[0-9]{8}$" title="Please enter a valid Kenyan mobile number starting with 07 or 01" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="practiceArea">Target Legal Department</label>
+                            <select id="practiceArea" required>
+                                <option value="" disabled selected>Select practice domain...</option>
+                                <option value="corporate">Corporate & Commercial Law</option>
+                                <option value="conveyancing">Conveyancing & Real Estate</option>
+                                <option value="dispute">Dispute Resolution & Litigation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="matterBrief">Brief Overview of Legal Matter</label>
+                        <textarea id="matterBrief" rows="5" placeholder="Outline the core context or details regarding your legal requirements..." required></textarea>
+                    </div>
+
+                    <!-- Modern Interactive Submit Trigger -->
+                    <button type="submit" id="submitBtn" class="btn-submit">
+                        <span class="btn-text">Initialize M-Pesa Payment</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer & LSK Disclaimer -->
+    <footer>
+        <div class="container">
+            <p class="disclaimer"><strong>Disclaimer:</strong> The information provided on this website does not, and is not intended to, constitute formal legal advice. All content, text, and materials available on this site are for general informational purposes only. Transmission or receipt of these materials does not create an Advocate-Client relationship.</p>
+            <hr>
+            <p class="copyright">&copy; 2026 Apex Legal Advocates. All Rights Reserved. Regulated by the Law Society of Kenya.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

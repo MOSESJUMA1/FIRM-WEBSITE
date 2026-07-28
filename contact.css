@@ -1,0 +1,175 @@
+/* ==========================================================================
+   NEXT-GEN CONTACT PORTAL STYLES
+   ========================================================================== */
+
+.booking-section {
+    padding: 40px 0 120px 0;
+    position: relative;
+}
+
+/* Secondary background glow feature for visual depth balance */
+.booking-section::before {
+    content: '';
+    position: absolute;
+    bottom: 10%;
+    right: 15%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.booking-container {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    max-width: 900px; /* Centered, focused interface workspace */
+    margin: 0 auto;
+}
+
+/* Glassmorphic Intake Form Module */
+.glass-form-card {
+    width: 100%;
+    background: rgba(13, 27, 49, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(197, 160, 89, 0.15);
+    border-radius: 28px; /* Smooth corner consistency */
+    padding: 50px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.form-header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 25px;
+}
+
+.form-header h2 {
+    font-size: 2.2rem;
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.form-header p {
+    color: #94a3b8;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.form-header strong {
+    color: #e2c07d; /* Highlighted Gold consultation price metrics */
+    text-shadow: 0 0 10px rgba(226, 192, 125, 0.2);
+}
+
+/* Dynamic Input Row Layouts */
+.cyber-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* Highly Polished Next-Gen Forms Inputs */
+.cyber-form input,
+.cyber-form select,
+.cyber-form textarea {
+    background: rgba(5, 11, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; /* Smooth inner interfaces */
+    padding: 14px 18px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.15, 0.85, 0.45, 1);
+}
+
+.cyber-form input:focus,
+.cyber-form select:focus,
+.cyber-form textarea:focus {
+    outline: none;
+    border-color: #e2c07d;
+    background: rgba(13, 27, 49, 0.8);
+    box-shadow: 0 0 15px rgba(226, 192, 125, 0.15);
+}
+
+/* Style overrides specifically targeting dropdown components */
+.cyber-form select option {
+    background-color: #050b14;
+    color: #ffffff;
+}
+
+/* Next-Gen Action Button Mechanics */
+.btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #e2c07d 0%, #b08d4b 100%);
+    color: #050b14;
+    border: none;
+    border-radius: 50px; /* Fluid round smooth edges */
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(226, 192, 125, 0.2);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 15px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(226, 192, 125, 0.4);
+    background: linear-gradient(135deg, #ffffff 0%, #e2c07d 100%);
+}
+
+.btn-submit i {
+    transition: transform 0.3s ease;
+}
+
+.btn-submit:hover i {
+    transform: translateX(4px); /* Interactive visual push on hover mechanics */
+}
+
+/* ==========================================================================
+   MOBILE PORTAL RESPONSIVE METRICS
+   ========================================================================== */
+@media (max-width: 768px) {
+    .glass-form-card {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+
+    .form-header h2 {
+        font-size: 1.8rem;
+    }
+
+    /* Collapse dual grid architecture cleanly into uniform mobile inputs columns */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+}

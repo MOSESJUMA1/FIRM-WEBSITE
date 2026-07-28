@@ -1,0 +1,540 @@
+/* ==========================================
+   1. RESET & VARIABLE DEFINITIONS
+   ========================================== */
+:root {
+    --primary-color: #0c1e36;    /* Premium Deep Navy */
+    --accent-color: #c5a059;     /* Elegant Legal Gold */
+    --accent-hover: #b08d4b;     /* Darker Gold for Hovers */
+    --text-dark: #222222;        /* Dark Charcoal for high readability */
+    --text-light: #666666;       /* Soft Gray for secondary body text */
+    --bg-light: #f8f9fa;         /* Off-white background for contrast */
+    --white: #ffffff;            /* Pure White */
+    --transition: all 0.3s ease; /* Consistent smooth animation timing */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    color: --text-dark;
+    background-color: var(--white);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================
+   2. TOP BAR COMPONENT
+   ========================================== */
+.top-bar {
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-size: 0.85rem;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-bar .container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.top-bar span i {
+    color: var(--accent-color);
+    margin-right: 6px;
+}
+
+/* ==========================================
+   3. NAVIGATION HEADER
+   ========================================== */
+header {
+    background-color: var(--white);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo a {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.logo span {
+    color: var(--accent-color);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 25px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    padding: 5px 0;
+    border-bottom: 2px solid transparent;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+}
+
+/* Consultation Call-To-Action Button */
+nav ul li a.btn-nav {
+    background-color: var(--accent-color);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 4px;
+    border-bottom: none;
+}
+
+nav ul li a.btn-nav:hover {
+    background-color: var(--accent-hover);
+    color: var(--white);
+}
+
+/* ==========================================
+   4. HERO SECTON
+   ========================================== */
+.hero {
+    background: linear-gradient(rgba(12, 30, 54, 0.85), rgba(12, 30, 54, 0.95)), 
+                url('https://unsplash.com') no-repeat center center/cover;
+    height: 70vh;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    margin-bottom: 35px;
+    font-weight: 300;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--white);
+    text-decoration: none;
+    padding: 14px 35px;
+    font-weight: 600;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
+}
+
+/* ==========================================
+   5. PRACTICE AREAS SECTION (SERVICES)
+   ========================================== */
+.services {
+    padding: 90px 0;
+    background-color: var(--bg-light);
+}
+
+.services h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 50px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+/* Subtle line decorative element beneath the header */
+.services h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.service-card {
+    background-color: var(--white);
+    padding: 40px 30px;
+    border-radius: 6px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+    transition: var(--transition);
+    border-top: 4px solid transparent;
+    cursor: pointer;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    border-top: 4px solid var(--accent-color);
+}
+
+.service-card i {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.service-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* ==========================================
+   6. FOOTER COMPONENT
+   ========================================== */
+footer {
+    background-color: var(--primary-color);
+    color: #b0bac5;
+    padding: 60px 0 30px 0;
+    font-size: 0.9rem;
+}
+
+footer .disclaimer {
+    line-height: 1.7;
+    margin-bottom: 30px;
+    text-align: justify;
+}
+
+footer .disclaimer strong {
+    color: var(--white);
+}
+
+footer hr {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+}
+
+footer .copyright {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+}
+
+/* ==========================================
+   7. RESPONSIVE DESIGN (MOBILE ADAPTATION)
+   ========================================== */
+@media (max-width: 768px) {
+    .top-bar .container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 5px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        text-align: center;
+    }
+
+    nav ul li {
+        width: 100%;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 8px 0;
+    }
+
+    nav ul li a.btn-nav {
+        display: inline-block;
+        width: auto;
+        margin-top: 5px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .services {
+        padding: 60px 0;
+    }
+}
+/* ==========================================
+   8. ABOUT PAGE STYLES (NEW ADDITIONS)
+   ========================================== */
+.page-banner {
+    background: linear-gradient(rgba(12, 30, 54, 0.9), rgba(12, 30, 54, 0.95));
+    padding: 60px 0;
+    text-align: center;
+    color: var(--white);
+}
+
+.page-banner h1 {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.page-banner p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+.about-overview {
+    padding: 80px 0;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.overview-text h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.overview-text p {
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+.overview-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.core-values {
+    padding: 80px 0;
+    background-color: var(--bg-light);
+}
+
+.core-values h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 50px;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.value-card {
+    background-color: var(--white);
+    padding: 40px 30px;
+    text-align: center;
+    border-radius: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    transition: var(--transition);
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.value-card i {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+}
+
+.value-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.value-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* Mobile responsive fixes for About page grid */
+@media (max-width: 768px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+/* ==========================================
+   9. TEAM PAGE STYLES (NEW ADDITIONS)
+   ========================================== */
+.team-page-section {
+    padding: 80px 0;
+    background-color: var(--white);
+}
+
+.team-page-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.profile-card {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    background-color: var(--bg-light);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: var(--transition);
+}
+
+.profile-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-details {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profile-details h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.profile-details .designation {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-divider {
+    border: 0;
+    border-top: 2px solid rgba(197, 160, 89, 0.2);
+    width: 50px;
+    margin: 15px 0;
+}
+
+.profile-bio {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 25px;
+}
+
+.profile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.profile-meta span i {
+    color: var(--accent-color);
+    margin-right: 8px;
+}
+
+/* Mobile adjustments for the vertical lawyer profiles */
+@media (max-width: 768px) {
+    .profile-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-image img {
+        height: 350px;
+    }
+    
+    .profile-details {
+        padding: 30px 20px;
+    }
+    
+    .profile-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
