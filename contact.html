@@ -1,111 +1,119 @@
-/**
- * NEXT-GENERATION CORE ARCHITECTURE — CENTRALISED APPLICATION ENGINE
- * Handles multi-page telemetry, smooth transitions, and Supabase booking storage.
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Securely book a legal consultation with Apex Legal Advocates in Kisumu, Kenya via M-Pesa.">
+    <title>Book Consultation | Apex Legal Advocates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Sharing the same premium next-gen team stylesheet for unified design components -->
+    <link rel="stylesheet" href="team.css">
+    <!-- Link to your upcoming dedicated contact styles -->
+    <link rel="stylesheet" href="contact.css">
+    <!-- Supabase client library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
-// ==========================================
-// SUPABASE CONNECTION
-// ==========================================
-const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-const supabaseKey = 'PASTE_YOUR_PUBLISHABLE_KEY_HERE';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    <!-- Top Info Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fa-solid fa-location-dot"></i> Lakebasin Mall, Kisumu-Kakamega Road, Kisumu</span>
+            <span><i class="fa-solid fa-phone"></i> +254 741801897</span>
+        </div>
+    </div>
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 Next-Gen Legal Engine initialized successfully.");
+    <!-- Navigation Header -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <a href="index.html">Apex<span>Legal</span></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="index.html#services">Practice Areas</a></li>
+                    <li><a href="team.html">Our Team</a></li>
+                    <li><a href="contact.html" class="btn-nav active">Book Consultation</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-    // ==========================================
-    // 1. GLOBAL COMPONENTS & MULTI-PAGE NAVIGATION TRACKING
-    // ==========================================
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll("nav ul li a");
+    <!-- Page Title / Banner -->
+    <section class="page-banner">
+        <div class="container">
+            <h1>Secure Portal</h1>
+            <p>Schedule your professional advocate session instantly with secure M-Pesa STK automation.</p>
+        </div>
+    </section>
 
-    navLinks.forEach(link => {
-        // Remove default static classes to let the engine evaluate routing dynamically
-        link.classList.remove("active");
+    <!-- Booking Interface Section -->
+    <section class="booking-section">
+        <div class="container booking-container">
+            
+            <!-- Glassmorphic Booking Form Wrapper -->
+            <div class="glass-form-card">
+                <div class="form-header">
+                    <h2>Consultation Intake</h2>
+                    <p>A standard consultation reservation fee of <strong>KSh 3,000</strong> applies to finalize your booking schedule.</p>
+                </div>
 
-        // Extract the target file destination from the link attribute
-        const linkHref = link.getAttribute("href");
+                <form id="consultationForm" class="cyber-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="clientName">Full Name</label>
+                            <input type="text" id="clientName" placeholder="e.g. Kennedy Ochieng" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="clientEmail">Email Address</label>
+                            <input type="email" id="clientEmail" placeholder="e.g. ochieng@domain.com" required>
+                        </div>
+                    </div>
 
-        // Match current URL pathway to highlight active navigation fields
-        if (currentPath.includes(linkHref) && linkHref !== "index.html") {
-            link.classList.add("active");
-        } else if ((currentPath === "/" || currentPath.endsWith("index.html")) && linkHref === "index.html") {
-            // Safe fallback defaults for the primary root homepage landing
-            if (!window.location.hash) {
-                link.classList.add("active");
-            }
-        }
-    });
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="mpesaPhone">M-Pesa Mobile Number (STK Push Target)</label>
+                            <!-- Enforces strict Safaricom number formatting (07... or 01...) via standard RegEx validation pattern -->
+                            <input type="tel" id="mpesaPhone" placeholder="e.g. 0712345678" pattern="^(07|01)[0-9]{8}$" title="Please enter a valid Kenyan mobile number starting with 07 or 01" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="practiceArea">Target Legal Department</label>
+                            <select id="practiceArea" required>
+                                <option value="" disabled selected>Select practice domain...</option>
+                                <option value="corporate">Corporate & Commercial Law</option>
+                                <option value="conveyancing">Conveyancing & Real Estate</option>
+                                <option value="dispute">Dispute Resolution & Litigation</option>
+                            </select>
+                        </div>
+                    </div>
 
-    // ==========================================
-    // 2. CONTACT PORTAL & BOOKING SUBMISSION ENGINE
-    // ==========================================
-    const bookingForm = document.getElementById("consultationForm");
+                    <div class="input-group">
+                        <label for="matterBrief">Brief Overview of Legal Matter</label>
+                        <textarea id="matterBrief" rows="5" placeholder="Outline the core context or details regarding your legal requirements..." required></textarea>
+                    </div>
 
-    // Code blocks execute safely ONLY if the user is visiting the booking terminal
-    if (bookingForm) {
-        const submitBtn = document.getElementById("submitBtn");
-        const btnText = submitBtn.querySelector(".btn-text");
-        const btnIcon = submitBtn.querySelector("i");
+                    <!-- Modern Interactive Submit Trigger -->
+                    <button type="submit" id="submitBtn" class="btn-submit">
+                        <span class="btn-text">Initialize M-Pesa Payment</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
 
-        bookingForm.addEventListener("submit", async (event) => {
-            // Intercept standard page refresh reload procedures
-            event.preventDefault();
+        </div>
+    </section>
 
-            // Extract real-time inputs values from form parameters
-            const clientName = document.getElementById("clientName").value.trim();
-            const clientEmail = document.getElementById("clientEmail").value.trim();
-            const rawPhone = document.getElementById("mpesaPhone").value.trim();
-            const practiceArea = document.getElementById("practiceArea").value;
-            const matterBrief = document.getElementById("matterBrief").value.trim();
+    <!-- Footer & LSK Disclaimer -->
+    <footer>
+        <div class="container">
+            <p class="disclaimer"><strong>Disclaimer:</strong> The information provided on this website does not, and is not intended to, constitute formal legal advice. All content, text, and materials available on this site are for general informational purposes only. Transmission or receipt of these materials does not create an Advocate-Client relationship.</p>
+            <hr>
+            <p class="copyright">&copy; 2026 Apex Legal Advocates. All Rights Reserved. Regulated by the Law Society of Kenya.</p>
+        </div>
+    </footer>
 
-            // Normalize Kenyan phone formatting safely to standard international format (254...)
-            let formattedPhone = rawPhone;
-            if (rawPhone.startsWith("0")) {
-                formattedPhone = "254" + rawPhone.substring(1);
-            }
-
-            // Visual UI Transformation: Lock button state and show next-gen processing loader
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = "0.7";
-            btnText.textContent = "Saving your booking...";
-            btnIcon.className = "fa-solid fa-spinner fa-spin"; // Animated next-gen rotation icon
-
-            try {
-                // Save the booking to Supabase
-                const { data, error } = await supabase.from('bookings').insert([
-                    {
-                        full_name: clientName,
-                        email: clientEmail,
-                        phone: formattedPhone,
-                        service_requested: practiceArea,
-                        amount: 3000
-                    }
-                ]);
-
-                if (error) throw error;
-
-                // Present a clean confirmation feedback card natively over the browser environment
-                alert(
-                    `🔒 Booking Received!\n\n` +
-                    `Thank you, ${clientName}.\n` +
-                    `Your consultation request has been logged. Our team will contact you shortly to confirm your KSh 3,000 M-Pesa payment.\n\n` +
-                    `Practice Area: ${practiceArea}`
-                );
-
-                // Fully reset interface layout parameters to default operating states upon completion
-                bookingForm.reset();
-
-            } catch (error) {
-                console.error("Booking Save Exception:", error);
-                alert("⛔ Something went wrong saving your booking. Please check your connection and try again.");
-            } finally {
-                // Re-enable interactive trigger options for standard UI operations
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = "1";
-                btnText.textContent = "Initialize M-Pesa Payment";
-                btnIcon.className = "fa-solid fa-paper-plane";
-            }
-        });
-    }
-});
+    <script src="script.js"></script>
+</body>
+</html>
