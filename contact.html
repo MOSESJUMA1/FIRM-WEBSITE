@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Securely book a legal consultation with Apex Legal Advocates in Kisumu, Kenya via M-Pesa.">
+    <meta name="description" content="Book a legal consultation with Apex Legal Advocates in Kisumu, Kenya.">
     <title>Book Consultation | Apex Legal Advocates</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Sharing the same premium next-gen team stylesheet for unified design components -->
@@ -44,8 +44,8 @@
     <!-- Page Title / Banner -->
     <section class="page-banner">
         <div class="container">
-            <h1>Secure Portal</h1>
-            <p>Schedule your professional advocate session instantly with secure M-Pesa STK automation.</p>
+            <h1>Book a Consultation</h1>
+            <p>Schedule your professional advocate session. Our team will reach out to confirm your appointment.</p>
         </div>
     </section>
 
@@ -57,7 +57,7 @@
             <div class="glass-form-card">
                 <div class="form-header">
                     <h2>Consultation Intake</h2>
-                    <p>A standard consultation reservation fee of <strong>KSh 3,000</strong> applies to finalize your booking schedule.</p>
+                    <p>Fill in your details below and our team will contact you to confirm your consultation.</p>
                 </div>
 
                 <form id="consultationForm" class="cyber-form">
@@ -74,7 +74,7 @@
 
                     <div class="form-grid">
                         <div class="input-group">
-                            <label for="mpesaPhone">M-Pesa Mobile Number (STK Push Target)</label>
+                            <label for="mpesaPhone">Mobile Number</label>
                             <!-- Enforces strict Safaricom number formatting (07... or 01...) via standard RegEx validation pattern -->
                             <input type="tel" id="mpesaPhone" placeholder="e.g. 0712345678" pattern="^(07|01)[0-9]{8}$" title="Please enter a valid Kenyan mobile number starting with 07 or 01" required>
                         </div>
@@ -96,7 +96,7 @@
 
                     <!-- Modern Interactive Submit Trigger -->
                     <button type="submit" id="submitBtn" class="btn-submit">
-                        <span class="btn-text">Initialize M-Pesa Payment</span>
+                        <span class="btn-text">Submit Consultation Request</span>
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </form>

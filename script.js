@@ -1,7 +1,14 @@
 /**
  * NEXT-GENERATION CORE ARCHITECTURE — CENTRALISED APPLICATION ENGINE
- * Handles multi-page telemetry, smooth transitions, and secure M-Pesa STK Push triggers.
+ * Handles multi-page telemetry, smooth transitions, and Supabase booking storage.
  */
+
+// ==========================================
+// SUPABASE CONNECTION
+// ==========================================
+const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+const supabaseKey = 'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🚀 Next-Gen Legal Engine initialized successfully.");
@@ -31,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
-    // 2. CONTACT PORTAL & SAFARICOM M-PESA STK PUSH INTERACTION ENGINE
+    // 2. CONTACT PORTAL & BOOKING SUBMISSION ENGINE
     // ==========================================
     const bookingForm = document.getElementById("consultationForm");
 
@@ -47,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Extract real-time inputs values from form parameters
             const clientName = document.getElementById("clientName").value.trim();
+            const clientEmail = document.getElementById("clientEmail").value.trim();
             const rawPhone = document.getElementById("mpesaPhone").value.trim();
             const practiceArea = document.getElementById("practiceArea").value;
             const matterBrief = document.getElementById("matterBrief").value.trim();
@@ -57,52 +65,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 formattedPhone = "254" + rawPhone.substring(1);
             }
 
-            // Visual UI Transformation: Lock button state and show next-gen processing loader
+            // Visual UI Transformation: Lock button state and show processing loader
             submitBtn.disabled = true;
             submitBtn.style.opacity = "0.7";
-            btnText.textContent = "Connecting to Safaricom Daraja...";
-            btnIcon.className = "fa-solid fa-spinner fa-spin"; // Animated next-gen rotation icon
+            btnText.textContent = "Submitting...";
+            btnIcon.className = "fa-solid fa-spinner fa-spin";
 
             try {
-                // Simulate an asynchronous API connection handshake with the backend processing microservice
-                await simulateNetworkLatency(2000);
+                // Save the booking to Supabase
+                const { data, error } = await supabase.from('bookings').insert([
+                    {
+                        full_name: clientName,
+                        email: clientEmail,
+                        phone: formattedPhone,
+                        service_requested: practiceArea
+                    }
+                ]);
 
-                btnText.textContent = `STK Prompt Sent to +${formattedPhone}...`;
-                btnIcon.className = "fa-solid fa-mobile-screen-button";
+                if (error) throw error;
 
-                // Simulate waiting for user to enter their M-Pesa PIN on their phone
-                await simulateNetworkLatency(3500);
-
-                // Present a clean next-gen confirmation feedback card natively over the browser environment
+                // Present a clean confirmation feedback card
                 alert(
-                    `🔒 SECURE TRANSACTION SUCCESSFUL!\n\n` +
+                    `✅ Request Received!\n\n` +
                     `Thank you, ${clientName}.\n` +
-                    `We have successfully processed your consultation fee of KSh 3,000 via M-Pesa.\n\n` +
-                    `Reference ID: APX_${Math.random().toString(36).substr(2, 9).toUpperCase()}\n` +
-                    `Our team will review your case file (${practiceArea}) and reach out within 2 hours.`
+                    `Your consultation request has been logged. Our team will contact you shortly to confirm your appointment.\n\n` +
+                    `Practice Area: ${practiceArea}`
                 );
 
                 // Fully reset interface layout parameters to default operating states upon completion
                 bookingForm.reset();
 
             } catch (error) {
-                console.error("Payment Gateway Exception:", error);
-                alert("⛔ Transaction Gateway Timeout. Please check your network connection and try again.");
+                console.error("Booking Save Exception:", error);
+                alert("⛔ Something went wrong saving your request. Please check your connection and try again.");
             } finally {
                 // Re-enable interactive trigger options for standard UI operations
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = "1";
-                btnText.textContent = "Initialize M-Pesa Payment";
+                btnText.textContent = "Submit Consultation Request";
                 btnIcon.className = "fa-solid fa-paper-plane";
             }
         });
     }
 });
-
-/**
- * Utilises native JavaScript Promise structures to precisely execute custom UI loading delays.
- * @param {number} ms - Milliseconds to stall code block threads
- */
-function simulateNetworkLatency(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
