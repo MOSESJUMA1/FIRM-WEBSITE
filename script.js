@@ -1,4 +1,4 @@
-mnnb/**
+/**
  * NEXT-GENERATION CORE ARCHITECTURE — CENTRALISED APPLICATION ENGINE
  * Handles multi-page telemetry, smooth transitions, and Supabase booking storage.
  */
