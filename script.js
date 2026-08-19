@@ -1,6 +1,6 @@
 const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co'; 
 const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga'; 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey); 
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
 
 document.addEventListener('DOMContentLoaded', async () => { 
     console.log("Next-Gen legal Engine initialized successfully."); 
