@@ -1,95 +1,77 @@
-/**
- * NEXT-GENERATION CORE ARCHITECTURE — CENTRALISED APPLICATION ENGINE
- * Handles multi-page telemetry, smooth transitions, and Supabase booking storage.
- */
+const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co'; 
+const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga'; 
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey); 
 
-// ==========================================
-// SUPABASE CONNECTION
-// ==========================================
-const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-const supabaseKey = 'sb_publishable_KJ0vSBO8QiUFQZ52wyws1A_zxrk39ga';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+document.addEventListener('DOMContentLoaded', async () => { 
+    console.log("Next-Gen legal Engine initialized successfully."); 
+    
+    // 1. Fix Nav Link Activation Logic
+    const currentPath = window.location.pathname; 
+    const navLinks = document.querySelectorAll("nav ul li a"); 
+    
+    navLinks.forEach(link => { 
+        link.classList.remove("active"); 
+        const linkHref = link.getAttribute("href"); 
+        
+        if (currentPath.includes(linkHref) && linkHref !== "index.html") { 
+            link.classList.add("active"); // Fixed: Added class assignment here
+        } else if ((currentPath === "/" || currentPath.endsWith("index.html")) && linkHref === "index.html") { 
+            if (!window.location.hash) { 
+                link.classList.add("active"); 
+            } 
+        } 
+    }); 
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 Next-Gen Legal Engine initialized successfully.");
+    // 2. Consultation Booking Handling
+    const bookingForm = document.getElementById("consulationForm"); 
+    if (bookingForm) { 
+        const submitBtn = document.getElementById("submitBtn"); 
+        const btnText = submitBtn.querySelector(".btn-text"); 
+        const btnIcon = submitBtn.querySelector("i"); 
 
-    // ==========================================
-    // 1. GLOBAL COMPONENTS & MULTI-PAGE NAVIGATION TRACKING
-    // ==========================================
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll("nav ul li a");
+        bookingForm.addEventListener("submit", async (event) => { 
+            event.preventDefault(); 
+            
+            const clientName = document.getElementById("clientName").value.trim(); 
+            const clientEmail = document.getElementById("clientEmail").value.trim(); 
+            const rawPhone = document.getElementById("mpesaPhone").value.trim(); 
+            const practiceArea = document.getElementById("practiceArea").value.trim(); 
+            
+            let formattedPhone = rawPhone; 
+            if (rawPhone.startsWith("0")) { 
+                formattedPhone = "+254" + rawPhone.substring(1); 
+            } 
 
-    navLinks.forEach(link => {
-        link.classList.remove("active");
-        const linkHref = link.getAttribute("href");
+            submitBtn.disabled = true; 
+            submitBtn.style.opacity = "0.7"; 
+            btnText.textContent = "submitting..."; 
+            btnIcon.className = "fa-solid fa-spinner fa-spin"; 
 
-        if (currentPath.includes(linkHref) && linkHref !== "index.html") {
-            link.classList.add("active");
-        } else if ((currentPath === "/" || currentPath.endsWith("index.html")) && linkHref === "index.html") {
-            if (!window.location.hash) {
-                link.classList.add("active");
-            }
-        }
-    });
+            try { 
+                const { data, error } = await supabase.from('consultation_bookings').insert([ 
+                    { 
+                        full_name: clientName, 
+                        email: clientEmail, 
+                        phone: formattedPhone, 
+                        service_requested: practiceArea, 
+                    } 
+                ]); 
 
-    // ==========================================
-    // 2. CONTACT PORTAL & BOOKING SUBMISSION ENGINE
-    // ==========================================
-    const bookingForm = document.getElementById("consultationForm");
+                if (error) throw error; // Fixed: Removed stray '|'
 
-    if (bookingForm) {
-        const submitBtn = document.getElementById("submitBtn");
-        const btnText = submitBtn.querySelector(".btn-text");
-        const btnIcon = submitBtn.querySelector("i");
-
-        bookingForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const clientName = document.getElementById("clientName").value.trim();
-            const clientEmail = document.getElementById("clientEmail").value.trim();
-            const rawPhone = document.getElementById("mpesaPhone").value.trim();
-            const practiceArea = document.getElementById("practiceArea").value;
-
-            let formattedPhone = rawPhone;
-            if (rawPhone.startsWith("0")) {
-                formattedPhone = "254" + rawPhone.substring(1);
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = "0.7";
-            btnText.textContent = "Submitting...";
-            btnIcon.className = "fa-solid fa-spinner fa-spin";
-
-            try {
-                const { data, error } = await supabase.from('bookings').insert([
-                    {
-                        full_name: clientName,
-                        email: clientEmail,
-                        phone: formattedPhone,
-                        service_requested: practiceArea
-                    }
-                ]);
-
-                if (error) throw error;
-
-                alert(
-                    `✅ Request Received!\n\n` +
-                    `Thank you, ${clientName}.\n` +
-                    `Your consultation request has been logged. Our team will contact you shortly to confirm your appointment.\n\n` +
-                    `Practice Area: ${practiceArea}`
-                );
-
-                bookingForm.reset();
-
-            } catch (error) {
-                console.error("Booking Save Exception:", error);
-                alert("⛔ Something went wrong saving your request. Please check your connection and try again.");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = "1";
-                btnText.textContent = "Submit Consultation Request";
-                btnIcon.className = "fa-solid fa-paper-plane";
-            }
-        });
-    }
-});
+                // Fixed: Swapped single quotes to backticks and closed all string brackets
+                alert(`Request Received!\n\nThank you, ${clientName}.\nYour consultation request has been logged. Our team will contact you shortly.\n\nPractice Area: ${practiceArea}`); 
+                
+                bookingForm.reset(); 
+            } catch (error) { 
+                console.error("Booking Save Exception:", error); 
+                alert("Something went wrong. Please try again."); 
+            } finally { 
+                submitBtn.disabled = false; 
+                submitBtn.style.opacity = "1"; 
+                btnText.textContent = "Submit Consulation Request"; 
+                btnIcon.className = "fa-solid fa-paper-plane"; 
+            } 
+        }); // Fixed: Properly closed event listener
+    } 
+}); // Fixed: Properly closed DOMContentLoaded event listener
