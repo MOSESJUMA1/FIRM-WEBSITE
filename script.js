@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnIcon.className = "fa-solid fa-spinner fa-spin"; 
 
             try { 
-                const { data, error } = await supabase.from('consultation_bookings').insert([ 
+                const { data, error } = await supabase.from('bookings').insert([ 
                     { 
                         full_name: clientName, 
                         email: clientEmail, 
