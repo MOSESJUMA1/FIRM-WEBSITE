@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }); 
 
     // 2. Consultation Booking Handling
-    const bookingForm = document.getElementById("consulationForm"); 
+    const bookingForm = document.getElementById("consultationForm"); 
     if (bookingForm) { 
         const submitBtn = document.getElementById("submitBtn"); 
         const btnText = submitBtn.querySelector(".btn-text"); 
