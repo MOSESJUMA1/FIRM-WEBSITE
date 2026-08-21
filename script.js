@@ -1,8 +1,8 @@
 let dbClient
 
 window.addEventListener('load' ,() => {
-    const supabaseUrl = window.NEXT_PUBLIC_BASE_URL;
-    const supabasekey =window.SUPABASE_ANON__KEY;
+    const supabaseUrl = "https://hjbrllpbpajzmgpgkadf.supabase.co/rest/v1/";
+    const supabasekey = "sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga";
 
     if (window.supabase) {
         dbClient = window.supabase.createClient(supabaseUrl, supabasekey);
