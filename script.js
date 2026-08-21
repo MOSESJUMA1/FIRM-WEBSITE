@@ -1,7 +1,7 @@
 let dbClient
 
 window.addEventListener('load' ,() => {
-    const supabaseUrl = "https://hjbrllpbpajzmgpgkadf.supabase.co/rest/v1/";
+    const supabaseUrl = "https://hjbrllpbpajzmgpgkadf.supabase.co/";
     const supabasekey = "sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga";
 
     if (window.supabase) {
