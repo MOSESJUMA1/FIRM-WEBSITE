@@ -1,7 +1,15 @@
-const supabaseUrl = window.NEXT_PUBLIC_BASE_URL; 
-const supabaseKey = window.NEXT_PUBLIC_ANON_KEY; 
-const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
- 
+let dbClient
+
+window.addEventListener('load' ,() => {
+    const supabaseUrl = window.NEXT_PUBLIC_BASE_URL;
+    const supabasekey =window.SUPABASE_ANON__KEY;
+
+    if (window.supabase) {
+        dbClient = window.supabase.createClient(supabaseUrl, supabasekey);
+    } else {
+        console.error("Supabase CDN failed to load in time!");
+    }
+});
 document.addEventListener('DOMContentLoaded', async () => { 
     console.log("Next-Gen legal Engine initialized successfully."); 
     
