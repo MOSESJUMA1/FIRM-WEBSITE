@@ -1,7 +1,7 @@
-const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co'; 
-const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga'; 
-const myAppDatabase = window.supabase.createClient(supabaseUrl, supabaseKey); 
-
+const supabaseUrl = process.env.NEXT_PUBLIC_BASE_URL; 
+const supabaseKey = Process.env.NEXT_PUBLIC_ANON_KEY; 
+const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
+ 
 document.addEventListener('DOMContentLoaded', async () => { 
     console.log("Next-Gen legal Engine initialized successfully."); 
     
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnIcon.className = "fa-solid fa-spinner fa-spin"; 
 
             try { 
-                const { data, error } = await myAppDatabase.from('bookings').insert([ 
+                const { data, error } = await dbClient.from('bookings').insert([ 
                     { 
                         full_name: clientName, 
                         email: clientEmail, 
