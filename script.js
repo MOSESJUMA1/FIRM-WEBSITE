@@ -1,5 +1,5 @@
-const supabaseUrl = process.env.NEXT_PUBLIC_BASE_URL; 
-const supabaseKey = Process.env.NEXT_PUBLIC_ANON_KEY; 
+const supabaseUrl = window.NEXT_PUBLIC_BASE_URL; 
+const supabaseKey = window.NEXT_PUBLIC_ANON_KEY; 
 const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
  
 document.addEventListener('DOMContentLoaded', async () => { 
