@@ -123,6 +123,21 @@
             text-decoration: underline;
         }
     </style>
+    <!-- Supabase with fallback -->
+<script>
+    // Try to load Supabase with timeout
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.async = true;
+    script.onerror = function() {
+        // Fallback to unpkg if jsdelivr fails
+        var fallbackScript = document.createElement('script');
+        fallbackScript.src = 'https://unpkg.com/@supabase/supabase-js@2';
+        fallbackScript.async = true;
+        document.head.appendChild(fallbackScript);
+    };
+    document.head.appendChild(script);
+</script>
 </head>
 <body>
     <div class="login-container">
@@ -153,72 +168,75 @@
         </div>
     </div>
 
- <script>
-    // Check if supabase is already loaded
-    if (!window.supabase) {
-        console.error('Supabase library not loaded');
+<script>
+    // Wait for Supabase library to load
+    function initializeLogin() {
+        if (!window.supabase) {
+            setTimeout(initializeLogin, 500); // Retry in 500ms
+            return;
+        }
+
+        const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+        const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('staff')
+                    .select('*')
+                    .eq('email', email)
+                    .single();
+
+                if (error || !data) {
+                    throw new Error('Invalid email or password');
+                }
+
+                if (data.password_hash !== password) {
+                    throw new Error('Invalid email or password');
+                }
+
+                localStorage.setItem('staffId', data.id);
+                localStorage.setItem('staffName', data.name);
+                localStorage.setItem('staffRole', data.role);
+                localStorage.setItem('staffEmail', data.email);
+
+                successMessage.textContent = 'Login successful! Redirecting...';
+                successMessage.style.display = 'block';
+
+                setTimeout(() => {
+                    window.location.href = 'staff-dashboard.html';
+                }, 1000);
+
+            } catch (error) {
+                errorMessage.textContent = error.message || 'Login failed. Please try again.';
+                errorMessage.style.display = 'block';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        });
     }
 
-    const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-    const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
-    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    const loginForm = document.getElementById('loginForm');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
-
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        loginBtn.disabled = true;
-        loginBtn.textContent = 'Logging in...';
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
-
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-
-        try {
-            // Query staff table
-            const { data, error } = await supabaseClient
-                .from('staff')
-                .select('*')
-                .eq('email', email)
-                .single();
-
-            if (error || !data) {
-                throw new Error('Invalid email or password');
-            }
-
-            // Simple password check
-            if (data.password_hash !== password) {
-                throw new Error('Invalid email or password');
-            }
-
-            // Success - save to localStorage and redirect
-            localStorage.setItem('staffId', data.id);
-            localStorage.setItem('staffName', data.name);
-            localStorage.setItem('staffRole', data.role);
-            localStorage.setItem('staffEmail', data.email);
-
-            successMessage.textContent = 'Login successful! Redirecting...';
-            successMessage.style.display = 'block';
-
-            setTimeout(() => {
-                window.location.href = 'staff-dashboard.html';
-            }, 1000);
-
-        } catch (error) {
-            errorMessage.textContent = error.message || 'Login failed. Please try again.';
-            errorMessage.style.display = 'block';
-        } finally {
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'Login';
-        }
-    });
+    // Start login initialization
+    initializeLogin();
 </script>
 </body>
 </html>
