@@ -167,12 +167,10 @@
             <a href="index.html">← Back to Home</a>
         </div>
     </div>
-
 <script>
-    // Wait for Supabase library to load
     function initializeLogin() {
         if (!window.supabase) {
-            setTimeout(initializeLogin, 500); // Retry in 500ms
+            setTimeout(initializeLogin, 500);
             return;
         }
 
@@ -196,7 +194,6 @@
             successMessage.style.display = 'none';
 
             const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
 
             try {
                 const { data, error } = await supabaseClient
@@ -206,13 +203,10 @@
                     .single();
 
                 if (error || !data) {
-                    throw new Error('Invalid email or password');
+                    throw new Error('Email not found in staff database');
                 }
 
-                if (data.password_hash !== password) {
-                    throw new Error('Invalid email or password');
-                }
-
+                // Login successful - save to localStorage
                 localStorage.setItem('staffId', data.id);
                 localStorage.setItem('staffName', data.name);
                 localStorage.setItem('staffRole', data.role);
@@ -235,7 +229,6 @@
         });
     }
 
-    // Start login initialization
     initializeLogin();
 </script>
 </body>
