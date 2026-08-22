@@ -153,68 +153,72 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script>
-        const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-        const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+ <script>
+    // Check if supabase is already loaded
+    if (!window.supabase) {
+        console.error('Supabase library not loaded');
+    }
 
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
+    const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+    const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Logging in...';
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
 
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Logging in...';
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
 
-            try {
-                // Query staff table
-                const { data, error } = await supabase
-                    .from('staff')
-                    .select('*')
-                    .eq('email', email)
-                    .single();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
 
-                if (error || !data) {
-                    throw new Error('Invalid email or password');
-                }
+        try {
+            // Query staff table
+            const { data, error } = await supabaseClient
+                .from('staff')
+                .select('*')
+                .eq('email', email)
+                .single();
 
-                // Simple password check (not secure - fix later)
-                if (data.password_hash !== password) {
-                    throw new Error('Invalid email or password');
-                }
-
-                // Success - save to localStorage and redirect
-                localStorage.setItem('staffId', data.id);
-                localStorage.setItem('staffName', data.name);
-                localStorage.setItem('staffRole', data.role);
-                localStorage.setItem('staffEmail', data.email);
-
-                successMessage.textContent = 'Login successful! Redirecting...';
-                successMessage.style.display = 'block';
-
-                setTimeout(() => {
-                    window.location.href = 'staff-dashboard.html';
-                }, 1000);
-
-            } catch (error) {
-                errorMessage.textContent = error.message || 'Login failed. Please try again.';
-                errorMessage.style.display = 'block';
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Login';
+            if (error || !data) {
+                throw new Error('Invalid email or password');
             }
-        });
-    </script>
+
+            // Simple password check
+            if (data.password_hash !== password) {
+                throw new Error('Invalid email or password');
+            }
+
+            // Success - save to localStorage and redirect
+            localStorage.setItem('staffId', data.id);
+            localStorage.setItem('staffName', data.name);
+            localStorage.setItem('staffRole', data.role);
+            localStorage.setItem('staffEmail', data.email);
+
+            successMessage.textContent = 'Login successful! Redirecting...';
+            successMessage.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = 'staff-dashboard.html';
+            }, 1000);
+
+        } catch (error) {
+            errorMessage.textContent = error.message || 'Login failed. Please try again.';
+            errorMessage.style.display = 'block';
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Login';
+        }
+    });
+</script>
 </body>
 </html>
