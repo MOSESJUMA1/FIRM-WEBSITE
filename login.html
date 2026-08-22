@@ -168,68 +168,48 @@
         </div>
     </div>
 <script>
-    function initializeLogin() {
-        if (!window.supabase) {
-            setTimeout(initializeLogin, 500);
-            return;
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Logging in...';
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+
+        const email = emailInput.value.trim();
+
+        // Hardcoded staff accounts for testing
+        const allowedEmails = {
+            'sarah@apexlegal.com': { id: '18949bad-78c1-41c9-9c17-673c97a30', name: 'Sarah Advocate', role: 'advocate' }
+        };
+
+        if (allowedEmails[email]) {
+            const staff = allowedEmails[email];
+            localStorage.setItem('staffId', staff.id);
+            localStorage.setItem('staffName', staff.name);
+            localStorage.setItem('staffRole', staff.role);
+            localStorage.setItem('staffEmail', email);
+
+            successMessage.textContent = 'Login successful! Redirecting...';
+            successMessage.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = 'staff-dashboard.html';
+            }, 1000);
+        } else {
+            errorMessage.textContent = 'Email not found. Try: sarah@apexlegal.com';
+            errorMessage.style.display = 'block';
         }
 
-        const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-        const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Logging in...';
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-
-            const email = emailInput.value.trim();
-
-            try {
-                const { data, error } = await supabaseClient
-                    .from('staff')
-                    .select('*')
-                    .eq('email', email)
-                    .single();
-
-                if (error || !data) {
-                    throw new Error('Email not found in staff database');
-                }
-
-                // Login successful - save to localStorage
-                localStorage.setItem('staffId', data.id);
-                localStorage.setItem('staffName', data.name);
-                localStorage.setItem('staffRole', data.role);
-                localStorage.setItem('staffEmail', data.email);
-
-                successMessage.textContent = 'Login successful! Redirecting...';
-                successMessage.style.display = 'block';
-
-                setTimeout(() => {
-                    window.location.href = 'staff-dashboard.html';
-                }, 1000);
-
-            } catch (error) {
-                errorMessage.textContent = error.message || 'Login failed. Please try again.';
-                errorMessage.style.display = 'block';
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Login';
-            }
-        });
-    }
-
-    initializeLogin();
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+    });
 </script>
 </body>
 </html>
