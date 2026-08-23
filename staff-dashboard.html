@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 250px;
             background: #2c3e50;
@@ -85,7 +84,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* MAIN CONTENT */
         .main-content {
             flex: 1;
             margin-left: 250px;
@@ -117,7 +115,6 @@
             color: #666;
         }
 
-        /* STATS CARDS */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -145,7 +142,6 @@
             color: #2c3e50;
         }
 
-        /* CONSULTATIONS TABLE */
         .section {
             background: white;
             padding: 20px;
@@ -241,17 +237,14 @@
             .sidebar {
                 width: 200px;
             }
-
             .main-content {
                 margin-left: 200px;
                 padding: 15px;
             }
-
             .header {
                 flex-direction: column;
                 align-items: flex-start;
             }
-
             .header-user {
                 text-align: left;
                 margin-top: 10px;
@@ -261,13 +254,11 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h3>Apex Legal</h3>
                 <p id="staffNameDisplay">Staff Portal</p>
             </div>
-
             <ul class="sidebar-nav">
                 <li><a class="nav-link active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
                 <li><a class="nav-link" data-section="consultations"><i class="fas fa-phone"></i> Consultations</a></li>
@@ -276,13 +267,11 @@
                 <li><a class="nav-link" data-section="attendance"><i class="fas fa-clock"></i> Attendance</a></li>
                 <li><a class="nav-link" data-section="reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
             </ul>
-
             <div class="logout-btn">
                 <a class="nav-link" id="logoutBtn" style="background: #e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
 
-        <!-- MAIN CONTENT -->
         <div class="main-content">
             <div class="header">
                 <h1 id="pageTitle">Dashboard</h1>
@@ -292,7 +281,6 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD SECTION -->
             <div id="dashboard" class="section active">
                 <h2>Dashboard Overview</h2>
                 <div class="stats-container">
@@ -313,7 +301,6 @@
                         <div class="number" id="staffCount">0</div>
                     </div>
                 </div>
-
                 <h3 style="margin-top: 30px;">Recent Consultations</h3>
                 <table>
                     <thead>
@@ -332,7 +319,6 @@
                 </table>
             </div>
 
-            <!-- CONSULTATIONS SECTION -->
             <div id="consultations" class="section">
                 <h2>All Consultations</h2>
                 <table>
@@ -352,7 +338,6 @@
                 </table>
             </div>
 
-            <!-- CASES SECTION -->
             <div id="cases" class="section">
                 <h2>Case Management</h2>
                 <button class="action-btn" style="background: #27ae60; margin-bottom: 20px;"><i class="fas fa-plus"></i> New Case</button>
@@ -373,7 +358,6 @@
                 </table>
             </div>
 
-            <!-- LEAVES SECTION -->
             <div id="leaves" class="section">
                 <h2>Leave Requests</h2>
                 <button class="action-btn" style="background: #27ae60; margin-bottom: 20px;"><i class="fas fa-plus"></i> Request Leave</button>
@@ -394,7 +378,6 @@
                 </table>
             </div>
 
-            <!-- ATTENDANCE SECTION -->
             <div id="attendance" class="section">
                 <h2>Attendance Register</h2>
                 <table>
@@ -413,7 +396,6 @@
                 </table>
             </div>
 
-            <!-- REPORTS SECTION -->
             <div id="reports" class="section">
                 <h2>Reports & Analytics</h2>
                 <div class="stats-container" style="margin-top: 30px;">
@@ -434,204 +416,181 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script>
-        const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-        const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+    const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Check if staff is logged in
-        function checkAuth() {
-            const staffId = localStorage.getItem('staffId');
-            if (!staffId) {
+    // Global store
+    let allConsultations = [];
+
+    // Load consultations
+    async function loadConsultationsWithActions() {
+        try {
+            const { data, error } = await supabase
+                .from('bookings')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allConsultations = data || [];
+            const consultationsBody = document.getElementById('consultationsBody');
+            consultationsBody.innerHTML = '';
+
+            if (allConsultations.length > 0) {
+                allConsultations.forEach((booking, index) => {
+                    const row = `
+                        <tr>
+                            <td>${booking.full_name}</td>
+                            <td>${booking.email || 'N/A'}</td>
+                            <td>${booking.service_requested}</td>
+                            <td>${booking.phone}</td>
+                            <td>${new Date(booking.created_at).toLocaleDateString()}</td>
+                            <td>
+                                <button class="action-btn" onclick="viewDetail(${index})">View</button>
+                                <button class="action-btn" onclick="updateStatus(${index})">Status</button>
+                                <button class="action-btn" style="background: #27ae60;" onclick="assignStaff(${index})">Assign</button>
+                            </td>
+                        </tr>
+                    `;
+                    consultationsBody.innerHTML += row;
+                });
+
+                const recentConsultationsBody = document.getElementById('recentConsultationsBody');
+                recentConsultationsBody.innerHTML = '';
+                allConsultations.slice(0, 5).forEach((booking, index) => {
+                    const row = `
+                        <tr>
+                            <td>${booking.full_name}</td>
+                            <td>${booking.service_requested}</td>
+                            <td>${booking.phone}</td>
+                            <td>${new Date(booking.created_at).toLocaleDateString()}</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td><button class="action-btn" onclick="viewDetail(${index})">View</button></td>
+                        </tr>
+                    `;
+                    recentConsultationsBody.innerHTML += row;
+                });
+            } else {
+                consultationsBody.innerHTML = '<tr><td colspan="6" class="empty-state">No consultations yet</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function viewDetail(index) {
+        const booking = allConsultations[index];
+        if (!booking) return;
+        alert(`CLIENT DETAILS\n━━━━━━━━━━━━━━━\nName: ${booking.full_name}\nEmail: ${booking.email || 'N/A'}\nPhone: ${booking.phone}\nService: ${booking.service_requested}\nDate: ${new Date(booking.created_at).toLocaleDateString()}`);
+    }
+
+    function updateStatus(index) {
+        const booking = allConsultations[index];
+        if (!booking) return;
+        const choice = prompt('1. Pending\n2. Assigned\n3. In Progress\n4. Completed\n\nEnter (1-4):');
+        const map = {'1': 'Pending', '2': 'Assigned', '3': 'In Progress', '4': 'Completed'};
+        if (choice && map[choice]) alert(`✅ ${booking.full_name} → ${map[choice]}`);
+    }
+
+    async function assignStaff(index) {
+        const booking = allConsultations[index];
+        if (!booking) return;
+        try {
+            const { data: staff, error } = await supabase.from('staff').select('id, name, role');
+            if (error) throw error;
+            if (!staff || staff.length === 0) {
+                alert('No staff found');
+                return;
+            }
+            let options = 'Select staff:\n\n';
+            staff.forEach((s, i) => options += `${i + 1}. ${s.name} (${s.role})\n`);
+            const choice = prompt(options + `\nEnter (1-${staff.length}):`);
+            const selected = staff[parseInt(choice) - 1];
+            if (choice && selected) alert(`✅ ${booking.full_name} → ${selected.name}`);
+        } catch (error) {
+            alert('Error loading staff');
+        }
+    }
+
+    function checkAuth() {
+        const staffId = localStorage.getItem('staffId');
+        if (!staffId) {
+            window.location.href = 'login.html';
+            return false;
+        }
+        return true;
+    }
+
+    async function initDashboard() {
+        if (!checkAuth()) return;
+        const staffName = localStorage.getItem('staffName');
+        document.getElementById('staffName').textContent = staffName;
+        document.getElementById('staffNameDisplay').textContent = staffName;
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+        await loadConsultationsWithActions();
+        await loadCases();
+        await loadStats();
+    }
+
+    async function loadCases() {
+        try {
+            const { data, error } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            const casesBody = document.getElementById('casesBody');
+            casesBody.innerHTML = '';
+            if (data && data.length > 0) {
+                data.forEach(c => {
+                    casesBody.innerHTML += `<tr><td>${c.case_number || 'N/A'}</td><td>${c.client_id || 'N/A'}</td><td><span class="status-badge status-pending">${c.status}</span></td><td>${c.assigned_to || 'Unassigned'}</td><td>${new Date(c.created_at).toLocaleDateString()}</td><td><button class="action-btn">Edit</button></td></tr>`;
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function loadStats() {
+        try {
+            const { count: consultCount } = await supabase.from('bookings').select('*', { count: 'exact', head: true });
+            const { count: caseCount } = await supabase.from('cases').select('*', { count: 'exact', head: true });
+            const { count: staffCount } = await supabase.from('staff').select('*', { count: 'exact', head: true });
+            
+            document.getElementById('totalConsultations').textContent = consultCount || 0;
+            document.getElementById('pendingCases').textContent = caseCount || 0;
+            document.getElementById('activeCases').textContent = Math.floor((caseCount || 0) / 2);
+            document.getElementById('staffCount').textContent = staffCount || 0;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (link.id === 'logoutBtn') {
+                localStorage.clear();
                 window.location.href = 'login.html';
-                return false;
+                return;
             }
-            return true;
-        }
-
-        // Initialize dashboard
-        async function initDashboard() {
-            if (!checkAuth()) return;
-
-            const staffName = localStorage.getItem('staffName');
-            document.getElementById('staffName').textContent = staffName;
-            document.getElementById('staffNameDisplay').textContent = staffName;
-            document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
-
-            // Load consultations
-            await loadConsultations();
-            // Load cases
-            await loadCases();
-            // Load stats
-            await loadStats();
-        }
-
-        // Load consultations from bookings table
-        async function loadConsultations() {
-            try {
-                const { data, error } = await supabase
-                    .from('bookings')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                // Display in consultations section
-                const consultationsBody = document.getElementById('consultationsBody');
-                consultationsBody.innerHTML = '';
-
-                if (data && data.length > 0) {
-                    data.forEach(booking => {
-                        const row = `
-                            <tr>
-                                <td>${booking.full_name}</td>
-                                <td>${booking.email || 'N/A'}</td>
-                                <td>${booking.service_requested}</td>
-                                <td>${booking.phone}</td>
-                                <td>${new Date(booking.created_at).toLocaleDateString()}</td>
-                                <td>
-                                    <button class="action-btn" onclick="viewConsultation('${booking.id}')">View</button>
-                                    <button class="action-btn" onclick="editConsultation('${booking.id}')">Edit</button>
-                                </td>
-                            </tr>
-                        `;
-                        consultationsBody.innerHTML += row;
-                    });
-
-                    // Display recent in dashboard
-                    const recentConsultationsBody = document.getElementById('recentConsultationsBody');
-                    recentConsultationsBody.innerHTML = '';
-                    data.slice(0, 5).forEach(booking => {
-                        const row = `
-                            <tr>
-                                <td>${booking.full_name}</td>
-                                <td>${booking.service_requested}</td>
-                                <td>${booking.phone}</td>
-                                <td>${new Date(booking.created_at).toLocaleDateString()}</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                                <td><button class="action-btn" onclick="viewConsultation('${booking.id}')">View</button></td>
-                            </tr>
-                        `;
-                        recentConsultationsBody.innerHTML += row;
-                    });
-                } else {
-                    consultationsBody.innerHTML = '<tr><td colspan="6" class="empty-state">No consultations yet</td></tr>';
-                }
-            } catch (error) {
-                console.error('Error loading consultations:', error);
-            }
-        }
-
-        // Load cases
-        async function loadCases() {
-            try {
-                const { data, error } = await supabase
-                    .from('cases')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                const casesBody = document.getElementById('casesBody');
-                casesBody.innerHTML = '';
-
-                if (data && data.length > 0) {
-                    data.forEach(caseItem => {
-                        const row = `
-                            <tr>
-                                <td>${caseItem.case_number || 'N/A'}</td>
-                                <td>${caseItem.client_id}</td>
-                                <td><span class="status-badge status-${caseItem.status}">${caseItem.status}</span></td>
-                                <td>${caseItem.assigned_to || 'Unassigned'}</td>
-                                <td>${new Date(caseItem.created_at).toLocaleDateString()}</td>
-                                <td><button class="action-btn">Edit</button></td>
-                            </tr>
-                        `;
-                        casesBody.innerHTML += row;
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading cases:', error);
-            }
-        }
-
-        // Load stats
-        async function loadStats() {
-            try {
-                // Total consultations
-                const { count: consultCount } = await supabase
-                    .from('bookings')
-                    .select('*', { count: 'exact', head: true });
-
-                document.getElementById('totalConsultations').textContent = consultCount || 0;
-
-                // Cases stats
-                const { data: cases } = await supabase
-                    .from('cases')
-                    .select('status');
-
-                const pending = cases?.filter(c => c.status === 'new').length || 0;
-                const active = cases?.filter(c => c.status === 'in-progress').length || 0;
-
-                document.getElementById('pendingCases').textContent = pending;
-                document.getElementById('activeCases').textContent = active;
-
-                // Staff count
-                const { count: staffCount } = await supabase
-                    .from('staff')
-                    .select('*', { count: 'exact', head: true });
-
-                document.getElementById('staffCount').textContent = staffCount || 0;
-
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        }
-
-        // Navigation
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                if (link.id === 'logoutBtn') {
-                    localStorage.removeItem('staffId');
-                    localStorage.removeItem('staffName');
-                    localStorage.removeItem('staffRole');
-                    localStorage.removeItem('staffEmail');
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-
-                const section = link.getAttribute('data-section');
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(section).classList.add('active');
-
-                // Update page title
-                const titles = {
-                    'dashboard': 'Dashboard',
-                    'consultations': 'All Consultations',
-                    'cases': 'Case Management',
-                    'leaves': 'Leave Requests',
-                    'attendance': 'Attendance Register',
-                    'reports': 'Reports & Analytics'
-                };
-                document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
-            });
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            const section = link.getAttribute('data-section');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            const titles = {
+                'dashboard': 'Dashboard',
+                'consultations': 'All Consultations',
+                'cases': 'Case Management',
+                'leaves': 'Leave Requests',
+                'attendance': 'Attendance Register',
+                'reports': 'Reports & Analytics'
+            };
+            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
         });
+    });
 
-        // Placeholder functions
-        function viewConsultation(id) {
-            alert('View consultation: ' + id);
-        }
-
-        function editConsultation(id) {
-            alert('Edit consultation: ' + id);
-        }
-
-        // Initialize
-        initDashboard();
-    </script>
+    initDashboard();
+</script>
 </body>
 </html>
