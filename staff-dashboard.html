@@ -6,250 +6,40 @@
     <title>Staff Dashboard | Apex Legal Advocates</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #2c3e50;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            margin-bottom: 30px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 20px;
-        }
-
-        .sidebar-header h3 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .sidebar-header p {
-            font-size: 12px;
-            color: #bdc3c7;
-        }
-
-        .sidebar-nav {
-            list-style: none;
-        }
-
-        .sidebar-nav li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar-nav a {
-            display: block;
-            padding: 12px 15px;
-            color: #bdc3c7;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(52, 152, 219, 0.2);
-            color: white;
-        }
-
-        .sidebar-nav a.active {
-            background: #3498db;
-            color: white;
-        }
-
-        .logout-btn {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 30px;
-        }
-
-        .header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            color: #2c3e50;
-        }
-
-        .header-user {
-            text-align: right;
-        }
-
-        .header-user p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #3498db;
-        }
-
-        .stat-card h3 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .section h2 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table thead {
-            background: #f8f9fa;
-            border-bottom: 2px solid #ddd;
-        }
-
-        table th {
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #ffeaa7;
-            color: #d63031;
-        }
-
-        .status-active {
-            background: #a9e34b;
-            color: #27ae60;
-        }
-
-        .status-completed {
-            background: #74b9ff;
-            color: #0984e3;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-right: 5px;
-            transition: background 0.3s;
-        }
-
-        .action-btn:hover {
-            background: #2980b9;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-            }
-            .main-content {
-                margin-left: 200px;
-                padding: 15px;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-user {
-                text-align: left;
-                margin-top: 10px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
+        .sidebar-header { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .sidebar-header h3 { font-size: 18px; margin-bottom: 5px; }
+        .sidebar-header p { font-size: 12px; color: #bdc3c7; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: 10px; }
+        .sidebar-nav a { display: block; padding: 12px 15px; color: #bdc3c7; text-decoration: none; border-radius: 5px; cursor: pointer; transition: all 0.3s; }
+        .sidebar-nav a:hover { background: rgba(52,152,219,0.2); color: white; }
+        .sidebar-nav a.active { background: #3498db; color: white; }
+        .logout-btn { margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; }
+        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; color: #2c3e50; }
+        .header-user { text-align: right; }
+        .header-user p { font-size: 14px; color: #666; }
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #3498db; }
+        .stat-card h3 { font-size: 14px; color: #666; margin-bottom: 10px; }
+        .stat-card .number { font-size: 32px; font-weight: bold; color: #2c3e50; }
+        .section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: none; }
+        .section.active { display: block; }
+        .section h2 { margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table thead { background: #f8f9fa; border-bottom: 2px solid #ddd; }
+        table th { padding: 12px; text-align: left; font-weight: 600; color: #2c3e50; }
+        table td { padding: 12px; border-bottom: 1px solid #eee; }
+        table tr:hover { background: #f8f9fa; }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #ffeaa7; color: #d63031; }
+        .action-btn { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 5px; transition: background 0.3s; }
+        .action-btn:hover { background: #2980b9; }
+        .empty-state { text-align: center; padding: 40px; color: #999; }
     </style>
 </head>
 <body>
@@ -260,12 +50,12 @@
                 <p id="staffNameDisplay">Staff Portal</p>
             </div>
             <ul class="sidebar-nav">
-                <li><a class="nav-link active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                <li><a class="nav-link" data-section="consultations"><i class="fas fa-phone"></i> Consultations</a></li>
-                <li><a class="nav-link" data-section="cases"><i class="fas fa-briefcase"></i> Cases</a></li>
-                <li><a class="nav-link" data-section="leaves"><i class="fas fa-calendar"></i> Leave Requests</a></li>
-                <li><a class="nav-link" data-section="attendance"><i class="fas fa-clock"></i> Attendance</a></li>
-                <li><a class="nav-link" data-section="reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a class="nav-link active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a class="nav-link" data-tab="consultations"><i class="fas fa-phone"></i> Consultations</a></li>
+                <li><a class="nav-link" data-tab="cases"><i class="fas fa-briefcase"></i> Cases</a></li>
+                <li><a class="nav-link" data-tab="leaves"><i class="fas fa-calendar"></i> Leave Requests</a></li>
+                <li><a class="nav-link" data-tab="attendance"><i class="fas fa-clock"></i> Attendance</a></li>
+                <li><a class="nav-link" data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
             </ul>
             <div class="logout-btn">
                 <a class="nav-link" id="logoutBtn" style="background: #e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -281,136 +71,65 @@
                 </div>
             </div>
 
+            <!-- DASHBOARD -->
             <div id="dashboard" class="section active">
                 <h2>Dashboard Overview</h2>
                 <div class="stats-container">
-                    <div class="stat-card">
-                        <h3>Total Consultations</h3>
-                        <div class="number" id="totalConsultations">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Pending Cases</h3>
-                        <div class="number" id="pendingCases">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Active Cases</h3>
-                        <div class="number" id="activeCases">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Staff Members</h3>
-                        <div class="number" id="staffCount">0</div>
-                    </div>
+                    <div class="stat-card"><h3>Total Consultations</h3><div class="number" id="totalConsultations">0</div></div>
+                    <div class="stat-card"><h3>Pending Cases</h3><div class="number" id="pendingCases">0</div></div>
+                    <div class="stat-card"><h3>Active Cases</h3><div class="number" id="activeCases">0</div></div>
+                    <div class="stat-card"><h3>Staff Members</h3><div class="number" id="staffCount">0</div></div>
                 </div>
                 <h3 style="margin-top: 30px;">Recent Consultations</h3>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Client Name</th>
-                            <th>Service</th>
-                            <th>Phone</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recentConsultationsBody">
-                        <tr><td colspan="6" class="empty-state">No consultations yet</td></tr>
-                    </tbody>
+                    <thead><tr><th>Client</th><th>Service</th><th>Phone</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="recentConsultationsBody"><tr><td colspan="6" class="empty-state">No data</td></tr></tbody>
                 </table>
             </div>
 
+            <!-- CONSULTATIONS -->
             <div id="consultations" class="section">
                 <h2>All Consultations</h2>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Client Name</th>
-                            <th>Email</th>
-                            <th>Service</th>
-                            <th>Phone</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="consultationsBody">
-                        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Client Name</th><th>Email</th><th>Service</th><th>Phone</th><th>Date</th><th>Actions</th></tr></thead>
+                    <tbody id="consultationsBody"><tr><td colspan="6" class="empty-state">Loading...</td></tr></tbody>
                 </table>
             </div>
 
+            <!-- CASES -->
             <div id="cases" class="section">
                 <h2>Case Management</h2>
-                <button class="action-btn" style="background: #27ae60; margin-bottom: 20px;"><i class="fas fa-plus"></i> New Case</button>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Case #</th>
-                            <th>Client</th>
-                            <th>Status</th>
-                            <th>Assigned To</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="casesBody">
-                        <tr><td colspan="6" class="empty-state">No cases yet</td></tr>
-                    </tbody>
+                    <thead><tr><th>Case #</th><th>Client</th><th>Status</th><th>Assigned</th><th>Created</th><th>Actions</th></tr></thead>
+                    <tbody id="casesBody"><tr><td colspan="6" class="empty-state">No cases</td></tr></tbody>
                 </table>
             </div>
 
+            <!-- LEAVES -->
             <div id="leaves" class="section">
                 <h2>Leave Requests</h2>
-                <button class="action-btn" style="background: #27ae60; margin-bottom: 20px;"><i class="fas fa-plus"></i> Request Leave</button>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Staff Member</th>
-                            <th>From Date</th>
-                            <th>To Date</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leavesBody">
-                        <tr><td colspan="6" class="empty-state">No leave requests</td></tr>
-                    </tbody>
+                    <thead><tr><th>Staff</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="leavesBody"><tr><td colspan="6" class="empty-state">No requests</td></tr></tbody>
                 </table>
             </div>
 
+            <!-- ATTENDANCE -->
             <div id="attendance" class="section">
                 <h2>Attendance Register</h2>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Staff Member</th>
-                            <th>Date</th>
-                            <th>Time In</th>
-                            <th>Time Out</th>
-                            <th>Hours Worked</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attendanceBody">
-                        <tr><td colspan="5" class="empty-state">No attendance records</td></tr>
-                    </tbody>
+                    <thead><tr><th>Staff</th><th>Date</th><th>Time In</th><th>Time Out</th><th>Hours</th></tr></thead>
+                    <tbody id="attendanceBody"><tr><td colspan="5" class="empty-state">No records</td></tr></tbody>
                 </table>
             </div>
 
+            <!-- REPORTS -->
             <div id="reports" class="section">
                 <h2>Reports & Analytics</h2>
-                <div class="stats-container" style="margin-top: 30px;">
-                    <div class="stat-card">
-                        <h3>Consultations This Month</h3>
-                        <div class="number" id="monthConsultations">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Cases Completed</h3>
-                        <div class="number" id="completedCases">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Staff Attendance Rate</h3>
-                        <div class="number" id="attendanceRate">0%</div>
-                    </div>
+                <div class="stats-container">
+                    <div class="stat-card"><h3>Consultations This Month</h3><div class="number">0</div></div>
+                    <div class="stat-card"><h3>Cases Completed</h3><div class="number">0</div></div>
+                    <div class="stat-card"><h3>Attendance Rate</h3><div class="number">0%</div></div>
                 </div>
             </div>
         </div>
@@ -422,99 +141,9 @@
     const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Global store
     let allConsultations = [];
 
-    // Load consultations
-    async function loadConsultationsWithActions() {
-        try {
-            const { data, error } = await supabase
-                .from('bookings')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-
-            allConsultations = data || [];
-            const consultationsBody = document.getElementById('consultationsBody');
-            consultationsBody.innerHTML = '';
-
-            if (allConsultations.length > 0) {
-                allConsultations.forEach((booking, index) => {
-                    const row = `
-                        <tr>
-                            <td>${booking.full_name}</td>
-                            <td>${booking.email || 'N/A'}</td>
-                            <td>${booking.service_requested}</td>
-                            <td>${booking.phone}</td>
-                            <td>${new Date(booking.created_at).toLocaleDateString()}</td>
-                            <td>
-                                <button class="action-btn" onclick="viewDetail(${index})">View</button>
-                                <button class="action-btn" onclick="updateStatus(${index})">Status</button>
-                                <button class="action-btn" style="background: #27ae60;" onclick="assignStaff(${index})">Assign</button>
-                            </td>
-                        </tr>
-                    `;
-                    consultationsBody.innerHTML += row;
-                });
-
-                const recentConsultationsBody = document.getElementById('recentConsultationsBody');
-                recentConsultationsBody.innerHTML = '';
-                allConsultations.slice(0, 5).forEach((booking, index) => {
-                    const row = `
-                        <tr>
-                            <td>${booking.full_name}</td>
-                            <td>${booking.service_requested}</td>
-                            <td>${booking.phone}</td>
-                            <td>${new Date(booking.created_at).toLocaleDateString()}</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                            <td><button class="action-btn" onclick="viewDetail(${index})">View</button></td>
-                        </tr>
-                    `;
-                    recentConsultationsBody.innerHTML += row;
-                });
-            } else {
-                consultationsBody.innerHTML = '<tr><td colspan="6" class="empty-state">No consultations yet</td></tr>';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    function viewDetail(index) {
-        const booking = allConsultations[index];
-        if (!booking) return;
-        alert(`CLIENT DETAILS\n━━━━━━━━━━━━━━━\nName: ${booking.full_name}\nEmail: ${booking.email || 'N/A'}\nPhone: ${booking.phone}\nService: ${booking.service_requested}\nDate: ${new Date(booking.created_at).toLocaleDateString()}`);
-    }
-
-    function updateStatus(index) {
-        const booking = allConsultations[index];
-        if (!booking) return;
-        const choice = prompt('1. Pending\n2. Assigned\n3. In Progress\n4. Completed\n\nEnter (1-4):');
-        const map = {'1': 'Pending', '2': 'Assigned', '3': 'In Progress', '4': 'Completed'};
-        if (choice && map[choice]) alert(`✅ ${booking.full_name} → ${map[choice]}`);
-    }
-
-    async function assignStaff(index) {
-        const booking = allConsultations[index];
-        if (!booking) return;
-        try {
-            const { data: staff, error } = await supabase.from('staff').select('id, name, role');
-            if (error) throw error;
-            if (!staff || staff.length === 0) {
-                alert('No staff found');
-                return;
-            }
-            let options = 'Select staff:\n\n';
-            staff.forEach((s, i) => options += `${i + 1}. ${s.name} (${s.role})\n`);
-            const choice = prompt(options + `\nEnter (1-${staff.length}):`);
-            const selected = staff[parseInt(choice) - 1];
-            if (choice && selected) alert(`✅ ${booking.full_name} → ${selected.name}`);
-        } catch (error) {
-            alert('Error loading staff');
-        }
-    }
-
+    // CHECK AUTH
     function checkAuth() {
         const staffId = localStorage.getItem('staffId');
         if (!staffId) {
@@ -524,60 +153,127 @@
         return true;
     }
 
-    async function initDashboard() {
+    // LOAD CONSULTATIONS
+    async function loadConsultations() {
+        try {
+            const { data, error } = await supabase.from('bookings').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            
+            allConsultations = data || [];
+            const body = document.getElementById('consultationsBody');
+            body.innerHTML = '';
+            
+            if (allConsultations.length > 0) {
+                allConsultations.forEach((b, i) => {
+                    body.innerHTML += `<tr>
+                        <td>${b.full_name}</td>
+                        <td>${b.email || 'N/A'}</td>
+                        <td>${b.service_requested}</td>
+                        <td>${b.phone}</td>
+                        <td>${new Date(b.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="action-btn" onclick="viewDetail(${i})">View</button>
+                            <button class="action-btn" onclick="updateStatus(${i})">Status</button>
+                            <button class="action-btn" style="background:#27ae60" onclick="assignStaff(${i})">Assign</button>
+                        </td>
+                    </tr>`;
+                });
+            } else {
+                body.innerHTML = '<tr><td colspan="6" class="empty-state">No consultations</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function viewDetail(i) {
+        const b = allConsultations[i];
+        if (b) alert(`NAME: ${b.full_name}\nEMAIL: ${b.email}\nPHONE: ${b.phone}\nSERVICE: ${b.service_requested}`);
+    }
+
+    function updateStatus(i) {
+        const choice = prompt('1=Pending, 2=Assigned, 3=In Progress, 4=Completed\nEnter (1-4):');
+        const map = {'1':'Pending','2':'Assigned','3':'In Progress','4':'Completed'};
+        if (choice && map[choice]) alert('✅ Status → ' + map[choice]);
+    }
+
+    async function assignStaff(i) {
+        try {
+            const { data: staff } = await supabase.from('staff').select('id, name, role');
+            if (!staff || staff.length === 0) { alert('No staff'); return; }
+            let opts = 'Select:\n\n';
+            staff.forEach((s, i) => opts += `${i+1}. ${s.name}\n`);
+            const c = prompt(opts + `\nEnter (1-${staff.length}):`);
+            const s = staff[parseInt(c)-1];
+            if (c && s) alert('✅ Assigned to ' + s.name);
+        } catch (e) {
+            alert('Error');
+        }
+    }
+
+    // LOAD CASES
+    async function loadCases() {
+        try {
+            const { data } = await supabase.from('cases').select('*');
+            const body = document.getElementById('casesBody');
+            body.innerHTML = data && data.length > 0 ? data.map(c => `<tr><td>${c.case_number || 'N/A'}</td><td>${c.client_id || 'N/A'}</td><td><span class="status-badge">${c.status}</span></td><td>${c.assigned_to || 'Unassigned'}</td><td>${new Date(c.created_at).toLocaleDateString()}</td><td><button class="action-btn">Edit</button></td></tr>`).join('') : '<tr><td colspan="6" class="empty-state">No cases</td></tr>';
+        } catch (e) { console.error(e); }
+    }
+
+    // LOAD STATS
+    async function loadStats() {
+        try {
+            const { count: c1 } = await supabase.from('bookings').select('*', { count: 'exact', head: true });
+            const { count: c2 } = await supabase.from('cases').select('*', { count: 'exact', head: true });
+            const { count: c3 } = await supabase.from('staff').select('*', { count: 'exact', head: true });
+            document.getElementById('totalConsultations').textContent = c1 || 0;
+            document.getElementById('pendingCases').textContent = c2 || 0;
+            document.getElementById('activeCases').textContent = Math.floor((c2 || 0) / 2);
+            document.getElementById('staffCount').textContent = c3 || 0;
+        } catch (e) { console.error(e); }
+    }
+
+    // INIT
+    async function init() {
         if (!checkAuth()) return;
-        const staffName = localStorage.getItem('staffName');
-        document.getElementById('staffName').textContent = staffName;
-        document.getElementById('staffNameDisplay').textContent = staffName;
+        const name = localStorage.getItem('staffName');
+        document.getElementById('staffName').textContent = name;
+        document.getElementById('staffNameDisplay').textContent = name;
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
-        await loadConsultationsWithActions();
+        await loadConsultations();
         await loadCases();
         await loadStats();
     }
 
-    async function loadCases() {
-        try {
-            const { data, error } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
-            if (error) throw error;
-            const casesBody = document.getElementById('casesBody');
-            casesBody.innerHTML = '';
-            if (data && data.length > 0) {
-                data.forEach(c => {
-                    casesBody.innerHTML += `<tr><td>${c.case_number || 'N/A'}</td><td>${c.client_id || 'N/A'}</td><td><span class="status-badge status-pending">${c.status}</span></td><td>${c.assigned_to || 'Unassigned'}</td><td>${new Date(c.created_at).toLocaleDateString()}</td><td><button class="action-btn">Edit</button></td></tr>`;
-                });
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    async function loadStats() {
-        try {
-            const { count: consultCount } = await supabase.from('bookings').select('*', { count: 'exact', head: true });
-            const { count: caseCount } = await supabase.from('cases').select('*', { count: 'exact', head: true });
-            const { count: staffCount } = await supabase.from('staff').select('*', { count: 'exact', head: true });
+    // NAVIGATION - SIMPLE & DIRECT
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            document.getElementById('totalConsultations').textContent = consultCount || 0;
-            document.getElementById('pendingCases').textContent = caseCount || 0;
-            document.getElementById('activeCases').textContent = Math.floor((caseCount || 0) / 2);
-            document.getElementById('staffCount').textContent = staffCount || 0;
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            if (link.id === 'logoutBtn') {
+            if (this.id === 'logoutBtn') {
                 localStorage.clear();
                 window.location.href = 'login.html';
                 return;
             }
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            const section = link.getAttribute('data-section');
+
+            // Remove active from all
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            // Get tab name
+            const tab = this.getAttribute('data-tab');
+            
+            // Hide all sections
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(section).classList.add('active');
+            
+            // Show selected section
+            const section = document.getElementById(tab);
+            if (section) {
+                section.classList.add('active');
+            }
+
+            // Update title
             const titles = {
                 'dashboard': 'Dashboard',
                 'consultations': 'All Consultations',
@@ -586,11 +282,12 @@
                 'attendance': 'Attendance Register',
                 'reports': 'Reports & Analytics'
             };
-            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+            document.getElementById('pageTitle').textContent = titles[tab] || 'Dashboard';
         });
     });
 
-    initDashboard();
+    // START
+    init();
 </script>
 </body>
 </html>
