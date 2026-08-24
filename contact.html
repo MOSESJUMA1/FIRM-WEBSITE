@@ -100,6 +100,38 @@
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </form>
+
+                <!-- Success Panel (hidden by default) -->
+                <div id="successPanel" style="display: none; text-align: center; padding: 2rem 1rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                    <h2 style="color: #1a3a5c; margin-bottom: 0.5rem;">Request Received!</h2>
+                    <p style="color: #555; margin-bottom: 1.5rem;">
+                        Thank you, <strong id="successName"></strong>.<br>
+                        Your consultation has been logged successfully.
+                    </p>
+                    
+                    <div style="background: #f0f7ff; border: 2px dashed #4a90d9; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0 0 0.75rem 0; font-weight: 600; color: #1a3a5c;">
+                            <i class="fa-solid fa-link"></i> Your Case Status Link
+                        </p>
+                        <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
+                            Save this link to check your case status anytime:
+                        </p>
+                        <input type="text" id="caseLink" readonly style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 8px; font-family: monospace; font-size: 0.8rem; text-align: center; margin-bottom: 0.75rem; background: #fff;">
+                        <p id="caseLinkDisplay" style="font-size: 0.75rem; color: #888; word-break: break-all; margin-bottom: 1rem;"></p>
+                        <button type="button" id="copyLinkBtn" class="btn-submit" style="background: #1a3a5c; font-size: 0.9rem; padding: 0.6rem 1.5rem;">
+                            <i class="fa-solid fa-copy"></i> Copy Link
+                        </button>
+                    </div>
+                    
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 1rem;">
+                        <i class="fa-solid fa-envelope"></i> We will also contact you at your provided email/phone to confirm your appointment.
+                    </p>
+                    
+                    <button type="button" id="bookAnotherBtn" style="margin-top: 1.5rem; background: none; border: none; color: #4a90d9; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">
+                        Submit another request
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -114,8 +146,6 @@
         </div>
     </footer>
 
-    
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
     const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
     const supabaseKey = 'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga';
@@ -139,6 +169,8 @@
 
         // Booking form
         const bookingForm = document.getElementById("consultationForm");
+        const successPanel = document.getElementById("successPanel");
+        
         if (bookingForm) {
             const submitBtn = document.getElementById("submitBtn");
             const btnText = submitBtn.querySelector(".btn-text");
@@ -151,6 +183,7 @@
                 const clientEmail = document.getElementById("clientEmail").value.trim();
                 const rawPhone = document.getElementById("mpesaPhone").value.trim();
                 const practiceArea = document.getElementById("practiceArea").value;
+                const matterBrief = document.getElementById("matterBrief").value.trim();
 
                 let formattedPhone = rawPhone;
                 if (rawPhone.startsWith("0")) formattedPhone = "254" + rawPhone.substring(1);
@@ -162,59 +195,63 @@
                 submitBtn.style.opacity = "0.7";
                 btnText.textContent = "Submitting...";
                 btnIcon.className = "fa-solid fa-spinner fa-spin";
-            try {
-    // 1. Save to Supabase
-    const { data, error } = await supabase.from('bookings').insert([{
-        full_name: clientName,
-        email: clientEmail,
-        phone: formattedPhone,
-        service_requested: practiceArea,
-        token: token
-    }]);
 
-    if (error) throw error;
+                try {
+                    // Save to Supabase with token
+                    const { data, error } = await supabase.from('bookings').insert([{
+                        full_name: clientName,
+                        email: clientEmail,
+                        phone: formattedPhone,
+                        service_requested: practiceArea,
+                        matter_brief: matterBrief,
+                        token: token,
+                        status: 'Pending',
+                        created_at: new Date().toISOString()
+                    }]);
 
-    // 2. Send email via Formspree (with proper error handling)
-    const clientLink = `https://firm-website-six.vercel.app/client-case.html?token=${token}`;
-    
-    const emailPayload = new FormData();
-    emailPayload.append('email', clientEmail);
-    emailPayload.append('name', clientName);
-    emailPayload.append('message', `Hi ${clientName},\n\nYour consultation request has been received! You can check your case profile here:\n\n${clientLink}\n\nThank you,\nApex Legal Advocates Team`);
-    emailPayload.append('_replyto', clientEmail);
+                    if (error) throw error;
 
-    const formspreeRes = await fetch('https://formspree.io/f/xdaqwnyb', {
-        method: 'POST',
-        body: emailPayload,
-        headers: {
-            'Accept': 'application/json'
-        }
-    });
+                    // Build the case status link
+                    const clientLink = `https://firm-website-six.vercel.app/client-page.html?token=${token}`;
 
-    // DEBUG: Log the Formspree response so you can see what's happening
-    console.log('Formspree status:', formspreeRes.status);
-    const formspreeData = await formspreeRes.json().catch(() => ({}));
-    console.log('Formspree response:', formspreeData);
+                    // Hide form, show success panel with link
+                    bookingForm.style.display = 'none';
+                    document.querySelector('.form-header').style.display = 'none';
+                    
+                    successPanel.style.display = 'block';
+                    document.getElementById('successName').textContent = clientName;
+                    document.getElementById('caseLink').value = clientLink;
+                    document.getElementById('caseLinkDisplay').textContent = clientLink;
 
-    if (!formspreeRes.ok) {
-        console.warn('Formspree failed, but Supabase saved successfully.');
-        // Still show success to user since their data is saved
-    }
-
-    alert(`✅ Request Received!\n\nThank you, ${clientName}.\nYour consultation request has been logged.\n\nA profile link has been sent to: ${clientEmail}\n\nPractice Area: ${practiceArea}`);
-    bookingForm.reset();
-
-} catch (error) {
-    console.error("Booking Save Exception:", error);
-    alert("⛔ Something went wrong. Please try again.");
-}
-                
+                } catch (error) {
+                    console.error("Booking Save Exception:", error);
+                    alert("⛔ Something went wrong saving your request. Please try again.");
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = "1";
                     btnText.textContent = "Submit Consultation Request";
                     btnIcon.className = "fa-solid fa-paper-plane";
                 }
+            });
+
+            // Copy link button
+            document.getElementById('copyLinkBtn').addEventListener('click', () => {
+                const linkInput = document.getElementById('caseLink');
+                linkInput.select();
+                navigator.clipboard.writeText(linkInput.value).then(() => {
+                    const btn = document.getElementById('copyLinkBtn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                    setTimeout(() => btn.innerHTML = originalText, 2000);
+                });
+            });
+
+            // Book another button
+            document.getElementById('bookAnotherBtn').addEventListener('click', () => {
+                bookingForm.reset();
+                successPanel.style.display = 'none';
+                bookingForm.style.display = 'block';
+                document.querySelector('.form-header').style.display = 'block';
             });
         }
     });

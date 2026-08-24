@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Client case status portal for Apex Legal Advocates.">
+    <title>Case Status | Apex Legal Advocates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Supabase client library -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2a4a6c;
+            --accent: #c9a227;
+            --accent-hover: #b8921f;
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+            --border: #e0e0e0;
+            --success: #28a745;
+            --warning: #f0ad4e;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .top-bar {
+            background: var(--primary);
+            color: #fff;
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+        }
+        .top-bar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .top-bar i { margin-right: 0.4rem; color: var(--accent); }
+
+        header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo a {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .logo span { color: var(--accent); }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Loading & Error States */
+        .state-message {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+        .state-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        .state-message.error i { color: var(--danger); }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Case Header */
+        .case-header {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .case-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .case-title h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        .case-title p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-review { background: #d1ecf1; color: #0c5460; }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-hearing { background: #f8d7da; color: #721c24; }
+        .status-resolved { background: #d4edda; color: #155724; }
+        .status-closed { background: #e2e3e5; color: #383d41; }
+        .status-awaiting { background: #fff3cd; color: #856404; }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width { grid-column: 1 / -1; }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--bg);
+        }
+        .card-header i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        .card-header h3 {
+            font-size: 1rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--bg);
+            font-size: 0.9rem;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-light); font-weight: 500; }
+        .info-value { color: var(--text); font-weight: 600; text-align: right; max-width: 60%; }
+
+        /* Requirements */
+        .requirements-list {
+            list-style: none;
+        }
+        .requirements-list li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--bg);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+        }
+        .requirements-list li:last-child { border-bottom: none; }
+        .requirements-list i {
+            color: var(--accent);
+            margin-top: 0.2rem;
+        }
+
+        /* Timeline / Notes */
+        .timeline {
+            border-left: 3px solid var(--border);
+            margin-left: 0.5rem;
+            padding-left: 1.2rem;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.2rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.45rem;
+            top: 0.3rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--card);
+        }
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.2rem;
+        }
+        .timeline-text {
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* Admin Toggle */
+        .admin-bar {
+            background: var(--primary);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .admin-bar p { font-size: 0.9rem; }
+        .admin-bar button {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .admin-bar button:hover { background: var(--accent-hover); }
+
+        /* Edit Forms */
+        .edit-form label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 1rem 0 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .edit-form input,
+        .edit-form select,
+        .edit-form textarea {
+            width: 100%;
+            padding: 0.65rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: var(--bg);
+        }
+        .edit-form textarea { resize: vertical; min-height: 80px; }
+        .edit-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-primary:hover { background: var(--primary-light); }
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* PIN Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal h3 { margin-bottom: 0.5rem; color: var(--primary); }
+        .modal p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem; }
+        .modal input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            letter-spacing: 0.3rem;
+            margin-bottom: 1rem;
+        }
+        .modal-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: rgba(255,255,255,0.8);
+            padding: 2rem 1.5rem;
+            margin-top: 3rem;
+            font-size: 0.85rem;
+        }
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .footer-disclaimer {
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .footer-copy {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.8rem;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Info Bar -->
+    <div class="top-bar">
+        <div class="container" style="padding: 0.5rem 1.5rem;">
+            <span><i class="fa-solid fa-location-dot"></i> Lakebasin Mall, Kisumu-Kakamega Road, Kisumu</span>
+            <span><i class="fa-solid fa-phone"></i> +254 741801897</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <a href="index.html">Apex<span>Legal</span></a>
+            </div>
+            <nav style="font-size: 0.9rem;">
+                <a href="index.html" style="color: var(--primary); text-decoration: none; margin-left: 1.5rem;">← Back to Website</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Loading State -->
+        <div id="loadingState" class="state-message">
+            <div class="spinner"></div>
+            <h2>Loading Case File...</h2>
+            <p style="color: var(--text-light);">Retrieving your matter from our records.</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="state-message error hidden">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <h2>Case Not Found</h2>
+            <p style="color: var(--text-light);">The link you followed may be expired or incorrect.<br>Please contact our offices for assistance.</p>
+            <a href="contact.html" class="btn-primary" style="display: inline-block; margin-top: 1rem; text-decoration: none;">Book a Consultation</a>
+        </div>
+
+        <!-- Case Dashboard -->
+        <div id="caseDashboard" class="hidden">
+
+            <!-- Admin Bar -->
+            <div class="admin-bar" id="adminBar">
+                <p><i class="fa-solid fa-shield-halved"></i> <strong>Advocate Access:</strong> Update case status, dates, and requirements.</p>
+                <button id="adminLoginBtn" onclick="openPinModal()">Advocate Login</button>
+                <button id="adminLogoutBtn" class="hidden" onclick="logoutAdmin()">Exit Admin Mode</button>
+            </div>
+
+            <!-- Case Header -->
+            <div class="case-header">
+                <div class="case-header-top">
+                    <div class="case-title">
+                        <h1 id="clientNameDisplay">—</h1>
+                        <p>Case Reference: <span id="tokenDisplay">—</span> &nbsp;|&nbsp; Filed: <span id="filedDate">—</span></p>
+                    </div>
+                    <span id="statusBadge" class="status-badge status-pending">
+                        <i class="fa-solid fa-clock"></i> <span id="statusText">Pending</span>
+                    </span>
+                </div>
+                <div style="background: var(--bg); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.3rem;"><strong>Legal Matter:</strong></p>
+                    <p id="matterDisplay" style="font-size: 0.95rem;">—</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+
+                <!-- Client Information -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-user"></i>
+                        <h3>Client Information</h3>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value" id="infoName">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="infoEmail">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value" id="infoPhone">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Service Area</span>
+                        <span class="info-value" id="infoService">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Assigned Advocate</span>
+                        <span class="info-value" id="infoAdvocate">Not yet assigned</span>
+                    </div>
+                </div>
+
+                <!-- Key Dates -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <h3>Key Dates</h3>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Date Filed</span>
+                        <span class="info-value" id="dateFiled">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Next Review / Hearing</span>
+                        <span class="info-value" id="dateNext">Awaiting scheduling</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Last Updated</span>
+                        <span class="info-value" id="dateUpdated">—</span>
+                    </div>
+                </div>
+
+                <!-- Requirements -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <h3>Requirements & Action Items</h3>
+                    </div>
+                    <ul class="requirements-list" id="requirementsList">
+                        <li><i class="fa-solid fa-circle-info"></i> <span>No requirements listed yet. Your advocate will update this section.</span></li>
+                    </ul>
+                    <!-- Admin Edit -->
+                    <div id="editRequirements" class="edit-form hidden">
+                        <label>Edit Requirements (one per line)</label>
+                        <textarea id="inputRequirements" placeholder="e.g. Copy of ID&#10;Signed retainer agreement&#10;Land title deed"></textarea>
+                    </div>
+                </div>
+
+                <!-- Case Updates / Notes -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <i class="fa-solid fa-timeline"></i>
+                        <h3>Case Updates</h3>
+                    </div>
+                    <div class="timeline" id="timelineContainer">
+                        <div class="timeline-item">
+                            <div class="timeline-date" id="noteDate">—</div>
+                            <div class="timeline-text" id="noteText">Case file opened. Awaiting advocate review.</div>
+                        </div>
+                    </div>
+                    <!-- Admin Edit -->
+                    <div id="editNotes" class="edit-form hidden">
+                        <label>Update Case Notes (visible to client)</label>
+                        <textarea id="inputNotes" placeholder="Enter update for the client..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Admin Edit Panel (Full Width) -->
+                <div class="card full-width hidden" id="adminEditCard">
+                    <div class="card-header">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <h3>Update Case Details</h3>
+                    </div>
+                    <div class="edit-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <label>Case Status</label>
+                                <select id="inputStatus">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Under Review">Under Review</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Awaiting Documents">Awaiting Documents">Awaiting Documents</option>
+                                    <option value="Hearing Scheduled">Hearing Scheduled</option>
+                                    <option value="Resolved">Resolved</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Next Hearing / Review Date</label>
+                                <input type="date" id="inputNextDate">
+                            </div>
+                        </div>
+                        <label>Assigned Advocate</label>
+                        <input type="text" id="inputAdvocate" placeholder="e.g. Adv. Moses Juma">
+                    </div>
+                    <div class="edit-actions">
+                        <button class="btn-primary" onclick="saveChanges()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                        <button class="btn-secondary" onclick="cancelEdit()">Cancel</button>
+                    </div>
+                    <p id="saveMessage" style="margin-top: 0.75rem; font-size: 0.85rem; display: none;"></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Modal -->
+    <div class="modal-overlay" id="pinModal">
+        <div class="modal">
+            <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+            <h3>Advocate Authentication</h3>
+            <p>Enter your PIN to unlock case management.</p>
+            <div class="modal-error" id="pinError">Incorrect PIN. Please try again.</div>
+            <input type="password" id="pinInput" maxlength="6" placeholder="••••••">
+            <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                <button class="btn-primary" onclick="checkPin()">Unlock</button>
+                <button class="btn-secondary" onclick="closePinModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-disclaimer">
+                <strong>Disclaimer:</strong> The information provided on this portal does not constitute formal legal advice. All case details are for informational purposes only. Transmission or receipt of these materials does not create an Advocate-Client relationship until a formal retainer agreement is executed.
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Apex Legal Advocates. All Rights Reserved. Regulated by the Law Society of Kenya.<br>
+                <span style="font-size: 0.75rem; opacity: 0.7;">This portal is confidential and intended solely for the named client and their authorised representatives.</span>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    // ==================== CONFIG ====================
+    const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+    const supabaseKey = 'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // CHANGE THIS PIN to your preferred advocate PIN
+    const ADMIN_PIN = '2026';
+    
+    // ==================== STATE ====================
+    let currentCase = null;
+    let isAdmin = false;
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (!token) {
+            showError();
+            return;
+        }
+
+        await loadCase(token);
+    });
+
+    // ==================== LOAD CASE ====================
+    async function loadCase(token) {
+        try {
+            const { data, error } = await supabase
+                .from('bookings')
+                .select('*')
+                .eq('token', token)
+                .single();
+
+            if (error || !data) {
+                console.error('Load error:', error);
+                showError();
+                return;
+            }
+
+            currentCase = data;
+            renderCase(data);
+
+        } catch (err) {
+            console.error('Exception:', err);
+            showError();
+        }
+    }
+
+    // ==================== RENDER ====================
+    function renderCase(data) {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('caseDashboard').classList.remove('hidden');
+
+        // Header
+        document.getElementById('clientNameDisplay').textContent = data.full_name || 'Client';
+        document.getElementById('tokenDisplay').textContent = (data.token || '').slice(-12);
+        document.getElementById('filedDate').textContent = formatDate(data.created_at);
+        document.getElementById('matterDisplay').textContent = data.matter_brief || 'No matter description provided.';
+
+        // Status
+        const status = data.status || 'Pending';
+        updateStatusBadge(status);
+
+        // Client Info
+        document.getElementById('infoName').textContent = data.full_name || '—';
+        document.getElementById('infoEmail').textContent = data.email || '—';
+        document.getElementById('infoPhone').textContent = data.phone || '—';
+        document.getElementById('infoService').textContent = formatService(data.service_requested);
+        document.getElementById('infoAdvocate').textContent = data.assigned_advocate || 'Not yet assigned';
+
+        // Dates
+        document.getElementById('dateFiled').textContent = formatDate(data.created_at);
+        document.getElementById('dateNext').textContent = data.next_date ? formatDate(data.next_date) : 'Awaiting scheduling';
+        document.getElementById('dateUpdated').textContent = data.updated_at ? formatDate(data.updated_at) : formatDate(data.created_at);
+
+        // Requirements
+        renderRequirements(data.requirements);
+
+        // Notes / Timeline
+        renderNotes(data.case_notes, data.created_at);
+
+        // Pre-fill admin inputs
+        document.getElementById('inputStatus').value = status;
+        document.getElementById('inputNextDate').value = data.next_date ? data.next_date.split('T')[0] : '';
+        document.getElementById('inputAdvocate').value = data.assigned_advocate || '';
+        document.getElementById('inputRequirements').value = data.requirements || '';
+        document.getElementById('inputNotes').value = data.case_notes || '';
+    }
+
+    function updateStatusBadge(status) {
+        const badge = document.getElementById('statusBadge');
+        const text = document.getElementById('statusText');
+        
+        badge.className = 'status-badge';
+        text.textContent = status;
+
+        const map = {
+            'Pending': 'status-pending',
+            'Under Review': 'status-review',
+            'Active': 'status-active',
+            'Awaiting Documents': 'status-awaiting',
+            'Hearing Scheduled': 'status-hearing',
+            'Resolved': 'status-resolved',
+            'Closed': 'status-closed'
+        };
+        badge.classList.add(map[status] || 'status-pending');
+        
+        // Update icon
+        const icon = status === 'Resolved' || status === 'Closed' ? 'fa-check-circle' :
+                     status === 'Hearing Scheduled' ? 'fa-gavel' :
+                     status === 'Active' ? 'fa-briefcase' :
+                     status === 'Awaiting Documents' ? 'fa-hourglass-half' :
+                     'fa-clock';
+        badge.querySelector('i').className = `fa-solid ${icon}`;
+    }
+
+    function renderRequirements(reqText) {
+        const list = document.getElementById('requirementsList');
+        list.innerHTML = '';
+
+        if (!reqText || !reqText.trim()) {
+            list.innerHTML = '<li><i class="fa-solid fa-circle-info"></i> <span>No requirements listed yet. Your advocate will update this section.</span></li>';
+            return;
+        }
+
+        const items = reqText.split('\n').filter(line => line.trim());
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${escapeHtml(item.trim())}</span>`;
+            list.appendChild(li);
+        });
+    }
+
+    function renderNotes(notesText, createdAt) {
+        const container = document.getElementById('timelineContainer');
+        container.innerHTML = '';
+
+        // Always show case opened
+        const openItem = document.createElement('div');
+        openItem.className = 'timeline-item';
+        openItem.innerHTML = `
+            <div class="timeline-date">${formatDate(createdAt)}</div>
+            <div class="timeline-text">Case file opened. Initial consultation request received.</div>
+        `;
+        container.appendChild(openItem);
+
+        if (notesText && notesText.trim()) {
+            const noteItem = document.createElement('div');
+            noteItem.className = 'timeline-item';
+            noteItem.innerHTML = `
+                <div class="timeline-date">${formatDate(currentCase?.updated_at || createdAt)}</div>
+                <div class="timeline-text">${escapeHtml(notesText)}</div>
+            `;
+            container.appendChild(noteItem);
+        }
+    }
+
+    // ==================== ADMIN FUNCTIONS ====================
+    function openPinModal() {
+        document.getElementById('pinModal').classList.add('active');
+        document.getElementById('pinInput').value = '';
+        document.getElementById('pinError').style.display = 'none';
+        setTimeout(() => document.getElementById('pinInput').focus(), 100);
+    }
+
+    function closePinModal() {
+        document.getElementById('pinModal').classList.remove('active');
+    }
+
+    function checkPin() {
+        const input = document.getElementById('pinInput').value.trim();
+        if (input === ADMIN_PIN) {
+            closePinModal();
+            enableAdminMode();
+        } else {
+            document.getElementById('pinError').style.display = 'block';
+            document.getElementById('pinInput').value = '';
+        }
+    }
+
+    function enableAdminMode() {
+        isAdmin = true;
+        document.getElementById('adminLoginBtn').classList.add('hidden');
+        document.getElementById('adminLogoutBtn').classList.remove('hidden');
+        document.getElementById('adminEditCard').classList.remove('hidden');
+        document.getElementById('editRequirements').classList.remove('hidden');
+        document.getElementById('editNotes').classList.remove('hidden');
+    }
+
+    function logoutAdmin() {
+        isAdmin = false;
+        document.getElementById('adminLoginBtn').classList.remove('hidden');
+        document.getElementById('adminLogoutBtn').classList.add('hidden');
+        document.getElementById('adminEditCard').classList.add('hidden');
+        document.getElementById('editRequirements').classList.add('hidden');
+        document.getElementById('editNotes').classList.add('hidden');
+    }
+
+    async function saveChanges() {
+        if (!currentCase) return;
+
+        const saveBtn = document.querySelector('#adminEditCard .btn-primary');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+        saveBtn.disabled = true;
+
+        const updates = {
+            status: document.getElementById('inputStatus').value,
+            next_date: document.getElementById('inputNextDate').value || null,
+            assigned_advocate: document.getElementById('inputAdvocate').value.trim() || null,
+            requirements: document.getElementById('inputRequirements').value.trim() || null,
+            case_notes: document.getElementById('inputNotes').value.trim() || null,
+            updated_at: new Date().toISOString()
+        };
+
+        try {
+            const { error } = await supabase
+                .from('bookings')
+                .update(updates)
+                .eq('token', currentCase.token);
+
+            if (error) throw error;
+
+            // Update local data and re-render
+            currentCase = { ...currentCase, ...updates };
+            renderCase(currentCase);
+
+            const msg = document.getElementById('saveMessage');
+            msg.textContent = '✅ Changes saved successfully.';
+            msg.style.color = 'var(--success)';
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 3000);
+
+        } catch (err) {
+            console.error('Save error:', err);
+            const msg = document.getElementById('saveMessage');
+            msg.textContent = '❌ Failed to save changes. Please try again.';
+            msg.style.color = 'var(--danger)';
+            msg.style.display = 'block';
+        } finally {
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    }
+
+    function cancelEdit() {
+        if (!currentCase) return;
+        // Reset inputs to current values
+        document.getElementById('inputStatus').value = currentCase.status || 'Pending';
+        document.getElementById('inputNextDate').value = currentCase.next_date ? currentCase.next_date.split('T')[0] : '';
+        document.getElementById('inputAdvocate').value = currentCase.assigned_advocate || '';
+        document.getElementById('inputRequirements').value = currentCase.requirements || '';
+        document.getElementById('inputNotes').value = currentCase.case_notes || '';
+    }
+
+    // ==================== UTILITIES ====================
+    function showError() {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('errorState').classList.remove('hidden');
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function formatService(val) {
+        const map = {
+            'corporate': 'Corporate & Commercial Law',
+            'conveyancing': 'Conveyancing & Real Estate',
+            'dispute': 'Dispute Resolution & Litigation'
+        };
+        return map[val] || val || '—';
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closePinModal();
+        if (e.key === 'Enter' && document.getElementById('pinModal').classList.contains('active')) {
+            checkPin();
+        }
+    });
+</script>
+
+</body>
+</html>
