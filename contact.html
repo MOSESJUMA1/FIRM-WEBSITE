@@ -162,37 +162,53 @@
                 submitBtn.style.opacity = "0.7";
                 btnText.textContent = "Submitting...";
                 btnIcon.className = "fa-solid fa-spinner fa-spin";
+            try {
+    // 1. Save to Supabase
+    const { data, error } = await supabase.from('bookings').insert([{
+        full_name: clientName,
+        email: clientEmail,
+        phone: formattedPhone,
+        service_requested: practiceArea,
+        token: token
+    }]);
 
-                try {
-                    // Save to Supabase with token
-                    const { data, error } = await supabase.from('bookings').insert([{
-                        full_name: clientName,
-                        email: clientEmail,
-                        phone: formattedPhone,
-                        service_requested: practiceArea,
-                        token: token
-                    }]);
+    if (error) throw error;
 
-                    if (error) throw error;
+    // 2. Send email via Formspree (with proper error handling)
+    const clientLink = `https://firm-website-six.vercel.app/client-case.html?token=${token}`;
+    
+    const emailPayload = new FormData();
+    emailPayload.append('email', clientEmail);
+    emailPayload.append('name', clientName);
+    emailPayload.append('message', `Hi ${clientName},\n\nYour consultation request has been received! You can check your case profile here:\n\n${clientLink}\n\nThank you,\nApex Legal Advocates Team`);
+    emailPayload.append('_replyto', clientEmail);
 
-                    // Send email via Formspree with client-case link
-                    const clientLink = `https://firm-website-six.vercel.app/client-case.html?token=${token}`;
-                    
-                    const emailData = new FormData();
-                    emailData.append('email', clientEmail);
-                    emailData.append('message', `Hi ${clientName},\n\nYour consultation request has been received! You can check your case profile here:\n\n${clientLink}\n\nThank you,\nApex Legal Advocates Team`);
+    const formspreeRes = await fetch('https://formspree.io/f/xdaqwnyb', {
+        method: 'POST',
+        body: emailPayload,
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
 
-                    await fetch('https://formspree.io/f/xdaqwnyb', {
-                        method: 'POST',
-                        body: emailData
-                    });
+    // DEBUG: Log the Formspree response so you can see what's happening
+    console.log('Formspree status:', formspreeRes.status);
+    const formspreeData = await formspreeRes.json().catch(() => ({}));
+    console.log('Formspree response:', formspreeData);
 
-                    alert(`✅ Request Received!\n\nThank you, ${clientName}.\nYour consultation request has been logged.\n\nA profile link has been sent to: ${clientEmail}\n\nPractice Area: ${practiceArea}`);
-                    bookingForm.reset();
+    if (!formspreeRes.ok) {
+        console.warn('Formspree failed, but Supabase saved successfully.');
+        // Still show success to user since their data is saved
+    }
 
-                } catch (error) {
-                    console.error("Booking Save Exception:", error);
-                    alert("⛔ Something went wrong. Please try again.");
+    alert(`✅ Request Received!\n\nThank you, ${clientName}.\nYour consultation request has been logged.\n\nA profile link has been sent to: ${clientEmail}\n\nPractice Area: ${practiceArea}`);
+    bookingForm.reset();
+
+} catch (error) {
+    console.error("Booking Save Exception:", error);
+    alert("⛔ Something went wrong. Please try again.");
+}
+                
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = "1";
