@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Case Profile | Apex Legal Advocates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-width: 600px; width: 100%; padding: 40px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { color: #2c3e50; font-size: 28px; margin-bottom: 10px; }
+        .header p { color: #666; font-size: 14px; }
+        .loading { text-align: center; color: #666; padding: 40px; font-size: 18px; }
+        .error { background: #fee; border-left: 4px solid #f44; padding: 20px; border-radius: 5px; color: #c33; margin-bottom: 20px; }
+        .success { background: #efe; border-left: 4px solid #4c4; padding: 20px; border-radius: 5px; color: #3a3; margin-bottom: 20px; }
+        .profile-card { background: #f8f9fa; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
+        .profile-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .profile-item:last-child { border-bottom: none; }
+        .profile-label { color: #666; font-weight: 600; }
+        .profile-value { color: #333; text-align: right; }
+        .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; background: #ffeaa7; color: #d63031; }
+        .status-active { background: #a9e34b; color: #27ae60; }
+        .status-completed { background: #74b9ff; color: #0984e3; }
+        .advocate-card { background: #e8f4f8; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db; margin-bottom: 20px; }
+        .advocate-card h3 { color: #2c3e50; margin-bottom: 8px; }
+        .advocate-card p { color: #555; font-size: 14px; }
+        .back-btn { display: inline-block; color: #3498db; text-decoration: none; margin-bottom: 20px; font-size: 14px; }
+        .back-btn:hover { text-decoration: underline; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px; }
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .profile-item { flex-direction: column; }
+            .profile-value { text-align: left; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-briefcase"></i> Your Case Profile</h1>
+            <p>Apex Legal Advocates</p>
+        </div>
+
+        <div id="content">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading your case profile...
+            </div>
+        </div>
+
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+    const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function loadCaseProfile() {
+        const contentDiv = document.getElementById('content');
+        
+        // Get token from URL
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+
+        if (!token) {
+            contentDiv.innerHTML = '<div class="error"><i class="fas fa-times-circle"></i> Invalid case link. Please check your email.</div>';
+            return;
+        }
+
+        try {
+            // Fetch booking by token
+            const { data, error } = await supabase
+                .from('bookings')
+                .select('*')
+                .eq('token', token)
+                .single();
+
+            if (error || !data) {
+                contentDiv.innerHTML = '<div class="error"><i class="fas fa-times-circle"></i> Case profile not found. The link may have expired.</div>';
+                return;
+            }
+
+            // Display case profile
+            const status = data.payment_status || 'Pending';
+            let statusClass = 'status-badge';
+            if (status === 'In Progress') statusClass += ' status-active';
+            if (status === 'Completed') statusClass += ' status-completed';
+
+            const createdDate = new Date(data.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            contentDiv.innerHTML = `
+                <div class="success">
+                    <i class="fas fa-check-circle"></i> Your consultation request has been received and is being processed.
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-item">
+                        <span class="profile-label"><i class="fas fa-user"></i> Full Name</span>
+                        <span class="profile-value">${data.full_name}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label"><i class="fas fa-envelope"></i> Email</span>
+                        <span class="profile-value">${data.email || 'Not provided'}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label"><i class="fas fa-phone"></i> Phone</span>
+                        <span class="profile-value">${data.phone}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label"><i class="fas fa-gavel"></i> Service Area</span>
+                        <span class="profile-value">${data.service_requested}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label"><i class="fas fa-calendar"></i> Request Date</span>
+                        <span class="profile-value">${createdDate}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label"><i class="fas fa-flag"></i> Status</span>
+                        <span class="profile-value"><span class="${statusClass}">${status}</span></span>
+                    </div>
+                </div>
+
+                <div class="advocate-card">
+                    <h3><i class="fas fa-user-tie"></i> Assigned Advocate</h3>
+                    <p>Your case is being reviewed by our legal team. An advocate will be assigned shortly and will contact you via phone or email.</p>
+                </div>
+
+                <div class="footer">
+                    <p><i class="fas fa-info-circle"></i> Need help? Contact us at +254 741 801 897 or visit apexlegal.co.ke</p>
+                </div>
+            `;
+
+        } catch (error) {
+            console.error('Error:', error);
+            contentDiv.innerHTML = '<div class="error"><i class="fas fa-exclamation-circle"></i> An error occurred. Please try again later.</div>';
+        }
+    }
+
+    // Load on page load
+    window.addEventListener('DOMContentLoaded', loadCaseProfile);
+</script>
+</body>
+</html>
