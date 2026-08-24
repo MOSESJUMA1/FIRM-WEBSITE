@@ -114,6 +114,95 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+    const supabaseKey = 'sb_publishable_KJ0vSB08iUFQZ52wyws1A_zxrk39ga';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("🚀 Booking form initialized.");
+
+        // Nav active state
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll("nav ul li a");
+        navLinks.forEach(link => {
+            link.classList.remove("active");
+            const linkHref = link.getAttribute("href");
+            if (currentPath.includes(linkHref) && linkHref !== "index.html") {
+                link.classList.add("active");
+            } else if ((currentPath === "/" || currentPath.endsWith("index.html")) && linkHref === "index.html") {
+                if (!window.location.hash) link.classList.add("active");
+            }
+        });
+
+        // Booking form
+        const bookingForm = document.getElementById("consultationForm");
+        if (bookingForm) {
+            const submitBtn = document.getElementById("submitBtn");
+            const btnText = submitBtn.querySelector(".btn-text");
+            const btnIcon = submitBtn.querySelector("i");
+
+            bookingForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                
+                const clientName = document.getElementById("clientName").value.trim();
+                const clientEmail = document.getElementById("clientEmail").value.trim();
+                const rawPhone = document.getElementById("mpesaPhone").value.trim();
+                const practiceArea = document.getElementById("practiceArea").value;
+
+                let formattedPhone = rawPhone;
+                if (rawPhone.startsWith("0")) formattedPhone = "254" + rawPhone.substring(1);
+
+                // Generate unique token
+                const token = 'token_' + Math.random().toString(36).substr(2, 9) + Date.now();
+
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = "0.7";
+                btnText.textContent = "Submitting...";
+                btnIcon.className = "fa-solid fa-spinner fa-spin";
+
+                try {
+                    // Save to Supabase with token
+                    const { data, error } = await supabase.from('bookings').insert([{
+                        full_name: clientName,
+                        email: clientEmail,
+                        phone: formattedPhone,
+                        service_requested: practiceArea,
+                        token: token
+                    }]);
+
+                    if (error) throw error;
+
+                    // Send email via Formspree with client-case link
+                    const clientLink = `https://firm-website-six.vercel.app/client-case.html?token=${token}`;
+                    
+                    const emailData = new FormData();
+                    emailData.append('email', clientEmail);
+                    emailData.append('message', `Hi ${clientName},\n\nYour consultation request has been received! You can check your case profile here:\n\n${clientLink}\n\nThank you,\nApex Legal Advocates Team`);
+
+                    await fetch('https://formspree.io/f/xdaqwnyb', {
+                        method: 'POST',
+                        body: emailData
+                    });
+
+                    alert(`✅ Request Received!\n\nThank you, ${clientName}.\nYour consultation request has been logged.\n\nA profile link has been sent to: ${clientEmail}\n\nPractice Area: ${practiceArea}`);
+                    bookingForm.reset();
+
+                } catch (error) {
+                    console.error("Booking Save Exception:", error);
+                    alert("⛔ Something went wrong. Please try again.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = "1";
+                    btnText.textContent = "Submit Consultation Request";
+                    btnIcon.className = "fa-solid fa-paper-plane";
+                }
+            });
+        }
+    });
+</script>
+
 </body>
 </html>
