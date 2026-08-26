@@ -8,7 +8,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1a3a52 0%, #0d1f2d 100%); color: #fff; min-height: 100vh; }
-        
+
         header { background: #fff; padding: 20px 40px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         nav { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 24px; font-weight: bold; color: #1a3a52; }
@@ -19,7 +19,7 @@
         .book-btn:hover { background: #b8956f; }
 
         .container { max-width: 600px; margin: 60px auto; padding: 40px; background: rgba(255,255,255,0.95); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); color: #333; }
-        
+
         .form-header { text-align: center; margin-bottom: 30px; }
         .form-header h1 { color: #1a3a52; margin-bottom: 10px; font-size: 32px; }
         .form-header p { color: #666; font-size: 16px; }
@@ -40,6 +40,7 @@
 
         footer { background: #0d1f2d; text-align: center; padding: 20px; color: #999; margin-top: 60px; font-size: 14px; }
     </style>
+<base target="_blank">
 </head>
 <body>
     <header>
@@ -103,12 +104,10 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-    // Supabase Setup
     const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
     const supabaseKey = 'sb_publishable_KJ0vS80SQiUFQZ52wyws1A_zxrkJ9ga';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Form Submission
     document.getElementById('consultationForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -130,8 +129,7 @@
         submitBtn.textContent = '⏳ Submitting...';
 
         try {
-            // Save to Supabase
-            const { error } = await supabase.from('bookings').insert([{
+            const { error } = await supabaseClient.from('bookings').insert([{
                 full_name: clientName,
                 email: clientEmail,
                 phone: formattedPhone,
@@ -142,26 +140,34 @@
 
             if (error) throw error;
 
-            // Send email via Formspree
             const clientLink = `https://firm-website-six.vercel.app/client-case.html?token=${token}`;
             const emailData = new FormData();
             emailData.append('email', clientEmail);
-            emailData.append('message', `Hi ${clientName},\n\nYour consultation request has been received!\n\nView your case profile:\n${clientLink}\n\nThank you,\nApex Legal Advocates`);
+            emailData.append('message', `Hi ${clientName},
+
+Your consultation request has been received!
+
+View your case profile:
+${clientLink}
+
+Thank you,
+Apex Legal Advocates`);
 
             fetch('https://formspree.io/f/xdaqwnyb', {
                 method: 'POST',
                 body: emailData
             }).catch(() => {});
 
-            // Success
             alert.className = 'alert success';
             alert.textContent = `✅ Success! Check ${clientEmail} for your case profile link.`;
+            alert.style.display = 'block';
             document.getElementById('consultationForm').reset();
             submitBtn.textContent = '✅ Submitted';
 
         } catch (error) {
             alert.className = 'alert error';
             alert.textContent = '❌ Error: ' + (error.message || 'Something went wrong. Please try again.');
+            alert.style.display = 'block';
             submitBtn.disabled = false;
             submitBtn.textContent = '📨 Submit Consultation Request';
         }
