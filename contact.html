@@ -149,7 +149,10 @@
 <script>
     const supabaseUrl = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
     const supabaseKey = 'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    let supabase;
+    if (window.supabase) {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
         console.log("🚀 Booking form initialized.");
