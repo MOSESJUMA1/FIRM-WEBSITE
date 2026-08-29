@@ -3,410 +3,524 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Case Profile | Apex Legal Advocates</title>
+    <title>Your Case Profile | Apex Legal Advocates</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #1a3a52;
-            --accent: #c9a961;
-            --bg: #f5f7fa;
-            --card: #fff;
-            --text: #333;
-            --text-light: #666;
-            --border: #ddd;
-            --danger: #e74c3c;
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #1a3a52 0%, #0d1f2d 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { background: var(--card); padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header h1 { color: var(--primary); margin-bottom: 10px; }
-        .case-header { display: flex; justify-content: space-between; align-items: center; }
-        .admin-bar { background: var(--primary); color: #fff; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-        .admin-bar button { background: var(--accent); color: #fff; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
-        .admin-bar button:hover { background: #b8956f; }
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: var(--card); padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .card h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
-        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .info-row:last-child { border-bottom: none; }
-        .info-label { font-weight: 600; color: var(--text-light); }
-        .info-value { color: var(--text); }
-        .timeline-container { margin-top: 20px; }
-        .timeline-item { display: flex; margin-bottom: 20px; position: relative; }
-        .timeline-item::before { content: ''; position: absolute; left: -1.45rem; top: 0.3rem; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--card); }
-        .timeline-date { font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.2rem; }
-        .timeline-text { font-size: 0.9rem; color: var(--text); }
-        .edit-form-group { margin-bottom: 20px; }
-        .edit-form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin: 1rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .edit-form-input, .edit-form-select, .edit-form-textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; background: inherit; }
-        .edit-form-textarea { resize: vertical; min-height: 80px; }
-        .edit-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
-        .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.65rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .btn-primary:hover { background: #0d1f2d; }
-        .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 0.65rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .btn-secondary:hover { background: var(--border); }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 200; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: var(--card); padding: 2rem; border-radius: 12px; width: 98%; max-width: 400px; text-align: center; }
-        .modal h3 { margin-bottom: 1rem; }
-        .modal-input { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; text-align: center; font-size: 1.1rem; letter-spacing: 0.3rem; margin-bottom: 1rem; }
-        .modal-error { color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; display: none; }
-        .hidden { display: none; }
-        .state-message { text-align: center; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .state-message.error-hidden { background: #fee; color: var(--danger); border: 1px solid #f5c6cb; display: none; }
+        .header-bar {
+            background: #1a3a52;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header-bar h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header-bar p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .container { 
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .success-banner {
+            background: #efe;
+            border-left: 4px solid #4c4;
+            padding: 20px;
+            border-radius: 8px;
+            color: #3a3;
+            margin-bottom: 20px;
+        }
+        .success-banner i {
+            margin-right: 10px;
+        }
+        .error-banner {
+            background: #fee;
+            border-left: 4px solid #f44;
+            padding: 20px;
+            border-radius: 8px;
+            color: #c33;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .card h2 {
+            color: #1a3a52;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #c9a961;
+            font-size: 20px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #c9a961;
+        }
+        .info-label {
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #1a3a52;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            background: #ffeaa7;
+            color: #d63031;
+        }
+        .advocate-card {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-top: 20px;
+        }
+        .advocate-card h3 {
+            color: #1a3a52;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .advocate-card p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .timeline {
+            margin-top: 20px;
+        }
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 40px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: #c9a961;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #c9a961;
+        }
+        .timeline-item:first-child::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% + 20px);
+            background: #c9a961;
+            opacity: 0.3;
+        }
+        .timeline-date {
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+        }
+        .timeline-text {
+            color: #555;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        .dates-section {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f0f8 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .dates-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .dates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .date-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-top: 3px solid #3498db;
+        }
+        .date-label {
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .date-value {
+            color: #1a3a52;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .footer {
+            background: #1a3a52;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-size: 13px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .footer strong {
+            color: #c9a961;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
+    <div class="header-bar">
+        <h1><i class="fas fa-briefcase"></i> Your Case Profile</h1>
+        <p>Apex Legal Advocates</p>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <div class="case-header">
-                <div>
-                    <h1 id="clientNameDisplay">Case Profile</h1>
-                    <p id="tokenDisplay">Case Reference: <span id="tokenDisplay"></span></p>
-                </div>
-            </div>
-        </div>
-
-        <div id="errorState" class="state-message error-hidden">
+        <div id="error" class="error-banner">
             <i class="fas fa-times-circle"></i>
-            <h2>Case Not Found</h2>
-            <p style="color: var(--text-light);">The link you followed may be expired or invalid.</p>
-            <a href="contact.html" class="btn-primary" style="display: inline-block; text-decoration: none; margin-top: 1rem;">Book a New Consultation</a>
+            <h3>Invalid Case Link</h3>
+            <p>The case reference could not be found. Please contact us to book a new consultation.</p>
         </div>
 
-        <!-- Admin Bar -->
-        <div class="admin-bar" id="adminBar">
-            <p><i class="fas fa-shield-halved"></i> <strong>Advocate Access:</strong> Click to unlock edit features</p>
-            <button id="adminLoginBtn" onclick="openPinModal()">Advocate Login</button>
-            <button id="adminLogoutBtn" class="hidden" onclick="logoutAdmin()">Exit Admin</button>
+        <div class="success-banner">
+            <i class="fas fa-check-circle"></i>
+            <strong>Your consultation request has been received!</strong>
+            <br><span style="font-size: 13px; margin-top: 5px; display: block;">Our legal team is reviewing your case. You'll be contacted within 2-3 business days.</span>
         </div>
 
-        <!-- PIN Modal -->
-        <div class="modal-overlay" id="pinModal">
-            <div class="modal">
-                <h3>Advocate Access</h3>
-                <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1.5rem;">Enter PIN to unlock edit features</p>
-                <input type="password" id="pinInput" class="modal-input" placeholder="••••" maxlength="4">
-                <div class="modal-error" id="pinError"></div>
-                <button class="btn-primary" style="width: 100%; margin-bottom: 0.5rem;" onclick="checkPin()">Unlock</button>
-                <button class="btn-secondary" style="width: 100%;" onclick="closePinModal()">Cancel</button>
+        <!-- CLIENT INFORMATION -->
+        <div class="card">
+            <h2><i class="fas fa-user"></i> Your Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value" id="clientName">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value" id="clientEmail">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone Number</div>
+                    <div class="info-value" id="clientPhone">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Service Area</div>
+                    <div class="info-value" id="clientService">—</div>
+                </div>
             </div>
         </div>
 
-        <!-- Case Dashboard -->
-        <div id="caseDashboard" class="hidden">
-            <div class="dashboard-grid">
-                <!-- Client Information -->
-                <div class="card">
-                    <h3><i class="fas fa-user"></i> Client Information</h3>
-                    <div class="info-row">
-                        <span class="info-label">Full Name</span>
-                        <span class="info-value" id="infoName">—</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value" id="infoEmail">—</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Phone</span>
-                        <span class="info-value" id="infoPhone">—</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Service</span>
-                        <span class="info-value" id="infoService">—</span>
+        <!-- CASE STATUS -->
+        <div class="card">
+            <h2><i class="fas fa-gavel"></i> Case Status</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">
+                        <span class="status-badge" id="caseStatus">Pending</span>
                     </div>
                 </div>
+                <div class="info-item">
+                    <div class="info-label">Case Reference</div>
+                    <div class="info-value" id="caseRef" style="font-size: 13px; color: #999;">—</div>
+                </div>
+            </div>
 
-                <!-- Key Dates -->
-                <div class="card">
-                    <h3><i class="fas fa-calendar-days"></i> Key Dates</h3>
-                    <div class="info-row">
-                        <span class="info-label">Date Filed</span>
-                        <span class="info-value" id="dateFiled">—</span>
+            <div class="dates-section">
+                <h3 style="color: #1a3a52; margin-bottom: 15px; font-size: 16px;">
+                    <i class="fas fa-calendar-days"></i> Key Dates
+                </h3>
+                <div class="dates-grid">
+                    <div class="date-item">
+                        <div class="date-label">Date Filed</div>
+                        <div class="date-value" id="dateFiled">—</div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Next Review / Hearing</span>
-                        <span class="info-value" id="dateNext">Awaiting scheduling</span>
+                    <div class="date-item">
+                        <div class="date-label">Next Review / Hearing</div>
+                        <div class="date-value" id="dateNext">Awaiting scheduling</div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Last Updated</span>
-                        <span class="info-value" id="dateUpdated">—</span>
+                    <div class="date-item">
+                        <div class="date-label">Last Updated</div>
+                        <div class="date-value" id="dateUpdated">—</div>
+                    </div>
+                    <div class="date-item">
+                        <div class="date-label">Case Number</div>
+                        <div class="date-value" id="caseNumber">—</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Admin Edit Card -->
-            <div class="card hidden" id="adminEditCard" style="margin-top: 20px;">
-                <h3><i class="fas fa-edit"></i> Advocate: Edit Case</h3>
-                
-                <div class="edit-form-group">
-                    <label class="edit-form-label">Case Status</label>
-                    <select id="inputStatus" class="edit-form-select">
-                        <option value="Pending">Pending</option>
-                        <option value="Under Review">Under Review</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Waiting Documents">Waiting Documents</option>
-                        <option value="Hearing Scheduled">Hearing Scheduled</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Closed">Closed</option>
-                    </select>
-                </div>
-
-                <div class="edit-form-group">
-                    <label class="edit-form-label">Next Date</label>
-                    <input type="date" id="inputNextDate" class="edit-form-input">
-                </div>
-
-                <div class="edit-form-group">
-                    <label class="edit-form-label">Assigned Advocate</label>
-                    <input type="text" id="inputAdvocate" class="edit-form-input" placeholder="Advocate name">
-                </div>
-
-                <div class="edit-form-group">
-                    <label class="edit-form-label">Requirements</label>
-                    <textarea id="inputRequirements" class="edit-form-textarea" placeholder="List requirements (one per line)"></textarea>
-                </div>
-
-                <div class="edit-form-group">
-                    <label class="edit-form-label">Case Notes</label>
-                    <textarea id="inputNotes" class="edit-form-textarea" placeholder="Add notes or updates"></textarea>
-                </div>
-
-                <div class="edit-actions">
-                    <button class="btn-primary" onclick="saveChanges()"><i class="fas fa-solid fa-spinner fa-spin"></i> Saving...</button>
-                    <button class="btn-secondary" onclick="cancelEdit()">Cancel</button>
-                </div>
+            <div class="advocate-card">
+                <h3><i class="fas fa-user-tie"></i> Your Advocate</h3>
+                <p id="advocateInfo">Our legal team is reviewing your case. An advocate will be assigned shortly and will contact you to discuss the next steps.</p>
             </div>
+        </div>
 
-            <!-- Requirements & Timeline -->
-            <div class="card" style="margin-top: 20px;">
-                <h3><i class="fas fa-solid fa-circle-info"></i> Requirements</h3>
-                <div id="requirementsList"></div>
+        <!-- CASE TIMELINE -->
+        <div class="card">
+            <h2><i class="fas fa-timeline"></i> Case Timeline</h2>
+            <div id="timelineLoading" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading case history...
             </div>
+            <div id="timeline" class="timeline" style="display: none;"></div>
+        </div>
 
-            <div class="card" style="margin-top: 20px;">
-                <h3><i class="fas fa-solid fa-timeline"></i> Case Timeline</h3>
-                <div class="timeline-container" id="timelineContainer"></div>
-            </div>
+        <!-- REQUIREMENTS -->
+        <div class="card" id="requirementsCard" style="display: none;">
+            <h2><i class="fas fa-checklist"></i> Requirements</h2>
+            <div id="requirementsList"></div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Need Help?</strong></p>
+            <p><i class="fas fa-phone"></i> <strong>+254 741 801 897</strong></p>
+            <p><i class="fas fa-globe"></i> apexlegal.co.ke</p>
         </div>
     </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-    // ONE Supabase initialization
     const sb = window.supabase.createClient(
         'https://hjbrllpbpajzmgpgkadf.supabase.co',
         'sb_publishable_KJ0vS80SQiUFQZ52wyws1A_zxrkJ9ga'
     );
 
-    const ADMIN_PIN = '2026';
-    let currentCase = null;
-    let isAdmin = false;
+    let caseData = null;
 
-    async function loadCase() {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
-
-        if (!token) {
-            showError();
-            return;
-        }
-
+    // Load profile
+    async function loadProfile() {
         try {
-            const { data, error } = await sb.from('bookings').select('*').eq('token', token).single();
+            const url = new URL(window.location);
             
-            if (error || !data) {
+            // Get from URL params
+            const name = url.searchParams.get('name');
+            const email = url.searchParams.get('email');
+            const phone = url.searchParams.get('phone');
+            const service = url.searchParams.get('service');
+            const date = url.searchParams.get('date');
+            const token = url.searchParams.get('token');
+
+            if (!name || !email) {
                 showError();
                 return;
             }
 
-            currentCase = data;
-            renderCase(data);
+            // Display basic info immediately
+            displayBasicInfo(name, email, phone, service, date);
+
+            // Try to load case details from Supabase (with timeout)
+            if (token) {
+                loadCaseDetails(token);
+            } else {
+                document.getElementById('timelineLoading').style.display = 'none';
+            }
+
         } catch (err) {
-            console.error(err);
+            console.error('Error:', err);
             showError();
         }
     }
 
-    function showError() {
-        document.getElementById('caseDashboard').classList.add('hidden');
-        document.getElementById('errorState').classList.remove('error-hidden');
+    function displayBasicInfo(name, email, phone, service, date) {
+        document.getElementById('clientName').textContent = decodeURIComponent(name) || '—';
+        document.getElementById('clientEmail').textContent = decodeURIComponent(email) || '—';
+        document.getElementById('clientPhone').textContent = decodeURIComponent(phone) || '—';
+        document.getElementById('clientService').textContent = decodeURIComponent(service) || '—';
+        document.getElementById('dateFiled').textContent = decodeURIComponent(date) || new Date().toLocaleDateString();
+        document.getElementById('dateUpdated').textContent = new Date().toLocaleDateString();
     }
 
-    function renderCase(data) {
-        document.getElementById('clientNameDisplay').textContent = data.full_name;
-        document.getElementById('tokenDisplay').textContent = data.token;
-        document.getElementById('infoName').textContent = data.full_name;
-        document.getElementById('infoEmail').textContent = data.email || '—';
-        document.getElementById('infoPhone').textContent = data.phone;
-        document.getElementById('infoService').textContent = formatService(data.service_requested);
-        document.getElementById('dateFiled').textContent = formatDate(data.created_at);
-        document.getElementById('dateUpdated').textContent = formatDate(data.updated_at || data.created_at);
-        document.getElementById('caseDashboard').classList.remove('hidden');
-    }
-
-    function formatDate(dateStr) {
-        if (!dateStr) return '—';
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
-
-    function formatService(val) {
-        const map = {
-            'corporate': 'Corporate & Commercial Law',
-            'conveyancing': 'Conveyancing & Real Estate',
-            'dispute': 'Dispute Resolution & Litigation'
-        };
-        return map[val] || val || '—';
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function openPinModal() {
-        document.getElementById('pinModal').classList.add('active');
-        document.getElementById('pinInput').value = '';
-        document.getElementById('pinInput').focus();
-        setImmediate(() => document.getElementById('pinInput').focus(), 100);
-    }
-
-    function closePinModal() {
-        document.getElementById('pinModal').classList.remove('active');
-    }
-
-    function checkPin() {
-        const input = document.getElementById('pinInput').value.trim();
-        if (input === ADMIN_PIN) {
-            closePinModal();
-            enableAdminMode();
-        } else {
-            document.getElementById('pinError').textContent = 'Incorrect PIN';
-            document.getElementById('pinError').style.display = 'block';
-            document.getElementById('pinInput').value = '';
-        }
-    }
-
-    function enableAdminMode() {
-        isAdmin = true;
-        document.getElementById('adminLoginBtn').classList.add('hidden');
-        document.getElementById('adminLogoutBtn').classList.remove('hidden');
-        document.getElementById('adminEditCard').classList.remove('hidden');
-    }
-
-    function logoutAdmin() {
-        isAdmin = false;
-        document.getElementById('adminLoginBtn').classList.remove('hidden');
-        document.getElementById('adminLogoutBtn').classList.add('hidden');
-        document.getElementById('adminEditCard').classList.add('hidden');
-    }
-
-    function cancelEdit() {
-        if (!currentCase) return;
-        document.getElementById('inputStatus').value = currentCase.status || 'Pending';
-        document.getElementById('inputNextDate').value = currentCase.next_date || '';
-        document.getElementById('inputAdvocate').value = currentCase.assigned_advocate || '';
-        document.getElementById('inputRequirements').value = currentCase.requirements || '';
-        document.getElementById('inputNotes').value = currentCase.case_notes || '';
-    }
-
-    async function saveChanges() {
-        if (!currentCase) return;
-
-        const saveBtn = document.querySelector('#adminEditCard .btn-primary');
-        const originalText = saveBtn.innerHTML;
-        saveBtn.innerHTML = '⏳ Saving...';
-        saveBtn.disabled = true;
-
-        const updates = {
-            status: document.getElementById('inputStatus').value,
-            next_date: document.getElementById('inputNextDate').value || null,
-            assigned_advocate: document.getElementById('inputAdvocate').value.trim() || null,
-            requirements: document.getElementById('inputRequirements').value.trim() || null,
-            case_notes: document.getElementById('inputNotes').value.trim() || null,
-            updated_at: new Date().toISOString()
-        };
-
+    async function loadCaseDetails(token) {
         try {
-            const { error } = await sb.from('bookings').update(updates).eq('id', currentCase.id);
-            if (error) throw error;
+            // Set timeout - don't wait more than 5 seconds
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout')), 5000)
+            );
 
-            currentCase = { ...currentCase, ...updates };
-            renderCase(currentCase);
-            renderRequirements(currentCase.requirements);
-            renderNotes(currentCase.case_notes, currentCase.created_at);
+            const queryPromise = sb
+                .from('bookings')
+                .select('*')
+                .eq('token', token)
+                .single();
 
-            const msg = document.getElementById('saveMessage');
-            msg.textContent = '✅ Changes saved successfully.';
-            msg.style.color = 'var(--success)';
-            msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 3000);
+            const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+
+            if (error || !data) {
+                // Supabase failed, just show what we have
+                document.getElementById('timelineLoading').style.display = 'none';
+                renderBasicTimeline();
+                return;
+            }
+
+            caseData = data;
+            renderFullProfile(data);
+
         } catch (err) {
-            console.error('Save error:', err);
-            const msg = document.getElementById('saveMessage');
-            msg.textContent = '❌ Failed to save changes. Please try again.';
-            msg.style.color = 'var(--danger)';
-            msg.style.display = 'block';
-        } finally {
-            saveBtn.innerHTML = originalText;
-            saveBtn.disabled = false;
+            console.error('Case details error:', err);
+            // Still show basic info
+            document.getElementById('timelineLoading').style.display = 'none';
+            renderBasicTimeline();
         }
     }
 
-    function renderRequirements(reqText) {
-        const list = document.getElementById('requirementsList');
-        list.innerHTML = '';
+    function renderBasicTimeline() {
+        const timeline = document.getElementById('timeline');
+        timeline.style.display = 'block';
+        timeline.innerHTML = `
+            <div class="timeline-item">
+                <div>
+                    <div class="timeline-date">${new Date().toLocaleDateString()}</div>
+                    <div class="timeline-text">Case file opened, Initial consultation request received.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div>
+                    <div class="timeline-date">Pending</div>
+                    <div class="timeline-text">Awaiting advocate assignment.</div>
+                </div>
+            </div>
+        `;
+    }
 
-        if (reqText && reqText.trim()) {
-            const items = reqText.split('\n').filter(line => line.trim());
-            items.forEach(item => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-solid fa-check-circle"></i> <span>${escapeHtml(item.trim())}</span>`;
-                list.appendChild(li);
-            });
-        } else {
-            list.innerHTML = '<div style="color: var(--text-light); font-size: 0.9rem;">No requirements listed</div>';
+    function renderFullProfile(data) {
+        // Update with Supabase data
+        document.getElementById('caseRef').textContent = data.token || '—';
+        document.getElementById('caseStatus').textContent = data.payment_status || 'Pending';
+        document.getElementById('caseNumber').textContent = data.case_number || 'TBD';
+        document.getElementById('dateNext').textContent = data.next_date || 'Awaiting scheduling';
+        
+        if (data.assigned_advocate) {
+            document.getElementById('advocateInfo').textContent = `Assigned to: ${data.assigned_advocate}. They will contact you shortly with details.`;
+        }
+
+        // Render timeline
+        renderTimeline(data);
+
+        // Render requirements
+        if (data.requirements) {
+            renderRequirements(data.requirements);
         }
     }
 
-    function renderNotes(notesText, createdAt) {
-        const container = document.getElementById('timelineContainer');
-        container.innerHTML = '';
+    function renderTimeline(data) {
+        const timeline = document.getElementById('timeline');
+        timeline.style.display = 'block';
+        timeline.innerHTML = '';
 
-        const openItem = document.createElement('div');
-        openItem.className = 'timeline-item';
-        openItem.innerHTML = `
+        // Filed
+        const item1 = document.createElement('div');
+        item1.className = 'timeline-item';
+        item1.innerHTML = `
             <div>
-                <div class="timeline-date">${formatDate(createdAt)}</div>
+                <div class="timeline-date">${new Date(data.created_at).toLocaleDateString()}</div>
                 <div class="timeline-text">Case file opened, Initial consultation request received.</div>
             </div>
         `;
-        container.appendChild(openItem);
+        timeline.appendChild(item1);
 
-        if (notesText && notesText.trim()) {
-            const items = notesText.split('\n').filter(line => line.trim());
-            items.forEach(item => {
-                const noteItem = document.createElement('div');
-                noteItem.className = 'timeline-item';
-                noteItem.innerHTML = `
-                    <div>
-                        <div class="timeline-date">${formatDate(new Date().toISOString())}</div>
-                        <div class="timeline-text">${escapeHtml(item.trim())}</div>
-                    </div>
-                `;
-                container.appendChild(noteItem);
-            });
+        // Status update
+        if (data.payment_status && data.payment_status !== 'Pending') {
+            const item2 = document.createElement('div');
+            item2.className = 'timeline-item';
+            item2.innerHTML = `
+                <div>
+                    <div class="timeline-date">${new Date(data.updated_at || data.created_at).toLocaleDateString()}</div>
+                    <div class="timeline-text">Status updated to: <strong>${data.payment_status}</strong></div>
+                </div>
+            `;
+            timeline.appendChild(item2);
         }
+
+        // Case notes/updates
+        if (data.case_notes) {
+            const item3 = document.createElement('div');
+            item3.className = 'timeline-item';
+            item3.innerHTML = `
+                <div>
+                    <div class="timeline-date">${new Date(data.updated_at || data.created_at).toLocaleDateString()}</div>
+                    <div class="timeline-text">${data.case_notes}</div>
+                </div>
+            `;
+            timeline.appendChild(item3);
+        }
+
+        document.getElementById('timelineLoading').style.display = 'none';
     }
 
-    document.addEventListener('DOMContentLoaded', loadCase);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closePinModal();
-        if (e.key === 'Enter' && document.getElementById('pinModal').classList.contains('active')) checkPin();
-    });
+    function renderRequirements(reqText) {
+        if (!reqText || !reqText.trim()) return;
+
+        document.getElementById('requirementsCard').style.display = 'block';
+        const list = document.getElementById('requirementsList');
+        list.innerHTML = '';
+
+        const items = reqText.split('\n').filter(line => line.trim());
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.style.cssText = 'padding: 10px 0; border-bottom: 1px solid #eee; color: #555; font-size: 14px;';
+            div.innerHTML = `<i class="fas fa-circle" style="color: #c9a961; margin-right: 8px; font-size: 6px;"></i> ${item.trim()}`;
+            list.appendChild(div);
+        });
+    }
+
+    function showError() {
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('timelineLoading').style.display = 'none';
+    }
+
+    // Load on page load
+    window.addEventListener('load', loadProfile);
+    loadProfile();
 </script>
 </body>
 </html>

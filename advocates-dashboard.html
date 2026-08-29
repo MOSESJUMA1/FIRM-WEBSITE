@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advocates Dashboard | Apex Legal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f7fa; }
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a3a52 0%, #0d1f2d 100%);
+            padding: 20px;
+        }
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .auth-header h1 {
+            color: #1a3a52;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
+        .auth-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #999;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            color: #1a3a52;
+            border-bottom-color: #c9a961;
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: Arial;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #c9a961;
+            box-shadow: 0 0 5px rgba(201,169,97,0.3);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1a3a52;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: #0d1f2d;
+        }
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+        .error-message {
+            background: #fee;
+            border-left: 4px solid #f44;
+            color: #c33;
+        }
+        .success-message {
+            background: #efe;
+            border-left: 4px solid #4c4;
+            color: #3a3;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+        .header {
+            background: #1a3a52;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #c9a961;
+            color: #1a3a52;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .logout-btn:hover {
+            background: #b8956f;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            min-width: 150px;
+        }
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .client-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .client-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .client-card-header {
+            background: linear-gradient(135deg, #1a3a52 0%, #2c5282 100%);
+            color: white;
+            padding: 15px;
+            border-bottom: 3px solid #c9a961;
+        }
+        .client-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .client-service {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .client-card-body {
+            padding: 15px;
+        }
+        .client-info {
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .client-info-label {
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+        .client-info-value {
+            color: #333;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #ffeaa7;
+            color: #d63031;
+            margin-top: 10px;
+        }
+        .client-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .btn-small {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-view {
+            background: #3498db;
+            color: white;
+        }
+        .btn-view:hover {
+            background: #2980b9;
+        }
+        .btn-update {
+            background: #c9a961;
+            color: white;
+        }
+        .btn-update:hover {
+            background: #b8956f;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        .modal-header h2 {
+            color: #1a3a52;
+            font-size: 20px;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        .form-group-modal {
+            margin-bottom: 15px;
+        }
+        .form-group-modal label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .form-group-modal input,
+        .form-group-modal select,
+        .form-group-modal textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: Arial;
+        }
+        .form-group-modal textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-save {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-save:hover {
+            background: #229954;
+        }
+        .btn-cancel {
+            background: #ddd;
+            color: #333;
+        }
+        .btn-cancel:hover {
+            background: #ccc;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Section -->
+    <div id="authSection" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1><i class="fas fa-gavel"></i> Advocate Portal</h1>
+                <p>Apex Legal Case Management</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login', this)">Login</button>
+                <button class="tab-btn" onclick="switchTab('signup', this)">Create Account</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login" class="form-section active">
+                <div id="loginMessage" class="message"></div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="submit-btn">Login</button>
+                </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup" class="form-section">
+                <div id="signupMessage" class="message"></div>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" required placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signupEmail" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" required placeholder="At least 6 characters">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="signupPasswordConfirm" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="dashboard">
+        <div class="header">
+            <h1><i class="fas fa-briefcase"></i> Advocates Dashboard</h1>
+            <div>
+                <span style="margin-right: 20px;">Welcome, <strong id="advocateName">Advocate</strong></span>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="filters">
+                <input type="text" id="searchInput" class="filter-input" placeholder="Search by client name...">
+                <select id="statusFilter" class="filter-input">
+                    <option value="">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Assigned">Assigned</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+                <button onclick="resetFilters()" class="filter-input" style="background: #f0f0f0; cursor: pointer;">Reset</button>
+            </div>
+
+            <div id="clientsContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading clients...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Client Details</h2>
+                <button class="close-btn" onclick="closeModal('detailsModal')">×</button>
+            </div>
+            <div id="detailsContent"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('detailsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Case Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Case</h2>
+                <button class="close-btn" onclick="closeModal('updateModal')">×</button>
+            </div>
+            <div class="form-group-modal">
+                <label>Case Status</label>
+                <select id="updateStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Assigned">Assigned</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            <div class="form-group-modal">
+                <label>Assign to Me</label>
+                <input type="checkbox" id="assignToMe"> Check to assign this case to yourself
+            </div>
+            <div class="form-group-modal">
+                <label>Add Notes</label>
+                <textarea id="updateNotes" placeholder="Add case notes..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-save" onclick="saveUpdate()">Save Changes</button>
+                <button class="btn-cancel" onclick="closeModal('updateModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const sb = window.supabase.createClient(
+        'https://hjbrllpbpajzmgpgkadf.supabase.co',
+        'sb_publishable_KJ0vS80SQiUFQZ52wyws1A_zxrkJ9ga'
+    );
+
+    let allClients = [];
+    let currentAdvocate = null;
+    let currentAdvocateId = null;
+    let currentClientId = null;
+
+    // Tab Switching
+    function switchTab(tab, clickedBtn) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+        
+        clickedBtn.classList.add('active');
+        document.getElementById(tab).classList.add('active');
+        
+        // Clear messages
+        document.getElementById('loginMessage').style.display = 'none';
+        document.getElementById('signupMessage').style.display = 'none';
+    }
+
+    function showMessage(elementId, message, isError = false) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.className = 'message ' + (isError ? 'error-message' : 'success-message');
+        element.style.display = 'block';
+    }
+
+    // Signup Handler
+    async function handleSignup(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+        if (password !== passwordConfirm) {
+            showMessage('signupMessage', 'Passwords do not match', true);
+            return;
+        }
+
+        if (password.length < 6) {
+            showMessage('signupMessage', 'Password must be at least 6 characters', true);
+            return;
+        }
+
+        try {
+            // Check if advocate already exists
+            const { data: existing } = await sb
+                .from('advocates')
+                .select('*')
+                .eq('email', email);
+
+            if (existing && existing.length > 0) {
+                showMessage('signupMessage', 'Email already registered', true);
+                return;
+            }
+
+            // Create new advocate (with simple password storage - not production)
+            const { data, error } = await sb
+                .from('advocates')
+                .insert([{ name, email, password }])
+                .select();
+
+            if (error) throw error;
+
+            showMessage('signupMessage', '✅ Account created! You can now login.');
+            setTimeout(() => {
+                document.getElementById('signupName').value = '';
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+                document.getElementById('signupPasswordConfirm').value = '';
+                switchTab('login', document.querySelectorAll('.tab-btn')[0]);
+            }, 2000);
+
+        } catch (err) {
+            console.error('Signup error:', err);
+            showMessage('signupMessage', 'Error creating account. Please try again.', true);
+        }
+    }
+
+    // Login Handler
+    async function handleLogin(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            // Check advocates table
+            const { data: advocates, error } = await sb
+                .from('advocates')
+                .select('*')
+                .eq('email', email)
+                .eq('password', password);
+
+            if (error) throw error;
+
+            if (!advocates || advocates.length === 0) {
+                showMessage('loginMessage', 'Invalid email or password', true);
+                return;
+            }
+
+            // Login successful
+            const advocate = advocates[0];
+            currentAdvocate = advocate.name;
+            currentAdvocateId = advocate.id;
+            
+            sessionStorage.setItem('advocate', advocate.name);
+            sessionStorage.setItem('advocateId', advocate.id);
+
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('advocateName').textContent = advocate.name;
+
+            loadClients();
+        } catch (err) {
+            console.error('Login error:', err);
+            showMessage('loginMessage', 'Error logging in. Please try again.', true);
+        }
+    }
+
+    function handleLogout() {
+        currentAdvocate = null;
+        currentAdvocateId = null;
+        allClients = [];
+
+        sessionStorage.removeItem('advocate');
+        sessionStorage.removeItem('advocateId');
+        
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        
+        document.getElementById('authSection').style.display = 'flex';
+        document.getElementById('dashboard').style.display = 'none';
+    }
+
+    // Load clients
+    async function loadClients() {
+        try {
+            const { data, error } = await sb
+                .from('bookings')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allClients = data || [];
+            renderClients(allClients);
+        } catch (err) {
+            console.error('Error loading clients:', err);
+            document.getElementById('clientsContainer').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Unable to load clients</h3>
+                    <p>Please refresh the page</p>
+                </div>
+            `;
+        }
+    }
+
+    function renderClients(clients) {
+        const container = document.getElementById('clientsContainer');
+
+        if (clients.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No Clients Found</h3>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+        const grid = document.createElement('div');
+        grid.className = 'clients-grid';
+
+        clients.forEach(client => {
+            const card = document.createElement('div');
+            card.className = 'client-card';
+            card.innerHTML = `
+                <div class="client-card-header">
+                    <div class="client-name">${client.full_name || 'Unnamed Client'}</div>
+                    <div class="client-service">${client.service_requested || 'General Legal Service'}</div>
+                </div>
+                <div class="client-card-body">
+                    <div class="client-info">
+                        <div class="client-info-label">Email</div>
+                        <div class="client-info-value"><a href="mailto:${client.email}" style="color: #3498db;">${client.email}</a></div>
+                    </div>
+                    <div class="client-info">
+                        <div class="client-info-label">Phone</div>
+                        <div class="client-info-value"><a href="tel:${client.phone}" style="color: #3498db;">${client.phone}</a></div>
+                    </div>
+                    <div class="client-info">
+                        <div class="client-info-label">Assigned To</div>
+                        <div class="client-info-value">${client.assigned_advocate || 'Not Assigned'}</div>
+                    </div>
+                    <span class="status-badge">${client.payment_status || 'Pending'}</span>
+                    <div class="client-actions">
+                        <button class="btn-small btn-view" onclick="viewDetails('${client.id}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn-small btn-update" onclick="openUpdateModal('${client.id}')">
+                            <i class="fas fa-edit"></i> Update
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        container.appendChild(grid);
+    }
+
+    function filterClients() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const status = document.getElementById('statusFilter').value;
+        
+        const filtered = allClients.filter(client => {
+            const matchesSearch = client.full_name && client.full_name.toLowerCase().includes(search);
+            const matchesStatus = !status || (client.payment_status === status);
+            return matchesSearch && matchesStatus;
+        });
+        
+        renderClients(filtered);
+    }
+
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('statusFilter').value = '';
+        renderClients(allClients);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', filterClients);
+    document.getElementById('statusFilter').addEventListener('change', filterClients);
+
+    function viewDetails(clientId) {
+        const client = allClients.find(c => c.id === clientId);
+        if (!client) return;
+        
+        const content = `
+            <div style="line-height: 1.8;">
+                <h3 style="color: #1a3a52; margin-bottom: 15px;">Case Information</h3>
+                <p><strong>Name:</strong> ${client.full_name}</p>
+                <p><strong>Email:</strong> <a href="mailto:${client.email}" style="color: #3498db;">${client.email}</a></p>
+                <p><strong>Phone:</strong> <a href="tel:${client.phone}" style="color: #3498db;">${client.phone}</a></p>
+                <p><strong>Service Area:</strong> ${client.service_requested}</p>
+                <p><strong>Status:</strong> ${client.payment_status || 'Pending'}</p>
+                <p><strong>Assigned To:</strong> ${client.assigned_advocate || 'Not Assigned'}</p>
+                <p><strong>Date Submitted:</strong> ${new Date(client.created_at).toLocaleDateString()}</p>
+                ${client.case_notes ? `<p><strong>Notes:</strong> ${client.case_notes}</p>` : ''}
+            </div>
+        `;
+        document.getElementById('detailsContent').innerHTML = content;
+        document.getElementById('detailsModal').classList.add('active');
+    }
+
+    function openUpdateModal(clientId) {
+        currentClientId = clientId;
+        const client = allClients.find(c => c.id === clientId);
+        if (!client) return;
+        
+        document.getElementById('updateStatus').value = client.payment_status || 'Pending';
+        document.getElementById('updateNotes').value = client.case_notes || '';
+        document.getElementById('assignToMe').checked = false;
+        document.getElementById('updateModal').classList.add('active');
+    }
+
+    async function saveUpdate() {
+        if (!currentClientId) return;
+        
+        const status = document.getElementById('updateStatus').value;
+        const notes = document.getElementById('updateNotes').value;
+        const assignToMe = document.getElementById('assignToMe').checked;
+        
+        const updates = {
+            payment_status: status,
+            case_notes: notes,
+            updated_at: new Date().toISOString()
+        };
+
+        if (assignToMe) {
+            updates.assigned_advocate = currentAdvocate;
+        } else {
+            updates.assigned_advocate = null;
+        }
+
+        try {
+            const { error } = await sb
+                .from('bookings')
+                .update(updates)
+                .eq('id', currentClientId);
+                
+            if (error) throw error;
+            
+            const client = allClients.find(c => c.id === currentClientId);
+            if (client) {
+                Object.assign(client, updates);
+            }
+            
+            closeModal('updateModal');
+            renderClients(allClients);
+            alert('Case updated successfully!');
+        } catch (err) {
+            console.error('Error updating case:', err);
+            alert('Error updating case');
+        }
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.classList.remove('active');
+        }
+    };
+
+    // Check if already logged in
+    window.addEventListener('load', () => {
+        const advocate = sessionStorage.getItem('advocate');
+        const advocateId = sessionStorage.getItem('advocateId');
+        
+        if (advocate && advocateId) {
+            currentAdvocate = advocate;
+            currentAdvocateId = advocateId;
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('advocateName').textContent = advocate;
+            loadClients();
+        }
+    });
+</script>
+</body>
+</html>
