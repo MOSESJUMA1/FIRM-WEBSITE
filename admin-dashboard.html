@@ -402,13 +402,13 @@
     <div id="dashboard" class="dashboard">
         <div class="sidebar">
             <h2><i class="fas fa-gavel"></i> Apex Admin</h2>
-            <a class="nav-link active" onclick="switchView('overview')">
+            <a class="nav-link active" onclick="switchView('overview', this)">
                 <i class="fas fa-chart-line"></i> Overview
             </a>
-            <a class="nav-link" onclick="switchView('cases')">
+            <a class="nav-link" onclick="switchView('cases', this)">
                 <i class="fas fa-briefcase"></i> All Cases
             </a>
-            <a class="nav-link" onclick="switchView('advocates')">
+            <a class="nav-link" onclick="switchView('advocates', this)">
                 <i class="fas fa-users"></i> Advocates
             </a>
             <a class="nav-link" onclick="handleLogout()">
@@ -461,7 +461,7 @@
                 <div class="card">
                     <h2>All Cases</h2>
                     <div style="margin-bottom: 15px;">
-                        <input type="text" id="caseSearch" placeholder="Search by client name..." 
+                        <input type="text" id="caseSearch" placeholder="Search by client name or email..." 
                             style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; width: 100%; max-width: 300px;">
                     </div>
                     <div id="allCasesContainer"></div>
@@ -524,14 +524,50 @@
         </div>
     </div>
 
+    <!-- Assign Case Modal (FIXED: moved outside advocateModal) -->
+    <div id="assignCaseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Assign Case</h2>
+                <button class="close-btn" onclick="closeModal('assignCaseModal')">×</button>
+            </div>
+            <div class="form-group-modal">
+                <label>Client Name</label>
+                <input type="text" id="caseClientName" readonly>
+            </div>
+            <div class="form-group-modal">
+                <label>Select Advocate</label>
+                <select id="advocateSelect" required>
+                    <option value="">-- Choose an advocate --</option>
+                </select>
+            </div>
+            <div class="form-group-modal">
+                <label>Case Status</label>
+                <select id="assignCaseStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Assigned">Assigned</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-save" onclick="assignCaseToAdvocate()">Assign</button>
+                <button class="btn-cancel" onclick="closeModal('assignCaseModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-    const sb = window.supabase.createClient(
+    // Use the global supabase object exposed by the CDN
+    const sb = supabase.createClient(
         'https://hjbrllpbpajzmgpgkadf.supabase.co',
-        'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga' );
+        'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga'
+    );
 
     let allCases = [];
     let allAdvocates = [];
+    let currentCaseId = null; // FIXED: moved to global scope
     const ADMIN_PASSWORD = 'admin123';
 
     function handleAdminLogin(event) {
@@ -562,19 +598,22 @@
     async function loadDashboard() {
         try {
             // Load cases
-            const { data: cases } = await sb.from('bookings').select('*').order('created_at', { ascending: false });
+            const { data: cases, error: casesError } = await sb.from('bookings').select('*').order('created_at', { ascending: false });
+            if (casesError) throw casesError;
             allCases = cases || [];
 
             // Load advocates
-            const { data: advocates } = await sb.from('advocates').select('*');
+            const { data: advocates, error: advError } = await sb.from('advocates').select('*');
+            if (advError) throw advError;
             allAdvocates = advocates || [];
 
             updateStats();
             renderRecentCases();
-            renderAllCases();
+            renderAllCases(allCases);
             renderAdvocates();
         } catch (err) {
             console.error('Error loading dashboard:', err);
+            alert('Failed to load dashboard data. Check console for details.');
         }
     }
 
@@ -589,6 +628,12 @@
         document.getElementById('completedCases').textContent = completed;
     }
 
+    function getStatusBadgeClass(status) {
+        const s = (status || 'Pending').toString().toLowerCase();
+        if (s === 'completed') return 'badge-active';
+        return 'badge-pending';
+    }
+
     function renderRecentCases() {
         const container = document.getElementById('recentCasesContainer');
         const recent = allCases.slice(0, 5);
@@ -600,33 +645,37 @@
 
         let html = '<table class="table"><thead><tr><th>Client</th><th>Service</th><th>Status</th><th>Date</th></tr></thead><tbody>';
         recent.forEach(c => {
+            const badgeClass = getStatusBadgeClass(c.payment_status);
             html += `<tr>
-                <td>${c.full_name}</td>
-                <td>${c.service_requested}</td>
-                <td><span class="badge badge-pending">${c.payment_status}</span></td>
-                <td>${new Date(c.created_at).toLocaleDateString()}</td>
+                <td>${c.full_name || 'N/A'}</td>
+                <td>${c.service_requested || 'N/A'}</td>
+                <td><span class="badge ${badgeClass}">${c.payment_status || 'Pending'}</span></td>
+                <td>${c.created_at ? new Date(c.created_at).toLocaleDateString() : '-'}</td>
             </tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
     }
 
-    function renderAllCases() {
+    function renderAllCases(casesToRender) {
         const container = document.getElementById('allCasesContainer');
+        const cases = casesToRender || allCases;
         
-        if (allCases.length === 0) {
+        if (cases.length === 0) {
             container.innerHTML = '<div class="empty-state"><p>No cases found</p></div>';
             return;
         }
 
-        let html = '<table class="table"><thead><tr><th>Client</th><th>Email</th><th>Service</th><th>Status</th><th>Assigned To</th></tr></thead><tbody>';
-        allCases.forEach(c => {
+        let html = '<table class="table"><thead><tr><th>Client</th><th>Email</th><th>Service</th><th>Status</th><th>Assigned To</th><th>Actions</th></tr></thead><tbody>';
+        cases.forEach(c => {
+            const badgeClass = getStatusBadgeClass(c.payment_status);
             html += `<tr>
-                <td>${c.full_name}</td>
-                <td>${c.email}</td>
-                <td>${c.service_requested}</td>
-                <td><span class="badge badge-pending">${c.payment_status}</span></td>
+                <td>${c.full_name || 'N/A'}</td>
+                <td>${c.email || 'N/A'}</td>
+                <td>${c.service_requested || 'N/A'}</td>
+                <td><span class="badge ${badgeClass}">${c.payment_status || 'Pending'}</span></td>
                 <td>${c.assigned_advocate || 'Unassigned'}</td>
+                <td><button class="btn" onclick="openAssignCaseModal('${c.id}', '${(c.full_name || '').replace(/'/g, "\\'")}')">Assign</button></td>
             </tr>`;
         });
         html += '</tbody></table>';
@@ -644,10 +693,10 @@
         let html = '<table class="table"><thead><tr><th>Name</th><th>Email</th><th>Specialization</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
         allAdvocates.forEach(a => {
             html += `<tr>
-                <td>${a.name}</td>
-                <td>${a.email}</td>
+                <td>${a.name || 'N/A'}</td>
+                <td>${a.email || 'N/A'}</td>
                 <td>${a.specialization || 'N/A'}</td>
-                <td><span class="badge badge-active">${a.status}</span></td>
+                <td><span class="badge badge-active">${a.status || 'active'}</span></td>
                 <td><button class="btn btn-danger" onclick="deleteAdvocate('${a.id}')">Delete</button></td>
             </tr>`;
         });
@@ -691,7 +740,7 @@
             loadDashboard();
         } catch (err) {
             console.error('Error:', err);
-            alert('❌ Error adding advocate');
+            alert('❌ Error adding advocate: ' + (err.message || err));
         }
     }
 
@@ -706,22 +755,81 @@
             loadDashboard();
         } catch (err) {
             console.error('Error:', err);
-            alert('❌ Error deleting advocate');
+            alert('❌ Error deleting advocate: ' + (err.message || err));
         }
     }
 
-    function switchView(view) {
+    // FIXED: Accepts the clicked element directly instead of relying on global event
+    function switchView(view, element) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         
         document.getElementById(view).classList.add('active');
-        if (event && event.target) {
-            event.target.closest('.nav-link').classList.add('active');
+        if (element) {
+            element.classList.add('active');
         }
     }
 
     function closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
+    }
+
+    // FIXED: Moved to global scope so onclick handlers can reach it
+    function openAssignCaseModal(caseId, clientName) {
+        currentCaseId = caseId;
+        document.getElementById('caseClientName').value = clientName;
+        
+        // Populate advocate dropdown
+        const advocateSelect = document.getElementById('advocateSelect');
+        advocateSelect.innerHTML = '<option value="">-- Choose an advocate --</option>';
+        
+        if (allAdvocates.length === 0) {
+            const option = document.createElement('option');
+            option.textContent = 'No advocates available';
+            option.disabled = true;
+            advocateSelect.appendChild(option);
+        } else {
+            allAdvocates.forEach(a => {
+                const option = document.createElement('option');
+                option.value = a.name;
+                option.textContent = a.name + ' (' + a.email + ')';
+                advocateSelect.appendChild(option);
+            });
+        }
+
+        document.getElementById('assignCaseModal').classList.add('active');
+    }
+
+    // FIXED: Moved to global scope so onclick handlers can reach it
+    async function assignCaseToAdvocate() {
+        const advocateName = document.getElementById('advocateSelect').value;
+        const status = document.getElementById('assignCaseStatus').value;
+
+        if (!advocateName) {
+            alert('Please select an advocate');
+            return;
+        }
+        if (!currentCaseId) {
+            alert('Error: No case selected');
+            return;
+        }
+
+        try {
+            const { error } = await sb.from('bookings').update({
+                assigned_advocate: advocateName,
+                payment_status: status,
+                updated_at: new Date().toISOString()
+            }).eq('id', currentCaseId);
+
+            if (error) throw error;
+
+            alert('✅ Case assigned to ' + advocateName);
+            closeModal('assignCaseModal');
+            loadDashboard();
+        } catch (err) {
+            console.error('Error:', err);
+            alert('❌ Error assigning case: ' + (err.message || err));
+        }
     }
 
     // Close modal when clicking outside
@@ -731,8 +839,29 @@
         }
     };
 
+    // Search functionality (FIXED: added missing listener)
+    function setupSearch() {
+        const searchInput = document.getElementById('caseSearch');
+        if (!searchInput) return;
+        
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase().trim();
+            if (!term) {
+                renderAllCases(allCases);
+                return;
+            }
+            const filtered = allCases.filter(c => 
+                (c.full_name && c.full_name.toLowerCase().includes(term)) || 
+                (c.email && c.email.toLowerCase().includes(term))
+            );
+            renderAllCases(filtered);
+        });
+    }
+
     // Check if already logged in
     window.addEventListener('load', () => {
+        setupSearch();
+        
         if (sessionStorage.getItem('admin')) {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
