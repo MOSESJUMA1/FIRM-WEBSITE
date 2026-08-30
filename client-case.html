@@ -1,526 +1,475 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Case Profile | Apex Legal Advocates</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #1a3a52 0%, #0d1f2d 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .header-bar {
-            background: #1a3a52;
-            color: white;
-            padding: 15px 0;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .header-bar h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .header-bar p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        .container { 
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-        .success-banner {
-            background: #efe;
-            border-left: 4px solid #4c4;
-            padding: 20px;
-            border-radius: 8px;
-            color: #3a3;
-            margin-bottom: 20px;
-        }
-        .success-banner i {
-            margin-right: 10px;
-        }
-        .error-banner {
-            background: #fee;
-            border-left: 4px solid #f44;
-            padding: 20px;
-            border-radius: 8px;
-            color: #c33;
-            margin-bottom: 20px;
-            display: none;
-        }
-        .card h2 {
-            color: #1a3a52;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #c9a961;
-            font-size: 20px;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        @media (max-width: 600px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .info-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 3px solid #c9a961;
-        }
-        .info-label {
-            color: #666;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-        .info-value {
-            color: #1a3a52;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 13px;
-            background: #ffeaa7;
-            color: #d63031;
-        }
-        .advocate-card {
-            background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f2 100%);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
-            margin-top: 20px;
-        }
-        .advocate-card h3 {
-            color: #1a3a52;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-        .advocate-card p {
-            color: #555;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .timeline {
-            margin-top: 20px;
-        }
-        .timeline-item {
-            display: flex;
-            margin-bottom: 20px;
-            position: relative;
-            padding-left: 40px;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 5px;
-            width: 12px;
-            height: 12px;
-            background: #c9a961;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px #c9a961;
-        }
-        .timeline-item:first-child::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 20px;
-            width: 2px;
-            height: calc(100% + 20px);
-            background: #c9a961;
-            opacity: 0.3;
-        }
-        .timeline-date {
-            font-size: 12px;
-            color: #999;
-            font-weight: 600;
-        }
-        .timeline-text {
-            color: #555;
-            font-size: 14px;
-            margin-top: 3px;
-        }
-        .dates-section {
-            background: linear-gradient(135deg, #f0f7ff 0%, #e8f0f8 100%);
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        .dates-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        @media (max-width: 600px) {
-            .dates-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .date-item {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            border-top: 3px solid #3498db;
-        }
-        .date-label {
-            color: #666;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .date-value {
-            color: #1a3a52;
-            font-size: 15px;
-            font-weight: 600;
-        }
-        .footer {
-            background: #1a3a52;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-            font-size: 13px;
-        }
-        .footer p {
-            margin: 5px 0;
-        }
-        .footer strong {
-            color: #c9a961;
-        }
-        .loading {
-            text-align: center;
-            color: #666;
-            padding: 20px;
-            font-size: 14px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Case | Apex Legal Advocates</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+  <style>
+    :root {
+      --navy: #1a3a52;
+      --navy-light: #2a4a6a;
+      --olive: #c5d1b9;
+      --olive-light: #e8ede3;
+      --olive-dark: #a8b5a0;
+      --white: #ffffff;
+      --cream: #f7f9f4;
+      --shadow: 0 8px 32px rgba(26, 58, 82, 0.12),
+        0 2px 8px rgba(168, 181, 160, 0.2);
+      --shadow-hover: 0 16px 48px rgba(26, 58, 82, 0.15),
+        0 4px 12px rgba(168, 181, 160, 0.3);
+      --transition: all 0.3s ease;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      color: var(--navy);
+      line-height: 1.5;
+    }
+
+    /* Wavy Hero */
+    .hero-wave {
+      background: var(--navy);
+      color: white;
+      padding: 40px 20px 70px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-wave h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      user-select: none;
+    }
+    .hero-wave p {
+      opacity: 0.85;
+      font-size: 16px;
+      user-select: none;
+    }
+
+    .wave-divider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      transform: translateY(1px);
+      user-select: none;
+    }
+    .wave-divider svg {
+      display: block;
+      width: 100%;
+      height: 70px;
+      fill: var(--cream);
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+
+    /* Floating Cards */
+    .float-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 28px;
+      border: 2px solid var(--olive);
+      box-shadow: var(--shadow);
+      margin-top: -30px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+      transition: var(--transition);
+    }
+    .float-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+    .float-card h2 {
+      font-size: 20px;
+      color: var(--navy);
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--olive-light);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* Tabs for Case Details and Dates */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--olive);
+      margin-bottom: 20px;
+      user-select: none;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      background: none;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--olive-dark);
+      cursor: pointer;
+      border-bottom: 4px solid transparent;
+      transition: var(--transition);
+    }
+    .tab-btn.active {
+      color: var(--navy);
+      border-bottom-color: var(--olive);
+    }
+    .tab-btn:hover:not(.active) {
+      color: var(--navy-light);
+    }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 600px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .info-item {
+      background: var(--cream);
+      padding: 18px;
+      border-radius: 16px;
+      border: 2px solid var(--olive);
+      transition: var(--transition);
+    }
+    .info-item:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-3px);
+    }
+    .info-label {
+      color: var(--olive-dark);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .info-value {
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+      background: var(--olive-light);
+      border: 2px solid var(--olive-dark);
+      user-select: none;
+    }
+
+    /* Advocate Info Floating Box */
+    .advocate-float {
+      background: linear-gradient(135deg, var(--olive-light) 0%, var(--cream) 100%);
+      padding: 24px;
+      border-radius: 20px;
+      border: 2px solid var(--olive);
+      margin-top: 28px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    .advocate-float:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+    .advocate-float h3 {
+      color: var(--navy);
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      user-select: none;
+    }
+    .advocate-float p {
+      color: #4f5d79;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* Dates section */
+    .dates-float {
+      background: var(--cream);
+      padding: 24px;
+      border-radius: 20px;
+      border: 2px dashed var(--olive-dark);
+      margin-top: 20px;
+      user-select: none;
+    }
+    .dates-float h3 {
+      color: var(--navy);
+      font-size: 18px;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+    .dates-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 600px) {
+      .dates-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .date-item {
+      background: var(--white);
+      border-radius: 14px;
+      border: 2px solid var(--olive);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--navy-light);
+      transition: var(--transition);
+    }
+    .date-item i {
+      font-size: 20px;
+      color: var(--olive-dark);
+    }
+    .date-item:hover {
+      color: var(--navy);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-3px);
+    }
+    .date-label {
+      flex-basis: 130px;
+      font-weight: 700;
+      color: var(--olive-dark);
+    }
+    .date-value {
+      flex-grow: 1;
+      font-weight: 600;
+      color: var(--navy);
+    }
+  </style>
 </head>
 <body>
-    <div class="header-bar">
-        <h1><i class="fas fa-briefcase"></i> Your Case Profile</h1>
-        <p>Apex Legal Advocates</p>
+  <section class="hero-wave">
+    <h1>Your Legal Case</h1>
+    <p>Track your case progress and important dates with Apex Legal Advocates</p>
+    <div class="wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,30 C360,50 720,10 1080,30 1260,40 1440,20 1440,20 L1440,70 L0,70 Z"></path>
+      </svg>
     </div>
+  </section>
 
-    <div class="container">
-        <div id="error" class="error-banner">
-            <i class="fas fa-times-circle"></i>
-            <h3>Invalid Case Link</h3>
-            <p>The case reference could not be found. Please contact us to book a new consultation.</p>
+  <div class="container" role="main" aria-label="Case Details and Dates">
+    <article class="float-card" aria-labelledby="caseDetailsTitle">
+      <h2 id="caseDetailsTitle">
+        <i class="fas fa-scale-balanced"></i> Case Information
+      </h2>
+
+      <nav class="tabs" role="tablist">
+        <button
+          class="tab-btn active"
+          aria-selected="true"
+          role="tab"
+          aria-controls="detailsTab"
+          id="detailsTabButton"
+          tabindex="0"
+        >
+          Details
+        </button>
+        <button
+          class="tab-btn"
+          aria-selected="false"
+          role="tab"
+          aria-controls="datesTab"
+          id="datesTabButton"
+          tabindex="-1"
+        >
+          Important Dates
+        </button>
+      </nav>
+
+      <section
+        id="detailsTab"
+        class="tab-content active"
+        role="tabpanel"
+        aria-labelledby="detailsTabButton"
+      >
+        <div class="info-grid" aria-label="Case detailed information">
+          <div class="info-item">
+            <div class="info-label">Case Number</div>
+            <div class="info-value">CL-2026-15783</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Client Name</div>
+            <div class="info-value">John Doe</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Service Requested</div>
+            <div class="info-value">Family Law Consultation</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Assigned Advocate</div>
+            <div class="info-value">Jane Smith</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Current Status</div>
+            <div class="status-badge">In Progress</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Priority</div>
+            <div class="status-badge">Medium</div>
+          </div>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <div class="info-label">Case Notes</div>
+            <div class="info-value" style="font-weight: 400; font-size: 14px; line-height:1.4;">
+              Case involves child custody issues post-divorce. Next hearing scheduled.
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div class="success-banner">
-            <i class="fas fa-check-circle"></i>
-            <strong>Your consultation request has been received!</strong>
-            <br><span style="font-size: 13px; margin-top: 5px; display: block;">Our legal team is reviewing your case. You'll be contacted within 2-3 business days.</span>
+      <section
+        id="datesTab"
+        class="tab-content"
+        role="tabpanel"
+        aria-labelledby="datesTabButton"
+        tabindex="0"
+      >
+        <div class="dates-float" aria-label="Important dates related to the case">
+          <h3>Upcoming & Past Dates</h3>
+          <div class="dates-grid">
+            <div class="date-item">
+              <i class="fas fa-calendar-check"></i>
+              <div>
+                <div class="date-label">Next Hearing</div>
+                <div class="date-value">September 15, 2026</div>
+              </div>
+            </div>
+            <div class="date-item">
+              <i class="fas fa-gavel"></i>
+              <div>
+                <div class="date-label">Court Date</div>
+                <div class="date-value">October 5, 2026</div>
+              </div>
+            </div>
+            <div class="date-item">
+              <i class="fas fa-clock"></i>
+              <div>
+                <div class="date-label">Filing Deadline</div>
+                <div class="date-value" style="color:#a83333; font-weight: 700;">Overdue: July 30, 2026</div>
+              </div>
+            </div>
+            <div class="date-item">
+              <i class="fas fa-file-alt"></i>
+              <div>
+                <div class="date-label">Document Submission</div>
+                <div class="date-value">September 1, 2026</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <!-- CLIENT INFORMATION -->
-        <div class="card">
-            <h2><i class="fas fa-user"></i> Your Information</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Full Name</div>
-                    <div class="info-value" id="clientName">—</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Email Address</div>
-                    <div class="info-value" id="clientEmail">—</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Phone Number</div>
-                    <div class="info-value" id="clientPhone">—</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Service Area</div>
-                    <div class="info-value" id="clientService">—</div>
-                </div>
-            </div>
-        </div>
+    </article>
 
-        <!-- CASE STATUS -->
-        <div class="card">
-            <h2><i class="fas fa-gavel"></i> Case Status</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Status</div>
-                    <div class="info-value">
-                        <span class="status-badge" id="caseStatus">Pending</span>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Case Reference</div>
-                    <div class="info-value" id="caseRef" style="font-size: 13px; color: #999;">—</div>
-                </div>
-            </div>
+    <aside class="advocate-float" aria-label="Assigned advocate information">
+      <h3><i class="fas fa-user-tie"></i> Your Advocate</h3>
+      <p><strong>Jane Smith</strong> specializes in Family Law and is your dedicated legal representative for this case. You can contact her to discuss case progress and next steps.</p>
+      <p><strong>Email:</strong> <a href="mailto:jane.smith@apexlegal.com">jane.smith@apexlegal.com</a><br />
+      <strong>Phone:</strong> +1 555 123 4567</p>
+    </aside>
+  </div>
 
-            <div class="dates-section">
-                <h3 style="color: #1a3a52; margin-bottom: 15px; font-size: 16px;">
-                    <i class="fas fa-calendar-days"></i> Key Dates
-                </h3>
-                <div class="dates-grid">
-                    <div class="date-item">
-                        <div class="date-label">Date Filed</div>
-                        <div class="date-value" id="dateFiled">—</div>
-                    </div>
-                    <div class="date-item">
-                        <div class="date-label">Next Review / Hearing</div>
-                        <div class="date-value" id="dateNext">Awaiting scheduling</div>
-                    </div>
-                    <div class="date-item">
-                        <div class="date-label">Last Updated</div>
-                        <div class="date-value" id="dateUpdated">—</div>
-                    </div>
-                    <div class="date-item">
-                        <div class="date-label">Case Number</div>
-                        <div class="date-value" id="caseNumber">—</div>
-                    </div>
-                </div>
-            </div>
+  <script>
+    // Tab switching interactivity
+    const tabsButtons = document.querySelectorAll('.tab-btn');
+    const tabsContents = document.querySelectorAll('.tab-content');
 
-            <div class="advocate-card">
-                <h3><i class="fas fa-user-tie"></i> Your Advocate</h3>
-                <p id="advocateInfo">Our legal team is reviewing your case. An advocate will be assigned shortly and will contact you to discuss the next steps.</p>
-            </div>
-        </div>
+    tabsButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const isActive = btn.classList.contains('active');
+        if (isActive) return;
 
-        <!-- CASE TIMELINE -->
-        <div class="card">
-            <h2><i class="fas fa-timeline"></i> Case Timeline</h2>
-            <div id="timelineLoading" class="loading">
-                <i class="fas fa-spinner fa-spin"></i> Loading case history...
-            </div>
-            <div id="timeline" class="timeline" style="display: none;"></div>
-        </div>
-
-        <!-- REQUIREMENTS -->
-        <div class="card" id="requirementsCard" style="display: none;">
-            <h2><i class="fas fa-checklist"></i> Requirements</h2>
-            <div id="requirementsList"></div>
-        </div>
-
-        <div class="footer">
-            <p><strong>Need Help?</strong></p>
-            <p><i class="fas fa-phone"></i> <strong>+254 741 801 897</strong></p>
-            <p><i class="fas fa-globe"></i> apexlegal.co.ke</p>
-        </div>
-    </div>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-    const sb = window.supabase.createClient(
-        'https://hjbrllpbpajzmgpgkadf.supabase.co',
-        'sb_publishable_KJ0vS80SQiUFQZ52wyws1A_zxrkJ9ga'
-    );
-
-    let caseData = null;
-
-    // Load profile
-    async function loadProfile() {
-        try {
-            const url = new URL(window.location);
-            
-            // Get from URL params
-            const name = url.searchParams.get('name');
-            const email = url.searchParams.get('email');
-            const phone = url.searchParams.get('phone');
-            const service = url.searchParams.get('service');
-            const date = url.searchParams.get('date');
-            const token = url.searchParams.get('token');
-
-            if (!name || !email) {
-                showError();
-                return;
-            }
-
-            // Display basic info immediately
-            displayBasicInfo(name, email, phone, service, date);
-
-            // Try to load case details from Supabase (with timeout)
-            if (token) {
-                loadCaseDetails(token);
-            } else {
-                document.getElementById('timelineLoading').style.display = 'none';
-            }
-
-        } catch (err) {
-            console.error('Error:', err);
-            showError();
-        }
-    }
-
-    function displayBasicInfo(name, email, phone, service, date) {
-        document.getElementById('clientName').textContent = decodeURIComponent(name) || '—';
-        document.getElementById('clientEmail').textContent = decodeURIComponent(email) || '—';
-        document.getElementById('clientPhone').textContent = decodeURIComponent(phone) || '—';
-        document.getElementById('clientService').textContent = decodeURIComponent(service) || '—';
-        document.getElementById('dateFiled').textContent = decodeURIComponent(date) || new Date().toLocaleDateString();
-        document.getElementById('dateUpdated').textContent = new Date().toLocaleDateString();
-    }
-
-    async function loadCaseDetails(token) {
-        try {
-            // Set timeout - don't wait more than 5 seconds
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Timeout')), 5000)
-            );
-
-            const queryPromise = sb
-                .from('bookings')
-                .select('*')
-                .eq('token', token)
-                .single();
-
-            const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
-
-            if (error || !data) {
-                // Supabase failed, just show what we have
-                document.getElementById('timelineLoading').style.display = 'none';
-                renderBasicTimeline();
-                return;
-            }
-
-            caseData = data;
-            renderFullProfile(data);
-
-        } catch (err) {
-            console.error('Case details error:', err);
-            // Still show basic info
-            document.getElementById('timelineLoading').style.display = 'none';
-            renderBasicTimeline();
-        }
-    }
-
-    function renderBasicTimeline() {
-        const timeline = document.getElementById('timeline');
-        timeline.style.display = 'block';
-        timeline.innerHTML = `
-            <div class="timeline-item">
-                <div>
-                    <div class="timeline-date">${new Date().toLocaleDateString()}</div>
-                    <div class="timeline-text">Case file opened, Initial consultation request received.</div>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div>
-                    <div class="timeline-date">Pending</div>
-                    <div class="timeline-text">Awaiting advocate assignment.</div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderFullProfile(data) {
-        // Update with Supabase data
-        document.getElementById('caseRef').textContent = data.token || '—';
-        document.getElementById('caseStatus').textContent = data.payment_status || 'Pending';
-        document.getElementById('caseNumber').textContent = data.case_number || 'TBD';
-        document.getElementById('dateNext').textContent = data.next_date || 'Awaiting scheduling';
-        
-        if (data.assigned_advocate) {
-            document.getElementById('advocateInfo').textContent = `Assigned to: ${data.assigned_advocate}. They will contact you shortly with details.`;
-        }
-
-        // Render timeline
-        renderTimeline(data);
-
-        // Render requirements
-        if (data.requirements) {
-            renderRequirements(data.requirements);
-        }
-    }
-
-    function renderTimeline(data) {
-        const timeline = document.getElementById('timeline');
-        timeline.style.display = 'block';
-        timeline.innerHTML = '';
-
-        // Filed
-        const item1 = document.createElement('div');
-        item1.className = 'timeline-item';
-        item1.innerHTML = `
-            <div>
-                <div class="timeline-date">${new Date(data.created_at).toLocaleDateString()}</div>
-                <div class="timeline-text">Case file opened, Initial consultation request received.</div>
-            </div>
-        `;
-        timeline.appendChild(item1);
-
-        // Status update
-        if (data.payment_status && data.payment_status !== 'Pending') {
-            const item2 = document.createElement('div');
-            item2.className = 'timeline-item';
-            item2.innerHTML = `
-                <div>
-                    <div class="timeline-date">${new Date(data.updated_at || data.created_at).toLocaleDateString()}</div>
-                    <div class="timeline-text">Status updated to: <strong>${data.payment_status}</strong></div>
-                </div>
-            `;
-            timeline.appendChild(item2);
-        }
-
-        // Case notes/updates
-        if (data.case_notes) {
-            const item3 = document.createElement('div');
-            item3.className = 'timeline-item';
-            item3.innerHTML = `
-                <div>
-                    <div class="timeline-date">${new Date(data.updated_at || data.created_at).toLocaleDateString()}</div>
-                    <div class="timeline-text">${data.case_notes}</div>
-                </div>
-            `;
-            timeline.appendChild(item3);
-        }
-
-        document.getElementById('timelineLoading').style.display = 'none';
-    }
-
-    function renderRequirements(reqText) {
-        if (!reqText || !reqText.trim()) return;
-
-        document.getElementById('requirementsCard').style.display = 'block';
-        const list = document.getElementById('requirementsList');
-        list.innerHTML = '';
-
-        const items = reqText.split('\n').filter(line => line.trim());
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.style.cssText = 'padding: 10px 0; border-bottom: 1px solid #eee; color: #555; font-size: 14px;';
-            div.innerHTML = `<i class="fas fa-circle" style="color: #c9a961; margin-right: 8px; font-size: 6px;"></i> ${item.trim()}`;
-            list.appendChild(div);
+        // Reset all buttons and tab contents
+        tabsButtons.forEach((b) => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+          b.setAttribute('tabindex', '-1');
         });
-    }
+        tabsContents.forEach((content) => content.classList.remove('active'));
 
-    function showError() {
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('timelineLoading').style.display = 'none';
-    }
+        // Activate current button and associated content
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        btn.setAttribute('tabindex', '0');
+        const tabId = btn.getAttribute('aria-controls');
+        const tabContent = document.getElementById(tabId);
+        if (tabContent) tabContent.classList.add('active');
+      });
 
-    // Load on page load
-    window.addEventListener('load', loadProfile);
-    loadProfile();
-</script>
+      // Allow keyboard navigation between tabs
+      btn.addEventListener('keydown', (e) => {
+        let index = Array.from(tabsButtons).indexOf(e.target);
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          index = (index + 1) % tabsButtons.length;
+          tabsButtons[index].focus();
+          e.preventDefault();
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          index = (index - 1 + tabsButtons.length) % tabsButtons.length;
+          tabsButtons[index].focus();
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
