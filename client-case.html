@@ -4,30 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Your Case | Apex Legal Advocates</title>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
     :root {
       --navy: #1a3a52;
       --navy-light: #2a4a6a;
       --olive: #c5d1b9;
       --olive-light: #e8ede3;
-      --olive-dark: #a8b5a0;
+      --olive-dark: #c6cac3;
       --white: #ffffff;
       --cream: #f7f9f4;
-      --shadow: 0 8px 32px rgba(26, 58, 82, 0.12),
-        0 2px 8px rgba(168, 181, 160, 0.2);
-      --shadow-hover: 0 16px 48px rgba(26, 58, 82, 0.15),
-        0 4px 12px rgba(168, 181, 160, 0.3);
+      --shadow: 0 8px 32px rgba(26, 58, 82, 0.12), 0 2px 8px rgba(168, 181, 160, 0.2);
+      --shadow-hover: 0 16px 48px rgba(26, 58, 82, 0.15), 0 4px 12px rgba(168, 181, 160, 0.3);
       --transition: all 0.3s ease;
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
       background: var(--cream);
@@ -35,8 +27,6 @@
       color: var(--navy);
       line-height: 1.5;
     }
-
-    /* Wavy Hero */
     .hero-wave {
       background: var(--navy);
       color: white;
@@ -45,258 +35,128 @@
       position: relative;
       overflow: hidden;
     }
-    .hero-wave h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      user-select: none;
-    }
-    .hero-wave p {
-      opacity: 0.85;
-      font-size: 16px;
-      user-select: none;
-    }
-
+    .hero-wave h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; user-select: none; }
+    .hero-wave p { opacity: 0.85; font-size: 16px; user-select: none; }
     .wave-divider {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      line-height: 0;
-      transform: translateY(1px);
-      user-select: none;
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      overflow: hidden; line-height: 0; transform: translateY(1px); user-select: none;
     }
-    .wave-divider svg {
-      display: block;
-      width: 100%;
-      height: 70px;
-      fill: var(--cream);
-    }
+    .wave-divider svg { display: block; width: 100%; height: 70px; fill: var(--cream); }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px 40px; }
 
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 20px 40px;
-    }
-
-    /* Floating Cards */
     .float-card {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 28px;
-      border: 2px solid var(--olive);
-      box-shadow: var(--shadow);
-      margin-top: -30px;
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 2;
+      background: var(--white); border-radius: 20px; padding: 28px;
+      border: 2px solid var(--olive); box-shadow: var(--shadow);
+      margin-top: -30px; margin-bottom: 20px; position: relative; z-index: 2;
       transition: var(--transition);
     }
-    .float-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-    }
+    .float-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
     .float-card h2 {
-      font-size: 20px;
-      color: var(--navy);
-      margin-bottom: 20px;
-      padding-bottom: 14px;
-      border-bottom: 2px solid var(--olive-light);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      user-select: none;
+      font-size: 20px; color: var(--navy); margin-bottom: 20px; padding-bottom: 14px;
+      border-bottom: 2px solid var(--olive-light); display: flex; align-items: center;
+      gap: 12px; font-weight: 700; user-select: none;
     }
-
-    /* Tabs for Case Details and Dates */
-    .tabs {
-      display: flex;
-      border-bottom: 2px solid var(--olive);
-      margin-bottom: 20px;
-      user-select: none;
-    }
+    .tabs { display: flex; border-bottom: 2px solid var(--olive); margin-bottom: 20px; user-select: none; }
     .tab-btn {
-      flex: 1;
-      padding: 12px 0;
-      border: none;
-      background: none;
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--olive-dark);
-      cursor: pointer;
-      border-bottom: 4px solid transparent;
-      transition: var(--transition);
+      flex: 1; padding: 12px 0; border: none; background: none; font-weight: 700;
+      font-size: 14px; color: var(--olive-dark); cursor: pointer;
+      border-bottom: 4px solid transparent; transition: var(--transition);
     }
-    .tab-btn.active {
-      color: var(--navy);
-      border-bottom-color: var(--olive);
-    }
-    .tab-btn:hover:not(.active) {
-      color: var(--navy-light);
-    }
+    .tab-btn.active { color: var(--navy); border-bottom-color: var(--olive); }
+    .tab-btn:hover:not(.active) { color: var(--navy-light); }
+    .tab-content { display: none; animation: fadeIn 0.5s ease forwards; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Tab Content */
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.5s ease forwards;
-    }
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Info Grid */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-    @media (max-width: 600px) {
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
     .info-item {
-      background: var(--cream);
-      padding: 18px;
-      border-radius: 16px;
-      border: 2px solid var(--olive);
-      transition: var(--transition);
+      background: var(--cream); padding: 18px; border-radius: 16px;
+      border: 2px solid var(--olive); transition: var(--transition);
     }
-    .info-item:hover {
-      box-shadow: var(--shadow);
-      transform: translateY(-3px);
-    }
+    .info-item:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
     .info-label {
-      color: var(--olive-dark);
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      color: var(--olive-dark); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
     }
-    .info-value {
-      color: var(--navy);
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    /* Status Badge */
+    .info-value { color: var(--navy); font-size: 17px; font-weight: 700; }
     .status-badge {
-      display: inline-block;
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--navy);
-      background: var(--olive-light);
-      border: 2px solid var(--olive-dark);
-      user-select: none;
+      display: inline-block; padding: 8px 20px; border-radius: 50px;
+      font-weight: 700; font-size: 14px; color: var(--navy);
+      background: var(--olive-light); border: 2px solid var(--olive-dark); user-select: none;
     }
 
-    /* Advocate Info Floating Box */
     .advocate-float {
       background: linear-gradient(135deg, var(--olive-light) 0%, var(--cream) 100%);
-      padding: 24px;
-      border-radius: 20px;
-      border: 2px solid var(--olive);
-      margin-top: 28px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
+      padding: 24px; border-radius: 20px; border: 2px solid var(--olive);
+      margin-top: 28px; box-shadow: var(--shadow); transition: var(--transition);
     }
-    .advocate-float:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
-    }
+    .advocate-float:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
     .advocate-float h3 {
-      color: var(--navy);
-      font-size: 18px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      user-select: none;
+      color: var(--navy); font-size: 18px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px; font-weight: 700; user-select: none;
     }
-    .advocate-float p {
-      color: #4f5d79;
-      font-size: 15px;
-      line-height: 1.5;
-    }
+    .advocate-float p { color: #4f5d79; font-size: 15px; line-height: 1.5; }
 
-    /* Dates section */
     .dates-float {
-      background: var(--cream);
-      padding: 24px;
-      border-radius: 20px;
-      border: 2px dashed var(--olive-dark);
-      margin-top: 20px;
-      user-select: none;
+      background: var(--cream); padding: 24px; border-radius: 20px;
+      border: 2px dashed var(--olive-dark); margin-top: 20px; user-select: none;
     }
-    .dates-float h3 {
-      color: var(--navy);
-      font-size: 18px;
-      margin-bottom: 18px;
-      font-weight: 700;
-    }
-    .dates-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-    @media (max-width: 600px) {
-      .dates-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+    .dates-float h3 { color: var(--navy); font-size: 18px; margin-bottom: 18px; font-weight: 700; }
+    .dates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 600px) { .dates-grid { grid-template-columns: 1fr; } }
     .date-item {
-      background: var(--white);
-      border-radius: 14px;
-      border: 2px solid var(--olive);
-      padding: 18px 20px;
-      box-shadow: var(--shadow);
-      font-weight: 600;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--navy-light);
+      background: var(--white); border-radius: 14px; border: 2px solid var(--olive);
+      padding: 18px 20px; box-shadow: var(--shadow); font-weight: 600; font-size: 15px;
+      display: flex; align-items: center; gap: 10px; color: var(--navy-light);
       transition: var(--transition);
     }
-    .date-item i {
-      font-size: 20px;
-      color: var(--olive-dark);
+    .date-item i { font-size: 20px; color: var(--olive-dark); }
+    .date-item:hover { color: var(--navy); box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .date-label { flex-basis: 130px; font-weight: 700; color: var(--olive-dark); }
+    .date-value { flex-grow: 1; font-weight: 600; color: var(--navy); }
+
+    .loading-overlay {
+      position: fixed; inset: 0; background: var(--cream);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 100; transition: opacity 0.4s ease, visibility 0.4s ease;
     }
-    .date-item:hover {
-      color: var(--navy);
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-3px);
+    .loading-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .spinner {
+      width: 48px; height: 48px; border: 4px solid var(--olive);
+      border-top-color: var(--navy); border-radius: 50%; animation: spin 1s linear infinite;
     }
-    .date-label {
-      flex-basis: 130px;
-      font-weight: 700;
-      color: var(--olive-dark);
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { margin-top: 16px; color: var(--navy); font-weight: 600; font-size: 15px; }
+
+    .error-banner {
+      display: none; background: #fde8e8; border: 2px solid #e53e3e;
+      color: #c53030; padding: 16px 20px; border-radius: 14px;
+      margin-bottom: 20px; font-weight: 600; white-space: pre-wrap; font-family: monospace; font-size: 13px;
     }
-    .date-value {
-      flex-grow: 1;
-      font-weight: 600;
-      color: var(--navy);
+    .error-banner.visible { display: block; }
+    .warning-banner {
+      display: none; background: #fffbeb; border: 2px solid #f59e0b;
+      color: #b45309; padding: 14px 18px; border-radius: 14px;
+      margin-bottom: 16px; font-size: 14px; font-weight: 600;
     }
+    .warning-banner.visible { display: block; }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--olive-light) 25%, var(--cream) 50%, var(--olive-light) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite;
+      border-radius: 8px; min-height: 20px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   </style>
+<base target="_blank">
 </head>
 <body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading your case...</div>
+  </div>
+
   <section class="hero-wave">
     <h1>Your Legal Case</h1>
     <p>Track your case progress and important dates with Apex Legal Advocates</p>
@@ -308,145 +168,347 @@
   </section>
 
   <div class="container" role="main" aria-label="Case Details and Dates">
+    <div class="error-banner" id="errorBanner"></div>
+    <div class="warning-banner" id="warningBanner"></div>
+
     <article class="float-card" aria-labelledby="caseDetailsTitle">
-      <h2 id="caseDetailsTitle">
-        <i class="fas fa-scale-balanced"></i> Case Information
-      </h2>
+      <h2 id="caseDetailsTitle"><i class="fas fa-scale-balanced"></i> Case Information</h2>
 
       <nav class="tabs" role="tablist">
-        <button
-          class="tab-btn active"
-          aria-selected="true"
-          role="tab"
-          aria-controls="detailsTab"
-          id="detailsTabButton"
-          tabindex="0"
-        >
-          Details
-        </button>
-        <button
-          class="tab-btn"
-          aria-selected="false"
-          role="tab"
-          aria-controls="datesTab"
-          id="datesTabButton"
-          tabindex="-1"
-        >
-          Important Dates
-        </button>
+        <button class="tab-btn active" aria-selected="true" role="tab" aria-controls="detailsTab" id="detailsTabButton" tabindex="0">Details</button>
+        <button class="tab-btn" aria-selected="false" role="tab" aria-controls="datesTab" id="datesTabButton" tabindex="-1">Important Dates</button>
       </nav>
 
-      <section
-        id="detailsTab"
-        class="tab-content active"
-        role="tabpanel"
-        aria-labelledby="detailsTabButton"
-      >
+      <section id="detailsTab" class="tab-content active" role="tabpanel" aria-labelledby="detailsTabButton">
         <div class="info-grid" aria-label="Case detailed information">
           <div class="info-item">
             <div class="info-label">Case Number</div>
-            <div class="info-value">CL-2026-15783</div>
+            <div class="info-value" id="caseNumber"><div class="skeleton" style="width:120px;height:24px;"></div></div>
           </div>
           <div class="info-item">
             <div class="info-label">Client Name</div>
-            <div class="info-value">John Doe</div>
+            <div class="info-value" id="clientName"><div class="skeleton" style="width:100px;height:24px;"></div></div>
           </div>
           <div class="info-item">
             <div class="info-label">Service Requested</div>
-            <div class="info-value">Family Law Consultation</div>
+            <div class="info-value" id="serviceRequested"><div class="skeleton" style="width:140px;height:24px;"></div></div>
           </div>
           <div class="info-item">
             <div class="info-label">Assigned Advocate</div>
-            <div class="info-value">Jane Smith</div>
+            <div class="info-value" id="assignedAdvocate"><div class="skeleton" style="width:110px;height:24px;"></div></div>
           </div>
           <div class="info-item">
             <div class="info-label">Current Status</div>
-            <div class="status-badge">In Progress</div>
+            <div id="statusBadge"><div class="skeleton" style="width:100px;height:36px;border-radius:50px;"></div></div>
           </div>
           <div class="info-item">
             <div class="info-label">Priority</div>
-            <div class="status-badge">Medium</div>
+            <div id="priorityBadge"><div class="skeleton" style="width:90px;height:36px;border-radius:50px;"></div></div>
           </div>
           <div class="info-item" style="grid-column: 1 / -1;">
             <div class="info-label">Case Notes</div>
-            <div class="info-value" style="font-weight: 400; font-size: 14px; line-height:1.4;">
-              Case involves child custody issues post-divorce. Next hearing scheduled.
-            </div>
+            <div class="info-value" id="caseNotes" style="font-weight: 400; font-size: 14px; line-height:1.4;"><div class="skeleton" style="width:100%;height:60px;"></div></div>
           </div>
         </div>
       </section>
 
-      <section
-        id="datesTab"
-        class="tab-content"
-        role="tabpanel"
-        aria-labelledby="datesTabButton"
-        tabindex="0"
-      >
+      <section id="datesTab" class="tab-content" role="tabpanel" aria-labelledby="datesTabButton" tabindex="0">
         <div class="dates-float" aria-label="Important dates related to the case">
           <h3>Upcoming & Past Dates</h3>
-          <div class="dates-grid">
-            <div class="date-item">
-              <i class="fas fa-calendar-check"></i>
-              <div>
-                <div class="date-label">Next Hearing</div>
-                <div class="date-value">September 15, 2026</div>
-              </div>
-            </div>
-            <div class="date-item">
-              <i class="fas fa-gavel"></i>
-              <div>
-                <div class="date-label">Court Date</div>
-                <div class="date-value">October 5, 2026</div>
-              </div>
-            </div>
-            <div class="date-item">
-              <i class="fas fa-clock"></i>
-              <div>
-                <div class="date-label">Filing Deadline</div>
-                <div class="date-value" style="color:#a83333; font-weight: 700;">Overdue: July 30, 2026</div>
-              </div>
-            </div>
-            <div class="date-item">
-              <i class="fas fa-file-alt"></i>
-              <div>
-                <div class="date-label">Document Submission</div>
-                <div class="date-value">September 1, 2026</div>
-              </div>
-            </div>
+          <div class="dates-grid" id="datesGrid">
+            <div class="date-item"><div class="skeleton" style="width:100%;height:24px;"></div></div>
+            <div class="date-item"><div class="skeleton" style="width:100%;height:24px;"></div></div>
+            <div class="date-item"><div class="skeleton" style="width:100%;height:24px;"></div></div>
+            <div class="date-item"><div class="skeleton" style="width:100%;height:24px;"></div></div>
           </div>
         </div>
       </section>
-
     </article>
 
     <aside class="advocate-float" aria-label="Assigned advocate information">
       <h3><i class="fas fa-user-tie"></i> Your Advocate</h3>
-      <p><strong>Jane Smith</strong> specializes in Family Law and is your dedicated legal representative for this case. You can contact her to discuss case progress and next steps.</p>
-      <p><strong>Email:</strong> <a href="mailto:jane.smith@apexlegal.com">jane.smith@apexlegal.com</a><br />
-      <strong>Phone:</strong> +1 555 123 4567</p>
+      <p><strong id="advocateName"><span class="skeleton" style="width:120px;height:20px;display:inline-block;vertical-align:middle;"></span></strong> <span id="advocateSpecialization">specializes in <span class="skeleton" style="width:100px;height:18px;display:inline-block;vertical-align:middle;"></span> and is your dedicated legal representative for this case. You can contact her to discuss case progress and next steps.</span></p>
+      <p><strong>Email:</strong> <a href="#" id="advocateEmail"><span class="skeleton" style="width:200px;height:18px;display:inline-block;vertical-align:middle;"></span></a><br />
+      <strong>Phone:</strong> <span id="advocatePhone"><span class="skeleton" style="width:140px;height:18px;display:inline-block;vertical-align:middle;"></span></span></p>
     </aside>
   </div>
 
   <script>
-    // Tab switching interactivity
+    // ============================================
+    // SUPABASE CONFIG
+    // ============================================
+    const SUPABASE_URL = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFqem1ncGdrYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2OTYxOTIsImV4cCI6MjEwMjI3MjE5Mn0.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4';
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ============================================
+    // DOM REFERENCES
+    // ============================================
+    const els = {
+      loadingOverlay: document.getElementById('loadingOverlay'),
+      errorBanner: document.getElementById('errorBanner'),
+      warningBanner: document.getElementById('warningBanner'),
+      caseNumber: document.getElementById('caseNumber'),
+      clientName: document.getElementById('clientName'),
+      serviceRequested: document.getElementById('serviceRequested'),
+      assignedAdvocate: document.getElementById('assignedAdvocate'),
+      statusBadge: document.getElementById('statusBadge'),
+      priorityBadge: document.getElementById('priorityBadge'),
+      caseNotes: document.getElementById('caseNotes'),
+      datesGrid: document.getElementById('datesGrid'),
+      advocateName: document.getElementById('advocateName'),
+      advocateSpecialization: document.getElementById('advocateSpecialization'),
+      advocateEmail: document.getElementById('advocateEmail'),
+      advocatePhone: document.getElementById('advocatePhone'),
+    };
+
+    // ============================================
+    // READ URL PARAMETERS
+    // ============================================
+    const params = new URLSearchParams(window.location.search);
+    const urlData = {
+      token: params.get('token'),
+      name: params.get('name'),
+      email: params.get('email'),
+      phone: params.get('phone'),
+      service: params.get('service'),
+      date: params.get('date'),
+    };
+
+    // ============================================
+    // RENDER FROM URL PARAMS (FALLBACK)
+    // ============================================
+    function renderFromURL() {
+      els.caseNumber.textContent = urlData.token || 'N/A';
+      els.clientName.textContent = decodeURIComponent(urlData.name || 'Unknown Client');
+      els.serviceRequested.textContent = decodeURIComponent(urlData.service || 'General Consultation');
+      els.assignedAdvocate.textContent = 'Not yet assigned';
+      els.statusBadge.innerHTML = `<span class="status-badge">Pending</span>`;
+      els.priorityBadge.innerHTML = `<span class="status-badge">Standard</span>`;
+      els.caseNotes.textContent = `Consultation request received on ${urlData.date ? new Date(urlData.date).toLocaleString() : 'recently'}. Awaiting advocate assignment.`;
+
+      els.datesGrid.innerHTML = `
+        <div class="date-item">
+          <i class="fas fa-calendar-check"></i>
+          <div>
+            <div class="date-label">Consultation Booked</div>
+            <div class="date-value">${urlData.date ? new Date(urlData.date).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) : 'Pending'}</div>
+          </div>
+        </div>
+        <div class="date-item">
+          <i class="fas fa-user-clock"></i>
+          <div>
+            <div class="date-label">Advocate Assignment</div>
+            <div class="date-value" style="color:#a83333; font-weight:700;">Pending</div>
+          </div>
+        </div>
+      `;
+
+      els.advocateName.textContent = 'To be assigned';
+      els.advocateSpecialization.innerHTML = `will be assigned based on your <strong>${decodeURIComponent(urlData.service || 'case')}</strong> needs. You will receive an email once an advocate is allocated.`;
+      els.advocateEmail.href = `mailto:${decodeURIComponent(urlData.email || '#')}`;
+      els.advocateEmail.textContent = decodeURIComponent(urlData.email || 'N/A');
+      els.advocatePhone.textContent = decodeURIComponent(urlData.phone || 'N/A');
+    }
+
+    // ============================================
+    // RENDER FROM SUPABASE
+    // ============================================
+    function renderFromSupabase(caseData, bookingData, datesData) {
+      // Use Supabase data, fall back to URL params for missing fields
+      els.caseNumber.textContent = caseData['case-number'] || caseData['booking-id'] || urlData.token || 'N/A';
+      els.clientName.textContent = (bookingData && (bookingData.name || bookingData['client-name'])) || decodeURIComponent(urlData.name || 'Unknown');
+      els.serviceRequested.textContent = (bookingData && (bookingData.service || bookingData['service-requested'])) || decodeURIComponent(urlData.service || 'General Consultation');
+      els.assignedAdvocate.textContent = caseData['assigned-to'] || 'Not yet assigned';
+      els.statusBadge.innerHTML = `<span class="status-badge">${caseData.status || 'Pending'}</span>`;
+      els.priorityBadge.innerHTML = `<span class="status-badge">${(bookingData && bookingData.priority) || 'Standard'}</span>`;
+      els.caseNotes.textContent = (bookingData && (bookingData.notes || bookingData['case-notes'])) || `Consultation request received. Awaiting advocate assignment.`;
+
+      if (!datesData || datesData.length === 0) {
+        els.datesGrid.innerHTML = `
+          <div class="date-item">
+            <i class="fas fa-calendar-check"></i>
+            <div>
+              <div class="date-label">Consultation Booked</div>
+              <div class="date-value">${urlData.date ? new Date(urlData.date).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) : 'Pending'}</div>
+            </div>
+          </div>
+          <div class="date-item">
+            <i class="fas fa-user-clock"></i>
+            <div>
+              <div class="date-label">Advocate Assignment</div>
+              <div class="date-value" style="color:#a83333; font-weight:700;">Pending</div>
+            </div>
+          </div>
+        `;
+      } else {
+        els.datesGrid.innerHTML = datesData.map((d) => {
+          const overdueStyle = d['is-overdue'] || d.is_overdue ? 'style="color:#a83333; font-weight: 700;"' : '';
+          return `
+            <div class="date-item">
+              <i class="fas ${d.icon || 'fa-calendar'}"></i>
+              <div>
+                <div class="date-label">${d.label}</div>
+                <div class="date-value" ${overdueStyle}>${d['date-value'] || d.date_value}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const advName = caseData['assigned-to'] || 'To be assigned';
+      els.advocateName.textContent = advName;
+      els.advocateSpecialization.innerHTML = `is your dedicated legal representative for this case. You can contact ${caseData['assigned-to'] ? 'us' : 'us'} to discuss case progress and next steps.`;
+      els.advocateEmail.href = `mailto:${decodeURIComponent(urlData.email || '#')}`;
+      els.advocateEmail.textContent = decodeURIComponent(urlData.email || 'N/A');
+      els.advocatePhone.textContent = decodeURIComponent(urlData.phone || 'N/A');
+    }
+
+    // ============================================
+    // FETCH FROM SUPABASE
+    // ============================================
+    async function loadCaseData() {
+      try {
+        if (!urlData.token) {
+          showError('No token provided in URL. Please use the link from your confirmation email.');
+          renderFromURL();
+          hideLoading();
+          return;
+        }
+
+        console.log('🔍 Searching Supabase for token:', urlData.token);
+
+        // Try 1: Match token against "case-number" column
+        let caseData = null;
+        let caseError = null;
+
+        const try1 = await supabaseClient
+          .from('cases')
+          .select('*')
+          .eq('case-number', urlData.token)
+          .maybeSingle();
+
+        if (try1.data) {
+          caseData = try1.data;
+          console.log('✅ Found case by case-number');
+        } else if (try1.error && try1.error.code !== 'PGRST116') {
+          caseError = try1.error;
+        }
+
+        // Try 2: If not found, match against "booking-id" column
+        if (!caseData) {
+          const try2 = await supabaseClient
+            .from('cases')
+            .select('*')
+            .eq('booking-id', urlData.token)
+            .maybeSingle();
+
+          if (try2.data) {
+            caseData = try2.data;
+            console.log('✅ Found case by booking-id');
+          } else if (try2.error && try2.error.code !== 'PGRST116') {
+            caseError = try2.error;
+          }
+        }
+
+        // Try 3: If still not found, maybe the token is in the "bookings" table
+        let bookingData = null;
+        if (!caseData) {
+          const try3 = await supabaseClient
+            .from('bookings')
+            .select('*')
+            .eq('token', urlData.token)
+            .maybeSingle();
+
+          if (try3.data) {
+            bookingData = try3.data;
+            console.log('✅ Found booking by token');
+
+            // Now try to find the case linked to this booking
+            const try4 = await supabaseClient
+              .from('cases')
+              .select('*')
+              .eq('booking-id', bookingData.id)
+              .maybeSingle();
+
+            if (try4.data) {
+              caseData = try4.data;
+              console.log('✅ Found linked case');
+            }
+          }
+        }
+
+        // If we have no case at all, show fallback
+        if (!caseData) {
+          const errDetail = caseError
+            ? `Supabase Error: ${caseError.code} - ${caseError.message}`
+            : `No case or booking found for token "${urlData.token}"`;
+          console.warn(errDetail);
+          showWarning('Case not found in database yet. Showing your booking details from the link. Your case will appear here once an advocate is assigned.');
+          renderFromURL();
+          hideLoading();
+          return;
+        }
+
+        // Try to fetch related booking data if we don't have it yet
+        if (!bookingData && caseData['booking-id']) {
+          const { data: bData } = await supabaseClient
+            .from('bookings')
+            .select('*')
+            .eq('id', caseData['booking-id'])
+            .maybeSingle();
+          bookingData = bData;
+        }
+
+        // Try to fetch case dates
+        const { data: datesData } = await supabaseClient
+          .from('case_dates')
+          .select('*')
+          .eq('case-id', caseData.id)
+          .order('sort-order', { ascending: true });
+
+        renderFromSupabase(caseData, bookingData, datesData);
+        hideLoading();
+
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        showError('Unexpected error: ' + err.message);
+        showWarning('Showing details from your booking link.');
+        renderFromURL();
+        hideLoading();
+      }
+    }
+
+    function showError(msg) {
+      els.errorBanner.textContent = msg;
+      els.errorBanner.classList.add('visible');
+    }
+
+    function showWarning(msg) {
+      els.warningBanner.textContent = msg;
+      els.warningBanner.classList.add('visible');
+    }
+
+    function hideLoading() {
+      els.loadingOverlay.classList.add('hidden');
+    }
+
+    // ============================================
+    // TABS
+    // ============================================
     const tabsButtons = document.querySelectorAll('.tab-btn');
     const tabsContents = document.querySelectorAll('.tab-content');
 
     tabsButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const isActive = btn.classList.contains('active');
-        if (isActive) return;
-
-        // Reset all buttons and tab contents
+        if (btn.classList.contains('active')) return;
         tabsButtons.forEach((b) => {
           b.classList.remove('active');
           b.setAttribute('aria-selected', 'false');
           b.setAttribute('tabindex', '-1');
         });
-        tabsContents.forEach((content) => content.classList.remove('active'));
-
-        // Activate current button and associated content
+        tabsContents.forEach((c) => c.classList.remove('active'));
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
         btn.setAttribute('tabindex', '0');
@@ -455,7 +517,6 @@
         if (tabContent) tabContent.classList.add('active');
       });
 
-      // Allow keyboard navigation between tabs
       btn.addEventListener('keydown', (e) => {
         let index = Array.from(tabsButtons).indexOf(e.target);
         if (e.key === "ArrowRight" || e.key === "ArrowDown") {
@@ -470,6 +531,8 @@
         }
       });
     });
+
+    document.addEventListener('DOMContentLoaded', loadCaseData);
   </script>
 </body>
 </html>
