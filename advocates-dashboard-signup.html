@@ -180,6 +180,11 @@
         .toast.error { border-left-color: #e53e3e; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
+        /* View sections */
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
         @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main-content { margin-left: 0; } }
     </style>
 </head>
@@ -244,10 +249,10 @@
                     <p>Case Management</p>
                 </div>
                 <ul class="sidebar-nav">
-                    <li><a href="#" class="active" onclick="setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a></li>
-                    <li><a href="#" onclick="setActiveNav(this)"><i class="fas fa-briefcase"></i> My Cases</a></li>
-                    <li><a href="#" onclick="setActiveNav(this)"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
-                    <li><a href="admin.html" target="_blank"><i class="fas fa-external-link-alt"></i> Admin Portal</a></li>
+                    <li><a href="#" class="active" onclick="setActiveNav(this, 'dashboard')"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                    <li><a href="#" onclick="setActiveNav(this, 'cases')"><i class="fas fa-briefcase"></i> My Cases</a></li>
+                    <li><a href="#" onclick="setActiveNav(this, 'schedule')"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                    <li><a href="admin-dashboard.html"><i class="fas fa-external-link-alt"></i> Admin Portal</a></li>
                 </ul>
                 <div class="sidebar-footer">
                     <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -261,33 +266,65 @@
                 </div>
 
                 <div class="topbar">
-                    <h2>Dashboard</h2>
-                    <div class="user-pill"><i class="fas fa-user-circle"></i> <span id="advocateName">Advocate</span></div>
+                    <h2 id="pageTitle">Dashboard</h2>
+                    <div class="user-pill"><i class="fas fa-user-circle"></i> <span id="advocateNameDisplay">Advocate</span></div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-float">
-                        <div class="stat-icon blue"><i class="fas fa-briefcase"></i></div>
-                        <div class="stat-info"><h3 id="statTotal">0</h3><p>Total Cases</p></div>
+                <!-- DASHBOARD VIEW -->
+                <div id="view-dashboard" class="view-section active">
+                    <div class="stats-grid">
+                        <div class="stat-float">
+                            <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="stat-info"><h3 id="statTotal">0</h3><p>Total Cases</p></div>
+                        </div>
+                        <div class="stat-float">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-info"><h3 id="statActive">0</h3><p>Active</p></div>
+                        </div>
+                        <div class="stat-float">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info"><h3 id="statPending">0</h3><p>Pending</p></div>
+                        </div>
+                        <div class="stat-float">
+                            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                            <div class="stat-info"><h3 id="statHearings">0</h3><p>Hearings</p></div>
+                        </div>
                     </div>
-                    <div class="stat-float">
-                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-info"><h3 id="statActive">0</h3><p>Active</p></div>
-                    </div>
-                    <div class="stat-float">
-                        <div class="stat-icon amber"><i class="fas fa-clock"></i></div>
-                        <div class="stat-info"><h3 id="statPending">0</h3><p>Pending</p></div>
-                    </div>
-                    <div class="stat-float">
-                        <div class="stat-icon red"><i class="fas fa-calendar-check"></i></div>
-                        <div class="stat-info"><h3 id="statHearings">0</h3><p>Hearings</p></div>
+
+                    <div class="float-card">
+                        <h3><i class="fas fa-list"></i> Assigned Cases</h3>
+                        <div id="dashboardCasesContainer">
+                            <div class="empty-state"><i class="fas fa-folder-open"></i><p>Loading cases...</p></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="float-card">
-                    <h3><i class="fas fa-list"></i> Assigned Cases</h3>
-                    <div id="casesTableContainer">
-                        <div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases assigned yet.</p></div>
+                <!-- MY CASES VIEW -->
+                <div id="view-cases" class="view-section">
+                    <div class="float-card">
+                        <h3><i class="fas fa-briefcase"></i> All My Cases</h3>
+                        <div id="allCasesContainer">
+                            <div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases assigned yet.</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCHEDULE VIEW -->
+                <div id="view-schedule" class="view-section">
+                    <div class="float-card">
+                        <h3><i class="fas fa-calendar-alt"></i> Upcoming Schedule</h3>
+                        <div id="scheduleContainer">
+                            <div class="empty-state"><i class="fas fa-calendar"></i><p>No upcoming hearings scheduled.</p></div>
+                        </div>
+                    </div>
+                    <div class="float-card">
+                        <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                        <table class="data-table">
+                            <thead><tr><th>Date</th><th>Activity</th><th>Case</th><th>Status</th></tr></thead>
+                            <tbody id="activityTable">
+                                <tr><td colspan="4" class="empty-state">No recent activity.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </main>
@@ -296,8 +333,9 @@
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
+        // FIXED: Correct Supabase Anon Key
         const SUPABASE_URL = 'https://hjbrllpbpajzmgpgkadf.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFqem1ncGdrYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2OTYxOTIsImV4cCI6MjEwMjI3MjE5Mn0.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4';
         let sb = null, useDemoMode = false, currentAdvocate = null, currentAdvocateId = null;
 
         const DemoDB = {
@@ -344,16 +382,38 @@
             const c = document.getElementById('toastContainer');
             const t = document.createElement('div'); t.className = 'toast ' + (type==='error'?'error':'');
             const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
-            t.innerHTML = `<i class=\"fas fa-${icon}\"></i> <span>${msg}</span>`; c.appendChild(t);
+            t.innerHTML = `<i class="fas fa-${icon}"></i> <span>${msg}</span>`; c.appendChild(t);
             setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(100%)'; t.style.transition='all 0.3s'; setTimeout(()=>t.remove(),300); }, 4000);
         }
         function setLoading(id, loading) {
             const btn = document.getElementById(id); if (!btn) return;
             btn.disabled = loading; btn.style.opacity = loading ? '0.7' : '1';
         }
-        function setActiveNav(el) {
+
+        // FIXED: Navigation actually switches content views
+        function setActiveNav(el, viewName) {
             document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
             el.classList.add('active');
+            
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            
+            // Show selected view
+            const viewMap = {
+                'dashboard': 'view-dashboard',
+                'cases': 'view-cases',
+                'schedule': 'view-schedule'
+            };
+            const targetId = viewMap[viewName];
+            if (targetId) {
+                document.getElementById(targetId).classList.add('active');
+                document.getElementById('pageTitle').textContent = 
+                    viewName === 'dashboard' ? 'Dashboard' : 
+                    viewName === 'cases' ? 'My Cases' : 'Schedule';
+            }
+            
+            // Load data when entering cases view
+            if (viewName === 'cases') loadAllCases();
         }
 
         async function handleLogin(e) {
@@ -372,8 +432,11 @@
                 }
                 if (!advocate) { showMessage('loginMessage', 'Invalid email or password', true); setLoading('loginBtn', false); return; }
                 currentAdvocate = advocate.name; currentAdvocateId = advocate.id;
-                sessionStorage.setItem('advocate', advocate.name); sessionStorage.setItem('advocateId', advocate.id);
-                enterDashboard(advocate.name); showToast(`Welcome back, ${advocate.name}!`);
+                sessionStorage.setItem('advocate', advocate.name); 
+                sessionStorage.setItem('advocateId', advocate.id);
+                sessionStorage.setItem('advocateEmail', advocate.email);
+                enterDashboard(advocate.name); 
+                showToast(`Welcome back, ${advocate.name}!`);
             } catch (err) { showMessage('loginMessage', 'Login error', true); }
             finally { setLoading('loginBtn', false); }
         }
@@ -409,29 +472,115 @@
         function enterDashboard(name) {
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('advocateName').textContent = name;
+            document.getElementById('advocateNameDisplay').textContent = name;
             loadDashboardStats();
         }
+
         async function loadDashboardStats() {
-            // Placeholder - in production, filter cases by assigned_advocate
-            document.getElementById('statTotal').textContent = '0';
-            document.getElementById('statActive').textContent = '0';
-            document.getElementById('statPending').textContent = '0';
-            document.getElementById('statHearings').textContent = '0';
+            if (!currentAdvocate) return;
+            
+            if (useDemoMode) {
+                document.getElementById('statTotal').textContent = '0';
+                document.getElementById('statActive').textContent = '0';
+                document.getElementById('statPending').textContent = '0';
+                document.getElementById('statHearings').textContent = '0';
+                document.getElementById('dashboardCasesContainer').innerHTML = 
+                    '<div class="empty-state"><i class="fas fa-folder-open"></i><p>Demo mode: No data available.</p></div>';
+                return;
+            }
+
+            try {
+                const { data: cases } = await sb.from('bookings')
+                    .select('*')
+                    .eq('assigned_advocate', currentAdvocate)
+                    .order('created_at', {ascending: false});
+
+                const all = cases || [];
+                document.getElementById('statTotal').textContent = all.length;
+                document.getElementById('statActive').textContent = 
+                    all.filter(c => ['assigned','in progress'].includes((c.payment_status||'').toLowerCase())).length;
+                document.getElementById('statPending').textContent = 
+                    all.filter(c => (c.payment_status||'').toLowerCase() === 'pending').length;
+                document.getElementById('statHearings').textContent = '0';
+
+                renderCasesTable(all, 'dashboardCasesContainer', 5);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('dashboardCasesContainer').innerHTML = 
+                    '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading cases.</p></div>';
+            }
         }
+
+        async function loadAllCases() {
+            if (!currentAdvocate || useDemoMode) {
+                document.getElementById('allCasesContainer').innerHTML = 
+                    '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases found.</p></div>';
+                return;
+            }
+            try {
+                const { data: cases } = await sb.from('bookings')
+                    .select('*')
+                    .eq('assigned_advocate', currentAdvocate)
+                    .order('created_at', {ascending: false});
+                renderCasesTable(cases || [], 'allCasesContainer');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('allCasesContainer').innerHTML = 
+                    '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading cases.</p></div>';
+            }
+        }
+
+        function renderCasesTable(cases, containerId, limit) {
+            const container = document.getElementById(containerId);
+            const displayCases = limit ? cases.slice(0, limit) : cases;
+            
+            if (!cases.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases assigned yet.</p></div>';
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr><th>Client</th><th>Email</th><th>Service</th><th>Status</th><th>Date</th></tr></thead><tbody>';
+            displayCases.forEach(c => {
+                const statusClass = (c.payment_status||'').toLowerCase() === 'pending' ? 'badge-pending' : 'badge-active';
+                html += `<tr>
+                    <td>${c.full_name || 'N/A'}</td>
+                    <td>${c.email || 'N/A'}</td>
+                    <td>${c.service_requested || 'N/A'}</td>
+                    <td><span class="badge ${statusClass}">${c.payment_status || 'Pending'}</span></td>
+                    <td>${c.created_at ? new Date(c.created_at).toLocaleDateString() : '-'}</td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            
+            if (limit && cases.length > limit) {
+                html += `<p style="text-align:center;margin-top:12px;color:#64748b;font-size:13px;">+ ${cases.length - limit} more cases</p>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
         function handleLogout() {
-            currentAdvocate = null; currentAdvocateId = null; sessionStorage.clear();
+            currentAdvocate = null; 
+            currentAdvocateId = null; 
+            sessionStorage.clear();
             document.getElementById('authSection').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
             showToast('Logged out', 'info');
         }
+
         function checkSession() {
-            const adv = sessionStorage.getItem('advocate'), id = sessionStorage.getItem('advocateId');
-            if (adv && id) { currentAdvocate = adv; currentAdvocateId = id; enterDashboard(adv); }
+            const adv = sessionStorage.getItem('advocate');
+            const id = sessionStorage.getItem('advocateId');
+            if (adv && id) { 
+                currentAdvocate = adv; 
+                currentAdvocateId = id; 
+                enterDashboard(adv); 
+            }
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
-            await initSupabase(); checkSession();
+            await initSupabase(); 
+            checkSession();
         });
     </script>
 </body>
