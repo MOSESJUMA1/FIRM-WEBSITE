@@ -5,211 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Login | Apex Legal Advocates</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .role-selector { display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; }
+        .role-pill {
+            padding: 10px 24px; border: 2px solid var(--olive); border-radius: 50px;
+            cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: all 0.2s;
+            background: white; color: var(--navy);
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .login-header h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .login-btn:hover {
-            background: #764ba2;
-        }
-
-        .login-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .success-message {
-            color: #28a745;
-            font-size: 14px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .back-link a:hover {
-            text-decoration: underline;
-        }
+        .role-pill.active { background: var(--navy); color: white; border-color: var(--navy); }
+        .role-pill:hover:not(.active) { border-color: var(--gold); }
+        .back-home { text-align: center; margin-top: 20px; }
+        .back-home a { color: var(--navy); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
     </style>
-    <!-- Supabase with fallback -->
-<script>
-    // Try to load Supabase with timeout
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    script.async = true;
-    script.onerror = function() {
-        // Fallback to unpkg if jsdelivr fails
-        var fallbackScript = document.createElement('script');
-        fallbackScript.src = 'https://unpkg.com/@supabase/supabase-js@2';
-        fallbackScript.async = true;
-        document.head.appendChild(fallbackScript);
-    };
-    document.head.appendChild(script);
-</script>
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Apex Legal</h1>
-            <p>Staff Portal</p>
-        </div>
+<body class="auth-page">
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="sarah@apexlegal.com" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
-            </div>
-
-            <button type="submit" class="login-btn" id="loginBtn">Login</button>
-
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-        </form>
-
-        <div class="back-link">
-            <a href="index.html">← Back to Home</a>
-        </div>
+<div class="auth-card">
+    <div style="text-align:center; margin-bottom:24px;">
+        <h2 style="color:var(--navy); font-size:1.5rem;"><i class="fas fa-gavel" style="color:var(--gold);"></i> Apex Legal</h2>
+        <p style="color:#64748b; font-size:0.85rem; margin-top:4px;">Staff & Admin Portal</p>
     </div>
+
+    <div class="role-selector">
+        <div class="role-pill active" onclick="setRole('advocate', this)">Advocate</div>
+        <div class="role-pill" onclick="setRole('admin', this)">Administrator</div>
+    </div>
+
+    <div id="loginAlert" class="alert"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" required placeholder="you@apexlegal.co.ke">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="navy-btn" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+
+    <div class="back-home">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Website</a>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
 <script>
-    const loginForm = document.getElementById('loginForm');
-    const emailInput = document.getElementById('email');
-    const loginBtn = document.getElementById('loginBtn');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
+    let currentRole = 'advocate';
 
-    loginForm.addEventListener('submit', async (e) => {
+    function setRole(role, el) {
+        currentRole = role;
+        document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('loginEmail').placeholder = role === 'admin' ? 'admin@apexlegal.co.ke' : 'you@apexlegal.co.ke';
+    }
+
+    function showAlert(msg, isError) {
+        const el = document.getElementById('loginAlert');
+        el.textContent = msg;
+        el.className = 'alert ' + (isError ? 'error' : 'success');
+        el.style.display = 'block';
+    }
+
+    async function handleLogin(e) {
         e.preventDefault();
-        
-        loginBtn.disabled = true;
-        loginBtn.textContent = 'Logging in...';
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
+        const btn = document.getElementById('loginBtn');
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
 
-        const email = emailInput.value.trim();
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in...';
 
-        // Hardcoded staff accounts for testing
-        const allowedEmails = {
-            'sarah@apexlegal.com': { id: '18949bad-78c1-41c9-9c17-673c97a30', name: 'Sarah Advocate', role: 'advocate' }
-        };
+        try {
+            let result;
+            if (currentRole === 'admin') {
+                result = await ApexAuth.loginAdmin(email, password);
+            } else {
+                result = await ApexAuth.loginAdvocate(email, password);
+            }
 
-        if (allowedEmails[email]) {
-            const staff = allowedEmails[email];
-            localStorage.setItem('staffId', staff.id);
-            localStorage.setItem('staffName', staff.name);
-            localStorage.setItem('staffRole', staff.role);
-            localStorage.setItem('staffEmail', email);
-
-            successMessage.textContent = 'Login successful! Redirecting...';
-            successMessage.style.display = 'block';
+            showAlert('Login successful! Redirecting...', false);
 
             setTimeout(() => {
-                window.location.href = 'staff-dashboard.html';
-            }, 1000);
-        } else {
-            errorMessage.textContent = 'Email not found. Try: sarah@apexlegal.com';
-            errorMessage.style.display = 'block';
-        }
+                // FIXED: admin-dashboard.html instead of admin.html
+                if (result.role === 'admin') window.location.href = 'admin-dashboard.html';
+                else window.location.href = 'staff-dashboard.html';
+            }, 800);
 
-        loginBtn.disabled = false;
-        loginBtn.textContent = 'Login';
-    });
+        } catch (err) {
+            showAlert(err.message || 'Login failed', true);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+        }
+    }
 </script>
 </body>
 </html>

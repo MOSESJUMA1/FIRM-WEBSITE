@@ -568,7 +568,7 @@
         const c = allCases.find(x => x.id === caseId);
         if (!c) return;
         const token = 'ALX-' + Math.random().toString(36).substr(2,8).toUpperCase();
-        const baseUrl = window.location.origin + '/client.html';
+        const baseUrl = window.location.origin + '/client-case.html';
         const params = new URLSearchParams({token, name:c.full_name, email:c.email, phone:c.phone||'', service:c.service_requested||'', date:c.created_at||''});
         const url = `${baseUrl}?${params.toString()}`;
         document.getElementById('tokenLink').textContent = url;
