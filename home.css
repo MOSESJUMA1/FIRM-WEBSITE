@@ -1,540 +1,1573 @@
 /* ==========================================
-   1. RESET & VARIABLE DEFINITIONS
+   APEX LEGAL ADVOCATES
+   INTERNATIONAL LAW FIRM DESIGN SYSTEM
    ========================================== */
+
 :root {
-    --primary-color: #0c1e36;    /* Premium Deep Navy */
-    --accent-color: #c5a059;     /* Elegant Legal Gold */
-    --accent-hover: #b08d4b;     /* Darker Gold for Hovers */
-    --text-dark: #222222;        /* Dark Charcoal for high readability */
-    --text-light: #666666;       /* Soft Gray for secondary body text */
-    --bg-light: #f8f9fa;         /* Off-white background for contrast */
-    --white: #ffffff;            /* Pure White */
-    --transition: all 0.3s ease; /* Consistent smooth animation timing */
+    --navy: #0b1f33;
+    --navy-light: #163552;
+    --gold: #c5a059;
+    --gold-dark: #a8833f;
+    --gold-soft: #e6d5ad;
+
+    --white: #ffffff;
+    --ivory: #f8f6f1;
+    --grey-bg: #f3f5f7;
+
+    --text-dark: #17202a;
+    --text-light: #65727e;
+
+    --border: rgba(197,160,89,0.25);
+
+    --shadow:
+    0 15px 40px rgba(11,31,51,0.10);
+
+    --transition:
+    all .35s ease;
 }
+
+
+/* ==========================================
+   GLOBAL RESET
+   ========================================== */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
 }
+
 
 html {
-    scroll-behavior: smooth;
+    scroll-behavior:smooth;
 }
+
 
 body {
-    color: --text-dark;
-    background-color: var(--white);
-    line-height: 1.6;
+
+    color:var(--text-dark);
+
+    background:
+    var(--white);
+
+    line-height:1.7;
+
+    overflow-x:hidden;
 }
+
 
 .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
+
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+
 }
 
+
+
 /* ==========================================
-   2. TOP BAR COMPONENT
+   TOP LEGAL INFORMATION BAR
    ========================================== */
+
 .top-bar {
-    background-color: var(--primary-color);
-    color: var(--white);
-    font-size: 0.85rem;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    background:
+    var(--navy);
+
+    color:
+    rgba(255,255,255,.85);
+
+    font-size:.82rem;
+
+    padding:10px 0;
+
+    letter-spacing:.3px;
+
+    border-bottom:
+    1px solid rgba(255,255,255,.08);
+
 }
+
 
 .top-bar .container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:35px;
+
+    align-items:center;
+
 }
 
-.top-bar span i {
-    color: var(--accent-color);
-    margin-right: 6px;
+
+.top-bar i {
+
+    color:var(--gold);
+
+    margin-right:7px;
+
 }
+
+
 
 /* ==========================================
-   3. NAVIGATION HEADER
+   MAIN HEADER
    ========================================== */
+
+
 header {
-    background-color: var(--white);
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+    background:
+    rgba(255,255,255,.96);
+
+    backdrop-filter:
+    blur(12px);
+
+    box-shadow:
+    0 5px 25px rgba(0,0,0,.06);
+
 }
+
+
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    min-height:85px;
+
 }
+
+
 
 .logo a {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    text-decoration: none;
-    letter-spacing: 0.5px;
+
+    text-decoration:none;
+
+    color:
+    var(--navy);
+
+    font-family:
+    Georgia,
+    serif;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    letter-spacing:-1px;
+
 }
+
+
 
 .logo span {
-    color: var(--accent-color);
+
+    color:
+    var(--gold);
+
 }
+
+
+
+/* ==========================================
+   NAVIGATION LINKS
+   ========================================== */
+
 
 nav ul {
-    display: flex;
-    list-style: none;
-    align-items: center;
-    gap: 25px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+    list-style:none;
+
 }
+
 
 nav ul li a {
-    text-decoration: none;
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: var(--transition);
-    padding: 5px 0;
-    border-bottom: 2px solid transparent;
+
+    text-decoration:none;
+
+    color:
+    var(--navy);
+
+    font-size:.9rem;
+
+    font-weight:600;
+
+    position:relative;
+
+    padding:8px 0;
+
+    transition:
+    var(--transition);
+
 }
+
+
+
+nav ul li a:not(.btn-nav)::after {
+
+    content:"";
+
+    position:absolute;
+
+    bottom:0;
+
+    left:0;
+
+    width:100%;
+
+    height:2px;
+
+    background:
+    var(--gold);
+
+    transform:
+    scaleX(0);
+
+    transition:
+    var(--transition);
+
+}
+
+
 
 nav ul li a:hover,
+
 nav ul li a.active {
-    color: var(--accent-color);
-    border-bottom: 2px solid var(--accent-color);
+
+    color:
+    var(--gold);
+
 }
 
-/* Consultation Call-To-Action Button */
-nav ul li a.btn-nav {
-    background-color: var(--accent-color);
-    color: var(--white);
-    padding: 10px 20px;
-    border-radius: 4px;
-    border-bottom: none;
+
+
+nav ul li a:hover::after,
+
+nav ul li a.active::after {
+
+    transform:
+    scaleX(1);
+
 }
+
+
+
+/* Consultation button */
+
+
+nav ul li a.btn-nav {
+
+    background:
+    var(--gold);
+
+    color:white;
+
+    padding:
+    12px 25px;
+
+    border-radius:3px;
+
+    box-shadow:
+    0 8px 20px rgba(197,160,89,.25);
+
+}
+
+
 
 nav ul li a.btn-nav:hover {
-    background-color: var(--accent-hover);
-    color: var(--white);
+
+    background:
+    var(--gold-dark);
+
+    color:white;
+
+    transform:
+    translateY(-2px);
+
+}
+/* ==========================================
+   HERO SECTION
+   INTERNATIONAL LAW FIRM STYLE
+   ========================================== */
+
+
+.hero {
+
+    position:relative;
+
+    min-height:650px;
+
+    display:flex;
+
+    align-items:center;
+
+    color:white;
+
+    overflow:hidden;
+
+
+    background:
+
+    linear-gradient(
+        90deg,
+        rgba(11,31,51,.97),
+        rgba(11,31,51,.82),
+        rgba(11,31,51,.65)
+    ),
+
+    radial-gradient(
+        circle at 80% 40%,
+        rgba(197,160,89,.22),
+        transparent 35%
+    );
+
 }
 
-/* ==========================================
-   4. HERO SECTON
-   ========================================== */
-.hero {
-    background: linear-gradient(rgba(12, 30, 54, 0.85), rgba(12, 30, 54, 0.95)), 
-                url('https://unsplash.com') no-repeat center center/cover;
-    height: 70vh;
-    min-height: 500px;
-    display: flex;
-    align-items: center;
-    color: var(--white);
-    text-align: center;
+
+
+/* Justice symbol watermark */
+
+.hero::before {
+
+    content:"⚖";
+
+    position:absolute;
+
+    right:8%;
+
+    top:50%;
+
+    transform:
+    translateY(-50%);
+
+    font-family:
+    Georgia,serif;
+
+    font-size:
+    330px;
+
+    color:
+    rgba(197,160,89,.08);
+
+    pointer-events:none;
+
 }
+
+
+
+/* Gold legal divider */
+
+.hero::after {
+
+    content:"";
+
+    position:absolute;
+
+    bottom:0;
+
+    left:0;
+
+    width:100%;
+
+    height:5px;
+
+
+    background:
+
+    linear-gradient(
+        90deg,
+        var(--gold),
+        var(--gold-soft),
+        var(--gold)
+    );
+
+}
+
+
 
 .hero-content {
-    max-width: 800px;
+
+    position:relative;
+
+    z-index:2;
+
+    max-width:850px;
+
+    padding:
+    100px 0;
+
 }
+
+
+
+.hero-content::before {
+
+    content:
+    "APEX LEGAL ADVOCATES  |  TRUST • INTEGRITY • EXCELLENCE";
+
+    display:block;
+
+    color:
+    var(--gold-soft);
+
+    font-size:.75rem;
+
+    letter-spacing:
+    3px;
+
+    font-weight:700;
+
+    margin-bottom:25px;
+
+}
+
+
+
 
 .hero h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
+
+    font-family:
+
+    Georgia,
+    "Times New Roman",
+    serif;
+
+
+    font-size:
+
+    clamp(42px,5vw,68px);
+
+
+    font-weight:
+
+    500;
+
+
+    line-height:
+
+    1.12;
+
+
+    letter-spacing:
+
+    -1px;
+
+
+    margin-bottom:
+
+    25px;
+
+
+    color:white;
+
 }
+
+
 
 .hero p {
-    font-size: 1.2rem;
-    color: #e0e0e0;
-    margin-bottom: 35px;
-    font-weight: 300;
+
+    max-width:700px;
+
+    font-size:
+
+    1.15rem;
+
+
+    font-weight:
+
+    300;
+
+
+    line-height:
+
+    1.9;
+
+
+    color:
+
+    rgba(255,255,255,.82);
+
+
+    margin-bottom:
+
+    38px;
+
 }
+
+
+
+/* Main consultation button */
+
 
 .btn-primary {
-    display: inline-block;
-    background-color: var(--accent-color);
-    color: var(--white);
-    text-decoration: none;
-    padding: 14px 35px;
-    font-weight: 600;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+
+    display:
+
+    inline-flex;
+
+
+    align-items:
+
+    center;
+
+
+    background:
+
+    var(--gold);
+
+
+    color:white;
+
+
+    padding:
+
+    15px 35px;
+
+
+    text-decoration:none;
+
+
+    font-weight:700;
+
+
+    font-size:.9rem;
+
+
+    letter-spacing:.5px;
+
+
+    border-radius:3px;
+
+
+    transition:
+
+    var(--transition);
+
+
+    box-shadow:
+
+    0 12px 30px rgba(197,160,89,.35);
+
 }
+
+
+
+
+.btn-primary::after {
+
+    content:"→";
+
+    margin-left:12px;
+
+    font-size:1.1rem;
+
+}
+
+
 
 .btn-primary:hover {
-    background-color: var(--accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
+
+    background:
+
+    var(--gold-dark);
+
+
+    transform:
+
+    translateY(-3px);
+
+
+    box-shadow:
+
+    0 18px 35px rgba(197,160,89,.45);
+
+}
+/* ==========================================
+   PRACTICE AREAS SECTION
+   PREMIUM LEGAL SERVICES DESIGN
+   ========================================== */
+
+
+.services {
+
+    padding:
+    100px 0;
+
+    background:
+    var(--ivory);
+
 }
 
-/* ==========================================
-   5. PRACTICE AREAS SECTION (SERVICES)
-   ========================================== */
-.services {
-    padding: 90px 0;
-    background-color: var(--bg-light);
-}
+
+
+/* Section title */
+
 
 .services h2 {
-    text-align: center;
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    margin-bottom: 50px;
-    position: relative;
-    padding-bottom: 15px;
+
+    text-align:center;
+
+    font-family:
+
+    Georgia,
+    "Times New Roman",
+    serif;
+
+
+    font-size:
+
+    2.8rem;
+
+
+    font-weight:
+
+    500;
+
+
+    color:
+
+    var(--navy);
+
+
+    margin-bottom:
+
+    60px;
+
+
+    position:
+
+    relative;
+
 }
 
-/* Subtle line decorative element beneath the header */
-.services h2::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background-color: var(--accent-color);
+
+
+.services h2::before {
+
+    content:
+
+    "OUR EXPERTISE";
+
+
+    display:block;
+
+
+    color:
+
+    var(--gold);
+
+
+    font-family:
+
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+
+    font-size:
+
+    .75rem;
+
+
+    font-weight:
+
+    800;
+
+
+    letter-spacing:
+
+    3px;
+
+
+    margin-bottom:
+
+    15px;
+
 }
+
+
+
+.services h2::after {
+
+    content:"";
+
+
+    display:block;
+
+
+    width:
+
+    60px;
+
+
+    height:
+
+    3px;
+
+
+    margin:
+
+    20px auto 0;
+
+
+    background:
+
+    var(--gold);
+
+}
+
+
+
+/* Service grid */
+
 
 .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+
+    display:
+
+    grid;
+
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+
+    gap:
+
+    30px;
+
 }
+
+
+
+/* Legal service cards */
+
 
 .service-card {
-    background-color: var(--white);
-    padding: 40px 30px;
-    border-radius: 6px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
-    transition: var(--transition);
-    border-top: 4px solid transparent;
-    cursor: pointer;
+
+    position:
+
+    relative;
+
+
+    background:
+
+    white;
+
+
+    padding:
+
+    45px 35px;
+
+
+    min-height:
+
+    330px;
+
+
+    border:
+
+    1px solid rgba(197,160,89,.18);
+
+
+    box-shadow:
+
+    0 15px 40px rgba(11,31,51,.06);
+
+
+    transition:
+
+    var(--transition);
+
+
+    overflow:hidden;
+
+
 }
+
+
+
+/* Gold side accent */
+
+
+.service-card::before {
+
+    content:"";
+
+
+    position:absolute;
+
+
+    left:0;
+
+
+    top:0;
+
+
+    width:4px;
+
+
+    height:0;
+
+
+    background:
+
+    var(--gold);
+
+
+    transition:
+
+    .35s ease;
+
+}
+
+
+
+/* Matter reference */
+
+
+.service-card::after {
+
+    content:
+
+    attr(data-matter);
+
+
+    position:absolute;
+
+
+    top:20px;
+
+
+    right:25px;
+
+
+    font-size:
+
+    .65rem;
+
+
+    color:
+
+    #a7adb5;
+
+
+    font-weight:
+
+    700;
+
+
+    letter-spacing:
+
+    1px;
+
+}
+
+
 
 .service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    border-top: 4px solid var(--accent-color);
+
+    transform:
+
+    translateY(-10px);
+
+
+    box-shadow:
+
+    0 25px 60px rgba(11,31,51,.12);
+
+
+    border-color:
+
+    rgba(197,160,89,.45);
+
 }
+
+
+
+.service-card:hover::before {
+
+    height:
+
+    100%;
+
+}
+
+
+
+/* Justice icons */
+
 
 .service-card i {
-    font-size: 2.5rem;
-    color: var(--accent-color);
-    margin-bottom: 20px;
+
+    width:
+
+    70px;
+
+
+    height:
+
+    70px;
+
+
+    display:
+
+    flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    border-radius:
+
+    50%;
+
+
+    background:
+
+    #f7f1e5;
+
+
+    color:
+
+    var(--gold);
+
+
+    font-size:
+
+    30px;
+
+
+    margin-bottom:
+
+    25px;
+
+
+    border:
+
+    1px solid rgba(197,160,89,.25);
+
+
 }
+
+
 
 .service-card h3 {
-    font-size: 1.4rem;
-    color: var(--primary-color);
-    margin-bottom: 15px;
+
+    font-family:
+
+    Georgia,
+    serif;
+
+
+    color:
+
+    var(--navy);
+
+
+    font-size:
+
+    1.45rem;
+
+
+    font-weight:
+
+    600;
+
+
+    line-height:
+
+    1.35;
+
+
+    margin-bottom:
+
+    15px;
+
 }
+
+
 
 .service-card p {
-    color: var(--text-light);
-    font-size: 0.95rem;
-}
 
-/* ==========================================
-   6. FOOTER COMPONENT
-   ========================================== */
-footer {
-    background-color: var(--primary-color);
-    color: #b0bac5;
-    padding: 60px 0 30px 0;
-    font-size: 0.9rem;
-}
+    color:
 
-footer .disclaimer {
-    line-height: 1.7;
-    margin-bottom: 30px;
-    text-align: justify;
-}
+    var(--text-light);
 
-footer .disclaimer strong {
-    color: var(--white);
-}
 
-footer hr {
-    border: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 25px;
-}
+    font-size:
 
-footer .copyright {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
-}
+    .95rem;
 
-/* ==========================================
-   7. RESPONSIVE DESIGN (MOBILE ADAPTATION)
-   ========================================== */
-@media (max-width: 768px) {
-    .top-bar .container {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 5px;
-    }
 
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px 0;
-    }
+    line-height:
 
-    nav ul {
-        flex-direction: column;
-        gap: 12px;
-        width: 100%;
-        text-align: center;
-    }
+    1.8;
 
-    nav ul li {
-        width: 100%;
-    }
-
-    nav ul li a {
-        display: block;
-        padding: 8px 0;
-    }
-
-    nav ul li a.btn-nav {
-        display: inline-block;
-        width: auto;
-        margin-top: 5px;
-    }
-
-    .hero h1 {
-        font-size: 2rem;
-    }
-
-    .hero p {
-        font-size: 1rem;
-    }
-
-    .services {
-        padding: 60px 0;
-    }
 }
 /* ==========================================
-   8. ABOUT PAGE STYLES (NEW ADDITIONS)
+   ABOUT PAGE - PREMIUM LAW FIRM STYLE
    ========================================== */
+
+
+/* Page banner */
+
 .page-banner {
-    background: linear-gradient(rgba(12, 30, 54, 0.9), rgba(12, 30, 54, 0.95));
-    padding: 60px 0;
-    text-align: center;
-    color: var(--white);
+
+    position:relative;
+
+    background:
+    linear-gradient(
+        rgba(12,30,54,.92),
+        rgba(12,30,54,.96)
+    ),
+    url("images/legal-banner.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    padding:110px 0;
+
+    text-align:center;
+
+    color:white;
+
 }
+
+
+
+.page-banner::after {
+
+    content:"⚖";
+
+    position:absolute;
+
+    right:10%;
+
+    bottom:20px;
+
+    font-size:120px;
+
+    color:rgba(197,160,89,.12);
+
+}
+
+
 
 .page-banner h1 {
-    font-size: 2.5rem;
-    color: var(--accent-color);
-    margin-bottom: 10px;
+
+    font-family:
+
+    Georgia,
+    serif;
+
+
+    font-size:
+
+    3rem;
+
+
+    font-weight:
+
+    600;
+
+
+    color:
+
+    var(--gold);
+
+
+    margin-bottom:
+
+    15px;
+
 }
+
+
 
 .page-banner p {
-    font-size: 1.1rem;
-    font-weight: 300;
-    opacity: 0.8;
+
+    font-size:
+
+    1.15rem;
+
+
+    opacity:
+
+    .85;
+
 }
+
+
+
+
+/* ==========================================
+   WHO WE ARE SECTION
+   ========================================== */
+
 
 .about-overview {
-    padding: 80px 0;
+
+    padding:
+
+    100px 0;
+
+    background:white;
+
 }
+
+
 
 .overview-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 50px;
-    align-items: center;
+
+    display:grid;
+
+    grid-template-columns:
+
+    1fr 1fr;
+
+    gap:
+
+    70px;
+
+    align-items:center;
+
 }
+
+
 
 .overview-text h2 {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
+
+
+    font-family:
+
+    Georgia,
+    serif;
+
+
+    font-size:
+
+    2.4rem;
+
+
+    color:
+
+    var(--navy);
+
+
+    margin-bottom:
+
+    25px;
+
 }
+
+
+
+.overview-text h2::after {
+
+    content:"";
+
+
+    display:block;
+
+
+    margin-top:
+
+    15px;
+
+
+    width:
+
+    55px;
+
+
+    height:
+
+    3px;
+
+
+    background:
+
+    var(--gold);
+
+}
+
+
 
 .overview-text p {
-    color: var(--text-light);
-    margin-bottom: 20px;
+
+    color:
+
+    var(--text-light);
+
+
+    font-size:
+
+    1.05rem;
+
+
+    line-height:
+
+    1.9;
+
+
+    margin-bottom:
+
+    20px;
+
 }
+
+
+
+
+/* Image container */
+
+.overview-image {
+
+    position:
+
+    relative;
+
+}
+
+
+
+.overview-image::before {
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:
+
+    100%;
+
+
+    height:
+
+    100%;
+
+
+    border:
+
+    3px solid var(--gold);
+
+
+    top:
+
+    15px;
+
+
+    left:
+
+    15px;
+
+
+    z-index:
+
+    0;
+
+}
+
+
 
 .overview-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 6px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+
+    position:
+
+    relative;
+
+
+    z-index:
+
+    1;
+
+
+    width:
+
+    100%;
+
+
+    border-radius:
+
+    4px;
+
+
+    box-shadow:
+
+    0 25px 50px rgba(0,0,0,.15);
+
 }
+
+
+
+
+/* ==========================================
+   CORE VALUES
+   ========================================== */
+
 
 .core-values {
-    padding: 80px 0;
-    background-color: var(--bg-light);
+
+    background:
+
+    #f7f5ef;
+
+
+    padding:
+
+    100px 0;
+
 }
+
+
 
 .core-values h2 {
-    text-align: center;
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 50px;
+
+
+    text-align:center;
+
+
+    font-family:
+
+    Georgia,
+    serif;
+
+
+    font-size:
+
+    2.5rem;
+
+
+    color:
+
+    var(--navy);
+
+
+    margin-bottom:
+
+    60px;
+
 }
+
+
+
 
 .values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+
+    gap:
+
+    35px;
+
 }
+
+
+
 
 .value-card {
-    background-color: var(--white);
-    padding: 40px 30px;
-    text-align: center;
-    border-radius: 6px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    transition: var(--transition);
+
+
+    background:white;
+
+
+    padding:
+
+    45px 35px;
+
+
+    text-align:center;
+
+
+    border:
+
+    1px solid rgba(197,160,89,.2);
+
+
+    transition:
+
+    .35s ease;
+
+
+    position:
+
+    relative;
+
 }
+
+
+
 
 .value-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+
+    transform:
+
+    translateY(-12px);
+
+
+    box-shadow:
+
+    0 25px 50px rgba(12,30,54,.12);
+
 }
+
+
+
 
 .value-card i {
-    font-size: 2.5rem;
-    color: var(--accent-color);
-    margin-bottom: 20px;
+
+
+    width:
+
+    75px;
+
+
+    height:
+
+    75px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    margin:
+
+    0 auto 25px;
+
+
+    border-radius:
+
+    50%;
+
+
+    background:
+
+    #f7f1e5;
+
+
+    color:
+
+    var(--gold);
+
+
+    font-size:
+
+    32px;
+
+
 }
+
+
 
 .value-card h3 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    font-size: 1.3rem;
+
+
+    font-family:
+
+    Georgia,
+    serif;
+
+
+    color:
+
+    var(--navy);
+
+
+    font-size:
+
+    1.4rem;
+
+
+    margin-bottom:
+
+    15px;
+
 }
+
+
 
 .value-card p {
-    color: var(--text-light);
-    font-size: 0.95rem;
+
+
+    color:
+
+    var(--text-light);
+
+
+    line-height:
+
+    1.8;
+
 }
 
-/* Mobile responsive fixes for About page grid */
-@media (max-width: 768px) {
-    .overview-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-}
-/* ==========================================
-   9. TEAM PAGE STYLES (NEW ADDITIONS)
-   ========================================== */
-.team-page-section {
-    padding: 80px 0;
-    background-color: var(--white);
+
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+
+.overview-grid,
+.values-grid{
+
+grid-template-columns:1fr;
+
 }
 
-.team-page-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+
+.page-banner h1{
+
+font-size:2.2rem;
+
 }
 
-.profile-card {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    background-color: var(--bg-light);
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    transition: var(--transition);
-}
 
-.profile-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-}
-
-.profile-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.profile-details {
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.profile-details h2 {
-    font-size: 1.8rem;
-    color: var(--primary-color);
-    margin-bottom: 5px;
-}
-
-.profile-details .designation {
-    color: var(--accent-color);
-    font-weight: 600;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.profile-divider {
-    border: 0;
-    border-top: 2px solid rgba(197, 160, 89, 0.2);
-    width: 50px;
-    margin: 15px 0;
-}
-
-.profile-bio {
-    color: var(--text-light);
-    font-size: 1rem;
-    margin-bottom: 25px;
-}
-
-.profile-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-    font-size: 0.9rem;
-    color: var(--primary-color);
-    font-weight: 500;
-}
-
-.profile-meta span i {
-    color: var(--accent-color);
-    margin-right: 8px;
-}
-
-/* Mobile adjustments for the vertical lawyer profiles */
-@media (max-width: 768px) {
-    .profile-card {
-        grid-template-columns: 1fr;
-    }
-    
-    .profile-image img {
-        height: 350px;
-    }
-    
-    .profile-details {
-        padding: 30px 20px;
-    }
-    
-    .profile-meta {
-        flex-direction: column;
-        gap: 10px;
-    }
 }
