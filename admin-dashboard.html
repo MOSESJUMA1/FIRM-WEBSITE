@@ -282,6 +282,7 @@
             .main-content { margin-left: 0; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -465,9 +466,16 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-    const sb = supabase.createClient('https://hjbrllpbpajzmgpgkadf.supabase.co', 'sb_publishable_KJ0vSBO8Q1UFQZ52wywslA_zxrkJ9ga');
+    // FIXED: Correct Supabase Anon Key
+    const sb = supabase.createClient('https://hjbrllpbpajzmgpgkadf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFqem1ncGdrYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2OTYxOTIsImV4cCI6MjEwMjI3MjE5Mn0.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4');
     let allCases = [], allAdvocates = [], currentCaseId = null;
     const ADMIN_PASSWORD = 'admin123';
+
+    // FIXED: Hash helper for advocate passwords
+    async function hashPassword(pw) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
 
     function handleAdminLogin(e) {
         e.preventDefault();
@@ -486,9 +494,11 @@
         sessionStorage.removeItem('admin');
         location.reload();
     }
+
+    // FIXED: Only affect internal nav links, not external ones
     function switchView(view, el) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('.sidebar-nav a[onclick^="switchView"]').forEach(a => a.classList.remove('active'));
         document.getElementById(view).classList.add('active');
         if (el) el.classList.add('active');
         const titles = {overview:'Overview', cases:'All Cases', advocates:'Advocates', tokens:'Client Tokens'};
@@ -538,7 +548,7 @@
             html += `<tr><td>${c.full_name||'N/A'}</td><td>${c.email||'N/A'}</td><td>${c.service_requested||'N/A'}</td>
                 <td><span class="badge ${getBadge(c.payment_status)}">${c.payment_status||'Pending'}</span></td>
                 <td>${c.assigned_advocate||'Unassigned'}</td>
-                <td><button class="btn btn-olive" onclick="openAssignCaseModal('${c.id}','${(c.full_name||'').replace(/'/g,"\\'")}')">Assign</button></td></tr>`;
+                <td><button class="btn btn-olive" onclick="openAssignCaseModal('${c.id}','${(c.full_name||'').replace(/'/g,"\'")}')">Assign</button></td></tr>`;
         });
         container.innerHTML = html + '</tbody></table>';
     }
@@ -562,14 +572,33 @@
             sel.appendChild(opt);
         });
     }
+
+    // FIXED: Use the existing booking token so the database lookup works
     function generateToken() {
         const caseId = document.getElementById('tokenCaseSelect').value;
         if (!caseId) { alert('Select a case first'); return; }
         const c = allCases.find(x => x.id === caseId);
         if (!c) return;
-        const token = 'ALX-' + Math.random().toString(36).substr(2,8).toUpperCase();
+
+        // Use the existing token from the booking so the database lookup works
+        const token = c.token || 'ALX-' + Math.random().toString(36).substr(2,8).toUpperCase();
+
+        // If this booking somehow has no token, save one now
+        if (!c.token) {
+            sb.from('bookings').update({ token: token }).eq('id', caseId).then(() => {
+                c.token = token; // Update local cache
+            });
+        }
+
         const baseUrl = window.location.origin + '/client-case.html';
-        const params = new URLSearchParams({token, name:c.full_name, email:c.email, phone:c.phone||'', service:c.service_requested||'', date:c.created_at||''});
+        const params = new URLSearchParams({
+            token: token, 
+            name: c.full_name, 
+            email: c.email, 
+            phone: c.phone || '', 
+            service: c.service_requested || '', 
+            date: c.created_at || ''
+        });
         const url = `${baseUrl}?${params.toString()}`;
         document.getElementById('tokenLink').textContent = url;
         document.getElementById('tokenResult').style.display = 'block';
@@ -585,19 +614,36 @@
         document.getElementById('advocatePhone').value = '';
         document.getElementById('advocateModal').classList.add('active');
     }
+
+    // FIXED: Hash password before saving so advocates can actually log in
     async function saveAdvocate() {
         const name = document.getElementById('advocateName').value.trim();
         const email = document.getElementById('advocateEmail').value.trim();
         const phone = document.getElementById('advocatePhone').value.trim();
         const specialization = document.getElementById('advocateSpecialization').value;
         const status = document.getElementById('advocateStatus').value;
+
         if (!name || !email) { alert('Fill required fields'); return; }
+
         try {
-            const {error} = await sb.from('advocates').insert([{name, email, phone, specialization, status, password:'temppass123'}]);
+            const hashedPassword = await hashPassword('temppass123');
+            const {error} = await sb.from('advocates').insert([{
+                name, 
+                email, 
+                phone, 
+                specialization, 
+                status, 
+                password: hashedPassword
+            }]);
+
             if (error) throw error;
-            closeModal('advocateModal'); loadDashboard();
-        } catch (err) { alert('Error: ' + err.message); }
+            closeModal('advocateModal'); 
+            loadDashboard();
+        } catch (err) { 
+            alert('Error: ' + err.message); 
+        }
     }
+
     async function deleteAdvocate(id) {
         if (!confirm('Delete this advocate?')) return;
         try { await sb.from('advocates').delete().eq('id', id); loadDashboard(); }
@@ -611,15 +657,57 @@
         allAdvocates.forEach(a => { const o=document.createElement('option'); o.value=a.name; o.textContent=a.name; sel.appendChild(o); });
         document.getElementById('assignCaseModal').classList.add('active');
     }
+
+    // FIXED: Creates a cases row so the client page can find it after assignment
     async function assignCaseToAdvocate() {
         const advocate = document.getElementById('advocateSelect').value;
         const status = document.getElementById('assignCaseStatus').value;
         if (!advocate) { alert('Select an advocate'); return; }
+
         try {
-            const {error} = await sb.from('bookings').update({assigned_advocate:advocate, payment_status:status, updated_at:new Date().toISOString()}).eq('id', currentCaseId);
-            if (error) throw error;
-            closeModal('assignCaseModal'); loadDashboard();
-        } catch (err) { alert('Error: ' + err.message); }
+            // 1. Update the booking
+            const {error: bookingError} = await sb.from('bookings').update({
+                assigned_advocate: advocate, 
+                payment_status: status, 
+                updated_at: new Date().toISOString()
+            }).eq('id', currentCaseId);
+
+            if (bookingError) throw bookingError;
+
+            // 2. Create or update the cases table (this is what client-case.html reads)
+            const { data: existingCase } = await sb.from('cases')
+                .select('id')
+                .eq('booking_id', currentCaseId)
+                .maybeSingle();
+
+            if (existingCase) {
+                await sb.from('cases').update({
+                    assigned_to: advocate,
+                    status: status,
+                    updated_at: new Date().toISOString()
+                }).eq('id', existingCase.id);
+            } else {
+                // Get the booking token to use as case_number
+                const { data: booking } = await sb.from('bookings')
+                    .select('token')
+                    .eq('id', currentCaseId)
+                    .single();
+
+                await sb.from('cases').insert([{
+                    booking_id: currentCaseId,
+                    case_number: booking?.token || 'ALX-' + Math.random().toString(36).substr(2,8).toUpperCase(),
+                    assigned_to: advocate,
+                    status: status,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }]);
+            }
+
+            closeModal('assignCaseModal'); 
+            loadDashboard();
+        } catch (err) { 
+            alert('Error: ' + err.message); 
+        }
     }
 
     // Search

@@ -187,6 +187,7 @@
 
         @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main-content { margin-left: 0; } }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div id="toastContainer" class="toast-container"></div>
@@ -390,15 +391,14 @@
             btn.disabled = loading; btn.style.opacity = loading ? '0.7' : '1';
         }
 
-        // FIXED: Navigation actually switches content views
+        // FIXED: Navigation actually switches content views without breaking external links
         function setActiveNav(el, viewName) {
-            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            if (!viewName) return;
+            document.querySelectorAll('.sidebar-nav a[onclick^="setActiveNav"]').forEach(a => a.classList.remove('active'));
             el.classList.add('active');
-            
-            // Hide all views
+
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            
-            // Show selected view
+
             const viewMap = {
                 'dashboard': 'view-dashboard',
                 'cases': 'view-cases',
@@ -411,8 +411,7 @@
                     viewName === 'dashboard' ? 'Dashboard' : 
                     viewName === 'cases' ? 'My Cases' : 'Schedule';
             }
-            
-            // Load data when entering cases view
+
             if (viewName === 'cases') loadAllCases();
         }
 
@@ -478,7 +477,7 @@
 
         async function loadDashboardStats() {
             if (!currentAdvocate) return;
-            
+
             if (useDemoMode) {
                 document.getElementById('statTotal').textContent = '0';
                 document.getElementById('statActive').textContent = '0';
@@ -533,7 +532,7 @@
         function renderCasesTable(cases, containerId, limit) {
             const container = document.getElementById(containerId);
             const displayCases = limit ? cases.slice(0, limit) : cases;
-            
+
             if (!cases.length) {
                 container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases assigned yet.</p></div>';
                 return;
@@ -549,13 +548,13 @@
                     <td><span class="badge ${statusClass}">${c.payment_status || 'Pending'}</span></td>
                     <td>${c.created_at ? new Date(c.created_at).toLocaleDateString() : '-'}</td>
                 </tr>`;
-            });
+            }).join('');
             html += '</tbody></table>';
-            
+
             if (limit && cases.length > limit) {
                 html += `<p style="text-align:center;margin-top:12px;color:#64748b;font-size:13px;">+ ${cases.length - limit} more cases</p>`;
             }
-            
+
             container.innerHTML = html;
         }
 

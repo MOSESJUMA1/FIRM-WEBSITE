@@ -39,6 +39,7 @@
 
         footer { background: #0d1f2d; text-align: center; padding: 20px; color: #999; margin-top: 60px; font-size: 14px; }
     </style>
+<base target="_blank">
 </head>
 <body>
     <header>
@@ -147,7 +148,7 @@
             if (error) throw error;
 
             // Send email via Formspree
-            const clientLink = window.location.origin + '/client-case.html?token=' + token;
+            const clientLink = window.location.origin + '/client-case.html?token=' + encodeURIComponent(token);
             const emailData = new FormData();
             emailData.append('email', clientEmail);
             emailData.append('message', `Hi ${clientName},
@@ -166,14 +167,14 @@ Apex Legal Advocates`);
             }).catch(() => {});
 
             alert.className = 'alert success';
-            alert.innerHTML = `✅ Success! Check <strong>${clientEmail}</strong> for your case profile link.`;
+            alert.innerHTML = `Success! Check <strong>${clientEmail}</strong> for your case profile link.`;
             alert.style.display = 'block';
             document.getElementById('consultationForm').reset();
             submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
 
         } catch (error) {
             alert.className = 'alert error';
-            alert.textContent = '❌ Error: ' + (error.message || 'Something went wrong. Please try again.');
+            alert.textContent = 'Error: ' + (error.message || 'Something went wrong. Please try again.');
             alert.style.display = 'block';
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Consultation Request';

@@ -105,7 +105,7 @@
             return false;
         }
         if (allowedRoles && !allowedRoles.includes(s.role)) {
-            const map = { admin: 'admin.html', advocate: 'staff-dashboard.html' };
+            const map = { admin: 'admin-dashboard.html', advocate: 'staff-dashboard.html' };
             window.location.href = map[s.role] || 'index.html';
             return false;
         }
@@ -125,7 +125,7 @@
                 <li><a href="contact.html">Book Consultation</a></li>
             `;
             if (role === 'admin') {
-                html += `<li><a href="admin.html">Admin</a></li>`;
+                html += `<li><a href="admin-dashboard.html">Admin</a></li>`;
             }
             if (role === 'advocate' || role === 'admin') {
                 html += `<li><a href="staff-dashboard.html">Dashboard</a></li>`;

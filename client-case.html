@@ -149,6 +149,7 @@
         }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="loading-overlay" id="loadingOverlay">
@@ -312,6 +313,54 @@
         }
 
         // ============================================
+        // RENDER FROM BOOKING (when no case file yet)
+        // ============================================
+        function renderFromBooking(booking) {
+            els.caseNumber.textContent = booking.token || 'N/A';
+            els.clientName.textContent = booking.full_name || booking.name || 'Unknown Client';
+            els.serviceRequested.textContent = booking.service_requested || booking.service || 'General Consultation';
+            els.assignedAdvocate.textContent = booking.assigned_advocate || 'Not yet assigned';
+            els.statusBadge.innerHTML = `<span class="status-badge">${booking.payment_status || 'Pending'}</span>`;
+            els.priorityBadge.innerHTML = `<span class="status-badge">${booking.priority || 'Standard'}</span>`;
+            els.caseNotes.textContent = booking.notes || booking.case_notes 
+                || `Consultation request received on ${booking.created_at ? new Date(booking.created_at).toLocaleString() : 'recently'}. Awaiting advocate assignment.`;
+
+            const createdDate = booking.created_at 
+                ? new Date(booking.created_at).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) 
+                : 'Pending';
+
+            els.datesGrid.innerHTML = `
+                <div class="date-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                        <div class="date-label">Consultation Booked</div>
+                        <div class="date-value">${createdDate}</div>
+                    </div>
+                </div>
+                <div class="date-item">
+                    <i class="fas fa-user-clock"></i>
+                    <div>
+                        <div class="date-label">Advocate Assignment</div>
+                        <div class="date-value" style="color:#a83333; font-weight:700;">${booking.assigned_advocate ? booking.assigned_advocate : 'Pending'}</div>
+                    </div>
+                </div>
+            `;
+
+            const advName = booking.assigned_advocate || 'To be assigned';
+            els.advocateName.textContent = advName;
+
+            if (booking.assigned_advocate) {
+                els.advocateSpecialization.innerHTML = `is your dedicated legal representative for this case. You can contact them to discuss case progress and next steps.`;
+            } else {
+                els.advocateSpecialization.innerHTML = `will be assigned based on your <strong>${booking.service_requested || 'case'}</strong> needs. You will receive an email once an advocate is allocated.`;
+            }
+
+            els.advocateEmail.href = `mailto:${booking.email || '#'}`;
+            els.advocateEmail.textContent = booking.email || 'N/A';
+            els.advocatePhone.textContent = booking.phone || 'N/A';
+        }
+
+        // ============================================
         // RENDER FROM SUPABASE
         // ============================================
         function renderFromSupabase(caseData, bookingData, datesData) {
@@ -325,12 +374,16 @@
             els.caseNotes.textContent = (bookingData && (bookingData.notes || bookingData.case_notes)) || `Consultation request received. Awaiting advocate assignment.`;
 
             if (!datesData || datesData.length === 0) {
+                const bookedDate = (bookingData && bookingData.created_at) 
+                    ? new Date(bookingData.created_at).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'})
+                    : (urlData.date ? new Date(urlData.date).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) : 'Pending');
+
                 els.datesGrid.innerHTML = `
                     <div class="date-item">
                         <i class="fas fa-calendar-check"></i>
                         <div>
                             <div class="date-label">Consultation Booked</div>
-                            <div class="date-value">${urlData.date ? new Date(urlData.date).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) : 'Pending'}</div>
+                            <div class="date-value">${bookedDate}</div>
                         </div>
                     </div>
                     <div class="date-item">
@@ -380,6 +433,7 @@
 
                 let caseData = null;
                 let caseError = null;
+                let bookingData = null;
 
                 // Try 1: Match token against case_number column (snake_case)
                 const try1 = await supabaseClient
@@ -411,8 +465,7 @@
                     }
                 }
 
-                // Try 3: Check bookings table directly
-                let bookingData = null;
+                // Try 3: Check bookings table directly by token
                 if (!caseData) {
                     const try3 = await supabaseClient
                         .from('bookings')
@@ -423,41 +476,40 @@
                     if (try3.data) {
                         bookingData = try3.data;
                         console.log('Found booking by token');
-
-                        const try4 = await supabaseClient
-                            .from('cases')
-                            .select('*')
-                            .eq('booking_id', bookingData.id)
-                            .maybeSingle();
-
-                        if (try4.data) {
-                            caseData = try4.data;
-                            console.log('Found linked case');
-                        }
                     }
                 }
 
-                if (!caseData) {
-                    const errDetail = caseError
-                        ? `Supabase Error: ${caseError.code} - ${caseError.message}`
-                        : `No case or booking found for token "${urlData.token}"`;
-                    console.warn(errDetail);
-                    showWarning('Case not found in database yet. Showing your booking details from the link. Your case will appear here once an advocate is assigned.');
-                    renderFromURL();
-                    hideLoading();
-                    return;
-                }
-
-                if (!bookingData && caseData.booking_id) {
+                // If we have a case, fetch its linked booking for richer data
+                if (caseData && caseData.booking_id) {
                     const { data: bData } = await supabaseClient
                         .from('bookings')
                         .select('*')
                         .eq('id', caseData.booking_id)
                         .maybeSingle();
-                    bookingData = bData;
+                    if (bData) bookingData = bData;
                 }
 
-                // FIXED: snake_case column names
+                // NEW: If we have a booking but no case file yet, render from the booking
+                if (!caseData && bookingData) {
+                    renderFromBooking(bookingData);
+                    showWarning('Your consultation is confirmed. A dedicated case file will appear here once an advocate is assigned.');
+                    hideLoading();
+                    return;
+                }
+
+                // If absolutely nothing found, fall back to URL params
+                if (!caseData) {
+                    const errDetail = caseError
+                        ? `Supabase Error: ${caseError.code} - ${caseError.message}`
+                        : `No case or booking found for token "${urlData.token}"`;
+                    console.warn(errDetail);
+                    showWarning('Case not found in database. Showing details from your booking link.');
+                    renderFromURL();
+                    hideLoading();
+                    return;
+                }
+
+                // We have a case — fetch dates and render fully
                 const { data: datesData } = await supabaseClient
                     .from('case_dates')
                     .select('*')
