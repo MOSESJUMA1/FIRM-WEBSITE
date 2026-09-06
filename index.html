@@ -1,116 +1,905 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apex Legal Advocates | Kenya</title>
+<title>Apex Legal Advocates | Trusted Legal Counsel in Kenya</title>
 
-<link rel="stylesheet" href="home.css">
+<meta name="description" content="Apex Legal Advocates provides trusted, practical and client-focused legal services in Kenya. Explore our practice areas and book a consultation.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 
-.blog-preview{
-    padding:70px 20px;
-    background:#f7f5ef;
+/* =========================================================
+   APEX LEGAL — INTERNATIONAL LAW FIRM HOMEPAGE
+   ========================================================= */
+
+:root{
+    --navy:#0b1f33;
+    --navy-2:#132d46;
+    --navy-3:#1d3c59;
+    --gold:#b89452;
+    --gold-light:#d4b77b;
+    --cream:#f7f5ef;
+    --off-white:#fbfaf7;
+    --white:#ffffff;
+    --text:#263746;
+    --muted:#687787;
+    --border:#e4e6e8;
+    --shadow:0 15px 45px rgba(11,31,51,.09);
+    --max:1180px;
 }
 
-.blog-preview-inner{
-    max-width:1150px;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:"DM Sans",Arial,sans-serif;
+    color:var(--text);
+    background:var(--white);
+    line-height:1.7;
+}
+
+img{
+    max-width:100%;
+    display:block;
+}
+
+a{
+    color:inherit;
+}
+
+.container{
+    width:min(var(--max), calc(100% - 40px));
     margin:auto;
 }
 
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:1000;
+    border-bottom:1px solid rgba(255,255,255,.14);
+}
+
+.navbar{
+    width:min(1240px, calc(100% - 50px));
+    margin:auto;
+    min-height:88px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+}
+
+.logo{
+    text-decoration:none;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-mark{
+    width:42px;
+    height:42px;
+    border:1px solid rgba(255,255,255,.65);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+}
+
+.logo-text strong{
+    display:block;
+    font-family:"Playfair Display",serif;
+    font-size:22px;
+    line-height:1.1;
+    letter-spacing:.2px;
+}
+
+.logo-text span{
+    display:block;
+    font-size:9px;
+    letter-spacing:2.2px;
+    text-transform:uppercase;
+    opacity:.7;
+    margin-top:3px;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:27px;
+}
+
+.nav-links a{
+    color:rgba(255,255,255,.9);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    transition:.25s ease;
+}
+
+.nav-links a:hover{
+    color:var(--gold-light);
+}
+
+.nav-consult{
+    padding:11px 18px;
+    border:1px solid rgba(255,255,255,.45);
+}
+
+.nav-consult:hover{
+    background:white;
+    color:var(--navy)!important;
+}
+
+.mobile-menu{
+    display:none;
+    color:white;
+    background:none;
+    border:0;
+    font-size:22px;
+    cursor:pointer;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+    min-height:760px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    background:
+        linear-gradient(90deg,
+        rgba(6,22,37,.97) 0%,
+        rgba(10,30,48,.91) 48%,
+        rgba(10,30,48,.55) 100%),
+        linear-gradient(135deg,#0b1f33,#1d3c59);
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:600px;
+    height:600px;
+    right:-250px;
+    top:100px;
+    border:1px solid rgba(212,183,123,.18);
+    border-radius:50%;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    width:min(var(--max),calc(100% - 40px));
+    margin:auto;
+    padding-top:80px;
+}
+
+.hero-kicker{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    letter-spacing:3px;
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+.hero-kicker::before{
+    content:"";
+    width:42px;
+    height:1px;
+    background:var(--gold);
+}
+
+.hero h1{
+    max-width:760px;
+    color:white;
+    font-family:"Playfair Display",serif;
+    font-size:clamp(48px,6vw,78px);
+    line-height:1.04;
+    font-weight:600;
+    letter-spacing:-1.5px;
+}
+
+.hero h1 span{
+    color:var(--gold-light);
+}
+
+.hero-description{
+    max-width:650px;
+    color:rgba(255,255,255,.76);
+    font-size:17px;
+    margin-top:28px;
+}
+
+.hero-actions{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-top:38px;
+}
+
+.btn-primary,
+.btn-outline{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:14px 25px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    transition:.25s ease;
+}
+
+.btn-primary{
+    background:var(--gold);
+    color:white;
+    border:1px solid var(--gold);
+}
+
+.btn-primary:hover{
+    background:var(--gold-light);
+    border-color:var(--gold-light);
+    transform:translateY(-2px);
+}
+
+.btn-outline{
+    color:white;
+    border:1px solid rgba(255,255,255,.45);
+}
+
+.btn-outline:hover{
+    background:white;
+    color:var(--navy);
+}
+
+.hero-bottom{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    z-index:3;
+    background:rgba(7,24,40,.72);
+    border-top:1px solid rgba(255,255,255,.1);
+}
+
+.hero-metrics{
+    width:min(var(--max),calc(100% - 40px));
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+}
+
+.metric{
+    padding:22px 25px;
+    border-right:1px solid rgba(255,255,255,.1);
+}
+
+.metric:last-child{
+    border-right:0;
+}
+
+.metric strong{
+    display:block;
+    color:white;
+    font-family:"Playfair Display",serif;
+    font-size:22px;
+}
+
+.metric span{
+    color:rgba(255,255,255,.58);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.intro{
+    padding:105px 0;
+    background:var(--off-white);
+}
+
+.intro-grid{
+    display:grid;
+    grid-template-columns:1fr 1.35fr;
+    gap:80px;
+    align-items:start;
+}
+
+.eyebrow{
+    color:var(--gold);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    margin-bottom:15px;
+}
+
+.section-title{
+    font-family:"Playfair Display",serif;
+    color:var(--navy);
+    font-size:clamp(34px,4vw,50px);
+    line-height:1.15;
+    font-weight:600;
+}
+
+.intro-copy{
+    font-size:17px;
+    color:var(--muted);
+    max-width:690px;
+}
+
+.intro-copy p + p{
+    margin-top:18px;
+}
+
+.signature{
+    margin-top:30px;
+    color:var(--navy);
+    font-family:"Playfair Display",serif;
+    font-size:19px;
+}
+
+.signature small{
+    display:block;
+    font-family:"DM Sans",sans-serif;
+    font-size:10px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+}
+
+
+/* =========================================================
+   PRACTICE AREAS
+   ========================================================= */
+
+.practice{
+    padding:110px 0;
+    background:white;
+}
+
 .section-heading{
-    text-align:center;
-    margin-bottom:40px;
+    max-width:700px;
+    margin-bottom:55px;
 }
 
-.section-heading h2{
-    color:#0c1e36;
-    font-size:32px;
-    margin-bottom:10px;
+.practice-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--border);
+    border-left:1px solid var(--border);
 }
 
-.section-heading p{
-    color:#64748b;
+.practice-card{
+    padding:35px 27px;
+    min-height:280px;
+    border-right:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    transition:.3s ease;
+}
+
+.practice-card:hover{
+    background:var(--navy);
+    transform:translateY(-4px);
+    box-shadow:var(--shadow);
+}
+
+.practice-icon{
+    width:44px;
+    height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--gold);
+    border:1px solid var(--gold);
+    margin-bottom:27px;
+}
+
+.practice-card h3{
+    color:var(--navy);
+    font-family:"Playfair Display",serif;
+    font-size:22px;
+    margin-bottom:12px;
+}
+
+.practice-card p{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.practice-card:hover h3{
+    color:white;
+}
+
+.practice-card:hover p{
+    color:rgba(255,255,255,.68);
+}
+
+
+/* =========================================================
+   VALUES
+   ========================================================= */
+
+.values{
+    padding:105px 0;
+    background:var(--cream);
+}
+
+.values-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    align-items:center;
+}
+
+.values-list{
+    display:grid;
+    gap:0;
+    margin-top:25px;
+}
+
+.value{
+    display:grid;
+    grid-template-columns:45px 1fr;
+    gap:18px;
+    padding:22px 0;
+    border-bottom:1px solid rgba(11,31,51,.12);
+}
+
+.value-number{
+    color:var(--gold);
+    font-family:"Playfair Display",serif;
+    font-size:20px;
+}
+
+.value h3{
+    color:var(--navy);
+    font-size:16px;
+    margin-bottom:5px;
+}
+
+.value p{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.values-panel{
+    background:var(--navy);
+    padding:55px;
+    min-height:420px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    position:relative;
+    overflow:hidden;
+}
+
+.values-panel::before{
+    content:"";
+    position:absolute;
+    width:280px;
+    height:280px;
+    border:1px solid rgba(212,183,123,.25);
+    border-radius:50%;
+    right:-100px;
+    top:-100px;
+}
+
+.values-panel h3{
+    position:relative;
+    color:white;
+    font-family:"Playfair Display",serif;
+    font-size:31px;
+    line-height:1.25;
+    margin-bottom:18px;
+}
+
+.values-panel p{
+    position:relative;
+    color:rgba(255,255,255,.67);
+    font-size:14px;
+}
+
+
+/* =========================================================
+   BLOG
+   ========================================================= */
+
+.blog-section{
+    padding:110px 0;
+    background:var(--off-white);
+}
+
+.blog-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:30px;
+    margin-bottom:45px;
+}
+
+.blog-header-copy{
+    max-width:650px;
+}
+
+.view-all{
+    color:var(--navy);
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    white-space:nowrap;
+    border-bottom:1px solid var(--gold);
+    padding-bottom:5px;
 }
 
 .blog-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    grid-template-columns:repeat(3,1fr);
     gap:25px;
 }
 
 .blog-card{
     background:white;
-    border-radius:10px;
-    overflow:hidden;
-    border:1px solid #e5e7eb;
-    box-shadow:0 5px 20px rgba(0,0,0,.06);
+    border:1px solid var(--border);
+    transition:.3s ease;
 }
 
-.blog-card img{
+.blog-card:hover{
+    transform:translateY(-5px);
+    box-shadow:var(--shadow);
+}
+
+.blog-image{
     width:100%;
-    height:190px;
+    height:210px;
     object-fit:cover;
+    background:var(--navy);
+}
+
+.blog-placeholder{
+    height:210px;
+    background:linear-gradient(135deg,var(--navy),var(--navy-3));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--gold-light);
+    font-size:34px;
 }
 
 .blog-body{
-    padding:22px;
+    padding:27px;
 }
 
 .blog-category{
-    font-size:11px;
-    font-weight:bold;
-    color:#c5a059;
+    color:var(--gold);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.7px;
     text-transform:uppercase;
 }
 
 .blog-body h3{
-    color:#0c1e36;
-    margin:8px 0;
+    color:var(--navy);
+    font-family:"Playfair Display",serif;
+    font-size:21px;
+    line-height:1.3;
+    margin:10px 0 12px;
 }
 
 .blog-body p{
-    color:#64748b;
-    font-size:14px;
-    line-height:1.6;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.7;
 }
 
 .blog-link{
-    display:inline-block;
-    margin-top:15px;
-    color:#0c1e36;
-    font-weight:bold;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    margin-top:20px;
+    color:var(--navy);
     text-decoration:none;
+    font-size:12px;
+    font-weight:700;
 }
 
 .blog-link:hover{
-    color:#c5a059;
-}
-
-.blog-button{
-    text-align:center;
-    margin-top:35px;
-}
-
-.blog-button a{
-    display:inline-block;
-    background:#0c1e36;
-    color:white;
-    padding:13px 25px;
-    border-radius:6px;
-    text-decoration:none;
-    font-weight:bold;
+    color:var(--gold);
 }
 
 .empty-blog{
+    grid-column:1/-1;
     text-align:center;
-    color:#64748b;
+    padding:40px;
+    color:var(--muted);
+}
+
+
+/* =========================================================
+   CONSULTATION CTA
+   ========================================================= */
+
+.cta{
+    background:var(--navy);
+    padding:90px 0;
+    position:relative;
+    overflow:hidden;
+}
+
+.cta::after{
+    content:"";
+    position:absolute;
+    width:450px;
+    height:450px;
+    border:1px solid rgba(212,183,123,.15);
+    border-radius:50%;
+    right:-180px;
+    top:-180px;
+}
+
+.cta-content{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:50px;
+}
+
+.cta h2{
+    color:white;
+    font-family:"Playfair Display",serif;
+    font-size:clamp(34px,4vw,48px);
+    line-height:1.15;
+    max-width:650px;
+}
+
+.cta p{
+    color:rgba(255,255,255,.65);
+    margin-top:12px;
+    max-width:600px;
+    font-size:14px;
+}
+
+.cta-action{
+    flex-shrink:0;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+    background:#071827;
+    color:white;
+    padding:65px 0 25px;
+}
+
+.footer-grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1fr;
+    gap:50px;
+    padding-bottom:50px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.footer-brand p{
+    color:rgba(255,255,255,.55);
+    font-size:13px;
+    max-width:320px;
+    margin-top:17px;
+}
+
+.footer h4{
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:18px;
+}
+
+.footer-links{
+    list-style:none;
+    display:grid;
+    gap:9px;
+}
+
+.footer-links a{
+    color:rgba(255,255,255,.62);
+    text-decoration:none;
+    font-size:13px;
+}
+
+.footer-links a:hover{
+    color:white;
+}
+
+.footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding-top:22px;
+    color:rgba(255,255,255,.4);
+    font-size:11px;
+}
+
+.footer-bottom a{
+    color:inherit;
+    text-decoration:none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:950px){
+
+    .nav-links{
+        gap:16px;
+    }
+
+    .practice-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .intro-grid,
+    .values-grid{
+        grid-template-columns:1fr;
+        gap:45px;
+    }
+
+    .blog-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .footer-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:720px){
+
+    .site-header{
+        position:absolute;
+    }
+
+    .navbar{
+        min-height:74px;
+    }
+
+    .nav-links{
+        display:none;
+        position:absolute;
+        top:74px;
+        left:20px;
+        right:20px;
+        padding:20px;
+        background:var(--navy);
+        border:1px solid rgba(255,255,255,.15);
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .nav-links.open{
+        display:flex;
+    }
+
+    .nav-links a{
+        padding:8px 0;
+    }
+
+    .nav-consult{
+        text-align:center;
+    }
+
+    .mobile-menu{
+        display:block;
+    }
+
+    .hero{
+        min-height:730px;
+    }
+
+    .hero-content{
+        padding-top:60px;
+    }
+
+    .hero h1{
+        font-size:45px;
+    }
+
+    .hero-description{
+        font-size:15px;
+    }
+
+    .hero-actions{
+        flex-direction:column;
+        align-items:stretch;
+        max-width:300px;
+    }
+
+    .hero-bottom{
+        display:none;
+    }
+
+    .practice-grid{
+        grid-template-columns:1fr;
+    }
+
+    .blog-grid{
+        grid-template-columns:1fr;
+    }
+
+    .blog-header{
+        display:block;
+    }
+
+    .view-all{
+        display:inline-block;
+        margin-top:20px;
+    }
+
+    .values-panel{
+        padding:35px;
+    }
+
+    .cta-content{
+        display:block;
+    }
+
+    .cta-action{
+        margin-top:30px;
+    }
+
+    .footer-grid{
+        grid-template-columns:1fr;
+        gap:35px;
+    }
+
+    .footer-bottom{
+        flex-direction:column;
+    }
+
 }
 
 </style>
@@ -119,33 +908,62 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 <body>
 
-<header>
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
 
-<nav>
+<header class="site-header">
 
-<div class="logo">
-<a href="index.html">Apex Legal</a>
+<nav class="navbar">
+
+<a href="index.html" class="logo">
+
+```
+<div class="logo-mark">
+    <i class="fa-solid fa-scale-balanced"></i>
 </div>
 
-<div class="nav-links">
+<div class="logo-text">
+    <strong>Apex Legal</strong>
+    <span>Advocates · Kenya</span>
+</div>
+```
 
+</a>
+
+<div class="nav-links" id="navLinks">
+
+```
 <a href="index.html">Home</a>
 
-<a href="index.html#about">About Us</a>
+<a href="#about">About</a>
 
-<a href="index.html#services">Practice Areas</a>
+<a href="#services">Practice Areas</a>
 
-<a href="blog.html">Blog</a>
+<a href="blog.html">Insights</a>
 
-<a href="contact.html">Book Consultation</a>
+<a href="contact.html" class="nav-consult">
+    Book a Consultation
+</a>
 
-<a href="login.html">Staff Login</a>
+<a href="login.html">
+    Staff Login
+</a>
+```
 
 </div>
+
+<button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">
+    <i class="fa-solid fa-bars"></i>
+</button>
 
 </nav>
 
 </header>
+
+<!-- =====================================================
+     HERO
+     ===================================================== -->
 
 <main>
 
@@ -153,105 +971,378 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 <div class="hero-content">
 
-<h1>Trusted Legal Counsel.<br>Practical Solutions.</h1>
+```
+<div class="hero-kicker">
+    Trusted Legal Counsel
+</div>
 
-<p>
-Apex Legal Advocates provides professional,
-client-focused legal services with integrity,
-clarity and commitment.
+<h1>
+    Clarity in Law.<br>
+    <span>Confidence in Action.</span>
+</h1>
+
+<p class="hero-description">
+    Apex Legal Advocates provides professional, practical and
+    client-focused legal services designed to protect your
+    interests and help you move forward with confidence.
 </p>
 
-<a href="contact.html" class="btn">
-Book a Consultation
-</a>
+<div class="hero-actions">
+
+    <a href="contact.html" class="btn-primary">
+        Book a Consultation
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+
+    <a href="#services" class="btn-outline">
+        Explore Our Practice
+    </a>
+
+</div>
+```
+
+</div>
+
+<div class="hero-bottom">
+
+<div class="hero-metrics">
+
+```
+<div class="metric">
+    <strong>Client Focused</strong>
+    <span>Personalised legal guidance</span>
+</div>
+
+<div class="metric">
+    <strong>Practical Advice</strong>
+    <span>Clear and commercially aware</span>
+</div>
+
+<div class="metric">
+    <strong>Professional Integrity</strong>
+    <span>Confidentiality and trust</span>
+</div>
+```
+
+</div>
 
 </div>
 
 </section>
 
-<section id="about" class="section">
+<!-- =====================================================
+     ABOUT
+     ===================================================== -->
+
+<section class="intro" id="about">
 
 <div class="container">
 
-<h2>About Apex Legal</h2>
+<div class="intro-grid">
 
-<p>
-We are committed to providing reliable and practical
-legal representation while protecting the interests
-of our clients.
-</p>
+```
+<div>
+
+    <div class="eyebrow">
+        About Apex Legal
+    </div>
+
+    <h2 class="section-title">
+        Law with purpose.<br>
+        Counsel with clarity.
+    </h2>
+
+</div>
+
+
+<div class="intro-copy">
+
+    <p>
+        At Apex Legal Advocates, we believe effective legal
+        representation begins with understanding people,
+        businesses and the circumstances behind every matter.
+    </p>
+
+    <p>
+        Our approach combines professional legal knowledge
+        with practical advice, clear communication and a
+        commitment to protecting our clients' interests.
+    </p>
+
+    <div class="signature">
+        Apex Legal Advocates
+        <small>Professional · Practical · Client Focused</small>
+    </div>
+
+</div>
+```
+
+</div>
 
 </div>
 
 </section>
 
-<section id="services" class="section">
+<!-- =====================================================
+     PRACTICE AREAS
+     ===================================================== -->
+
+<section class="practice" id="services">
 
 <div class="container">
-
-<h2>Our Practice Areas</h2>
-
-<div class="cards">
-
-<div class="card">
-<i class="fa-solid fa-building"></i>
-<h3>Corporate Law</h3>
-<p>Legal support for businesses, companies and commercial transactions.</p>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-house"></i>
-<h3>Conveyancing</h3>
-<p>Professional assistance with property transactions and documentation.</p>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-scale-balanced"></i>
-<h3>Dispute Resolution</h3>
-<p>Strategic representation and resolution of legal disputes.</p>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-people-roof"></i>
-<h3>Family Law</h3>
-<p>Practical legal guidance on family and related matters.</p>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- BLOG -->
-
-<section class="blog-preview">
-
-<div class="blog-preview-inner">
 
 <div class="section-heading">
 
-<h2>Legal Insights</h2>
+```
+<div class="eyebrow">
+    Our Expertise
+</div>
 
-<p>
-Stay informed with practical legal information
-from Apex Legal Advocates.
-</p>
+<h2 class="section-title">
+    Focused legal expertise<br>
+    for real-world matters.
+</h2>
+```
+
+</div>
+
+<div class="practice-grid">
+
+```
+<article class="practice-card">
+
+    <div class="practice-icon">
+        <i class="fa-solid fa-building"></i>
+    </div>
+
+    <h3>Corporate & Commercial Law</h3>
+
+    <p>
+        Legal support for businesses, companies,
+        commercial transactions and corporate matters.
+    </p>
+
+</article>
+
+
+<article class="practice-card">
+
+    <div class="practice-icon">
+        <i class="fa-solid fa-house"></i>
+    </div>
+
+    <h3>Property & Conveyancing</h3>
+
+    <p>
+        Professional assistance with property transactions,
+        documentation and related legal requirements.
+    </p>
+
+</article>
+
+
+<article class="practice-card">
+
+    <div class="practice-icon">
+        <i class="fa-solid fa-scale-balanced"></i>
+    </div>
+
+    <h3>Dispute Resolution</h3>
+
+    <p>
+        Strategic representation and practical approaches
+        to resolving civil and commercial disputes.
+    </p>
+
+</article>
+
+
+<article class="practice-card">
+
+    <div class="practice-icon">
+        <i class="fa-solid fa-people-roof"></i>
+    </div>
+
+    <h3>Family Law</h3>
+
+    <p>
+        Sensitive and practical legal guidance for family
+        matters and related legal concerns.
+    </p>
+
+</article>
+```
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     VALUES
+     ===================================================== -->
+
+<section class="values">
+
+<div class="container">
+
+<div class="values-grid">
+
+```
+<div>
+
+    <div class="eyebrow">
+        Our Approach
+    </div>
+
+    <h2 class="section-title">
+        Principles that guide
+        our practice.
+    </h2>
+
+
+    <div class="values-list">
+
+
+        <div class="value">
+
+            <div class="value-number">01</div>
+
+            <div>
+
+                <h3>Integrity</h3>
+
+                <p>
+                    We approach every matter with honesty,
+                    professionalism and respect.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="value">
+
+            <div class="value-number">02</div>
+
+            <div>
+
+                <h3>Clarity</h3>
+
+                <p>
+                    We explain legal issues in practical,
+                    understandable terms.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="value">
+
+            <div class="value-number">03</div>
+
+            <div>
+
+                <h3>Confidentiality</h3>
+
+                <p>
+                    We treat client information and legal
+                    matters with appropriate discretion.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="value">
+
+            <div class="value-number">04</div>
+
+            <div>
+
+                <h3>Client Focus</h3>
+
+                <p>
+                    We seek practical solutions that respond
+                    to the circumstances of each client.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<div class="values-panel">
+
+    <h3>
+        Your legal matter deserves
+        thoughtful attention.
+    </h3>
+
+    <p>
+        Whether you are an individual, family, entrepreneur
+        or established organisation, our team is committed
+        to providing considered legal guidance.
+    </p>
+
+</div>
+```
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     BLOG / LEGAL INSIGHTS
+     ===================================================== -->
+
+<section class="blog-section">
+
+<div class="container">
+
+<div class="blog-header">
+
+```
+<div class="blog-header-copy">
+
+    <div class="eyebrow">
+        Legal Insights
+    </div>
+
+    <h2 class="section-title">
+        Practical perspectives
+        on the law.
+    </h2>
+
+</div>
+
+<a href="blog.html" class="view-all">
+    View All Insights
+    <i class="fa-solid fa-arrow-right"></i>
+</a>
+```
 
 </div>
 
 <div id="latestBlogs" class="blog-grid">
 
-<p class="empty-blog">Loading articles...</p>
-
-</div>
-
-<div class="blog-button">
-
-<a href="blog.html">
-View All Articles
-<i class="fa-solid fa-arrow-right"></i>
-</a>
+```
+<p class="empty-blog">
+    Loading legal insights...
+</p>
+```
 
 </div>
 
@@ -259,21 +1350,43 @@ View All Articles
 
 </section>
 
-<section class="section">
+<!-- =====================================================
+     CONSULTATION CTA
+     ===================================================== -->
+
+<section class="cta">
 
 <div class="container">
 
-<h2>Need Legal Assistance?</h2>
+<div class="cta-content">
 
-<p>
-Speak with our team about your legal matter.
-</p>
+```
+<div>
 
-<br>
+    <h2>
+        Have a legal matter
+        that needs attention?
+    </h2>
 
-<a href="contact.html" class="btn">
-Book a Consultation
-</a>
+    <p>
+        Start the conversation with our team and
+        tell us how we can assist you.
+    </p>
+
+</div>
+
+
+<div class="cta-action">
+
+    <a href="contact.html" class="btn-primary">
+        Book a Consultation
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+
+</div>
+```
+
+</div>
 
 </div>
 
@@ -281,114 +1394,321 @@ Book a Consultation
 
 </main>
 
-<footer>
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
 
-<p>
-© <span id="year"></span> Apex Legal Advocates.
-All Rights Reserved.
-</p>
+<footer class="footer">
+
+<div class="container">
+
+<div class="footer-grid">
+
+```
+<div class="footer-brand">
+
+    <a href="index.html" class="logo">
+
+        <div class="logo-mark">
+            <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+
+        <div class="logo-text">
+            <strong>Apex Legal</strong>
+            <span>Advocates · Kenya</span>
+        </div>
+
+    </a>
+
+    <p>
+        Professional, practical and client-focused
+        legal services.
+    </p>
+
+</div>
+
+
+<div>
+
+    <h4>Explore</h4>
+
+    <ul class="footer-links">
+
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#services">Practice Areas</a></li>
+        <li><a href="blog.html">Legal Insights</a></li>
+
+    </ul>
+
+</div>
+
+
+<div>
+
+    <h4>Services</h4>
+
+    <ul class="footer-links">
+
+        <li><a href="#services">Corporate Law</a></li>
+        <li><a href="#services">Conveyancing</a></li>
+        <li><a href="#services">Dispute Resolution</a></li>
+        <li><a href="#services">Family Law</a></li>
+
+    </ul>
+
+</div>
+
+
+<div>
+
+    <h4>Client Services</h4>
+
+    <ul class="footer-links">
+
+        <li><a href="contact.html">Book Consultation</a></li>
+        <li><a href="login.html">Staff Login</a></li>
+        <li><a href="blog.html">Legal Insights</a></li>
+
+    </ul>
+
+</div>
+```
+
+</div>
+
+<div class="footer-bottom">
+
+```
+<span>
+    © <span id="year"></span> Apex Legal Advocates.
+    All Rights Reserved.
+</span>
+
+<span>
+    Professional legal services in Kenya.
+</span>
+```
+
+</div>
+
+</div>
 
 </footer>
+
+<!-- =====================================================
+     SCRIPTS
+     ===================================================== -->
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <script>
 
-const SUPABASE_URL=
+const SUPABASE_URL =
 "https://hjbrllpbpajzmgpgkadf.supabase.co";
 
-const SUPABASE_KEY=
+const SUPABASE_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFxem1ncGdrYWRmIiwiaWF0IjoxNzg2Njk2MTkyLCJleHAiOjIxMDIyNzIxOTJ9.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4";
 
-const db=supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+const db = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
-document.getElementById("year").textContent=
-new Date().getFullYear();
 
-async function loadLatestBlogs(){
+/* YEAR */
 
-    const {data,error}=await db
-        .from("blogs")
-        .select("*")
-        .eq("status","published")
-        .order("created_at",{ascending:false})
-        .limit(3);
+document.getElementById("year").textContent =
+    new Date().getFullYear();
 
-    const container=
-        document.getElementById("latestBlogs");
 
-    if(error){
-        console.error(error);
+/* MOBILE NAVIGATION */
 
-        container.innerHTML=
-        `<p class="empty-blog">
-        Our latest legal insights will appear here.
-        </p>`;
+const mobileMenu =
+    document.getElementById("mobileMenu");
 
-        return;
+const navLinks =
+    document.getElementById("navLinks");
+
+mobileMenu.addEventListener("click",function(){
+
+    navLinks.classList.toggle("open");
+
+    const icon =
+        mobileMenu.querySelector("i");
+
+    if(navLinks.classList.contains("open")){
+        icon.className = "fa-solid fa-xmark";
+    }else{
+        icon.className = "fa-solid fa-bars";
     }
 
-    if(!data || !data.length){
+});
 
-        container.innerHTML=
-        `<p class="empty-blog">
-        Our latest legal insights will appear here.
-        </p>`;
 
-        return;
-    }
+document.querySelectorAll("#navLinks a").forEach(link => {
 
-    container.innerHTML=data.map(post=>`
+    link.addEventListener("click",function(){
 
-    <article class="blog-card">
+        navLinks.classList.remove("open");
 
-        ${
-            post.image_url
-            ? `<img src="${escapeAttr(post.image_url)}"
-                alt="${escapeAttr(post.title)}">`
-            :""
-        }
+        const icon =
+            mobileMenu.querySelector("i");
 
-        <div class="blog-body">
+        icon.className = "fa-solid fa-bars";
 
-            <span class="blog-category">
-                ${escapeHtml(post.category||"Legal Insights")}
-            </span>
+    });
 
-            <h3>${escapeHtml(post.title)}</h3>
+});
 
-            <p>
-                ${escapeHtml(post.excerpt||"")}
-            </p>
 
-            <a class="blog-link"
-            href="blog.html#${escapeAttr(post.slug)}">
-                Read Article →
-            </a>
-
-        </div>
-
-    </article>
-
-    `).join("");
-}
+/* SAFE HTML ESCAPING */
 
 function escapeHtml(value){
 
-    return String(value||"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
 }
 
-function escapeAttr(value){
-    return escapeHtml(value);
+
+/* LOAD LATEST BLOG POSTS */
+
+async function loadLatestBlogs(){
+
+    const container =
+        document.getElementById("latestBlogs");
+
+    try{
+
+        const {data,error} = await db
+            .from("blogs")
+            .select("*")
+            .eq("status","published")
+            .order("created_at",{ascending:false})
+            .limit(3);
+
+
+        if(error){
+
+            console.error("Blog loading error:",error);
+
+            container.innerHTML = `
+                <p class="empty-blog">
+                    Our latest legal insights will appear here.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        if(!data || !data.length){
+
+            container.innerHTML = `
+                <p class="empty-blog">
+                    Our latest legal insights will appear here.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML = data.map(post => {
+
+            const title =
+                escapeHtml(post.title);
+
+            const category =
+                escapeHtml(
+                    post.category || "Legal Insights"
+                );
+
+            const excerpt =
+                escapeHtml(
+                    post.excerpt ||
+                    "Read the latest legal insight from Apex Legal Advocates."
+                );
+
+            const slug =
+                encodeURIComponent(
+                    String(post.slug || post.id || "")
+                );
+
+
+            const image =
+                post.image_url
+                ? `
+                    <img
+                        class="blog-image"
+                        src="${escapeHtml(post.image_url)}"
+                        alt="${title}"
+                        loading="lazy">
+                  `
+                : `
+                    <div class="blog-placeholder">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                  `;
+
+
+            return `
+
+                <article class="blog-card">
+
+                    ${image}
+
+                    <div class="blog-body">
+
+                        <span class="blog-category">
+                            ${category}
+                        </span>
+
+                        <h3>
+                            ${title}
+                        </h3>
+
+                        <p>
+                            ${excerpt}
+                        </p>
+
+                        <a
+                            href="blog.html#${slug}"
+                            class="blog-link">
+
+                            Read Article
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            `;
+
+        }).join("");
+
+
+    }catch(error){
+
+        console.error("Unexpected blog error:",error);
+
+        container.innerHTML = `
+            <p class="empty-blog">
+                Our latest legal insights will appear here.
+            </p>
+        `;
+
+    }
+
 }
+
 
 loadLatestBlogs();
 
@@ -396,4 +1716,3 @@ loadLatestBlogs();
 
 </body>
 </html>
-```
