@@ -1,108 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Login | Apex Legal Advocates</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        .role-selector { display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; }
-        .role-pill {
-            padding: 10px 24px; border: 2px solid var(--olive); border-radius: 50px;
-            cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: all 0.2s;
-            background: white; color: var(--navy);
-        }
-        .role-pill.active { background: var(--navy); color: white; border-color: var(--navy); }
-        .role-pill:hover:not(.active) { border-color: var(--gold); }
-        .back-home { text-align: center; margin-top: 20px; }
-        .back-home a { color: var(--navy); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
-    </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Staff Login | Apex Legal Advocates</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<link rel="stylesheet" href="home.css">
+
+
+<style>
+
+.auth-page{
+
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#f8f9fa;
+
+}
+
+
+.auth-card{
+
+background:white;
+width:100%;
+max-width:420px;
+padding:40px;
+border-radius:10px;
+box-shadow:0 15px 40px rgba(0,0,0,.12);
+
+}
+
+
+.auth-card h2{
+
+color:#0c1e36;
+text-align:center;
+
+}
+
+
+.form-group{
+
+margin-bottom:20px;
+
+}
+
+
+.form-group label{
+
+display:block;
+font-weight:600;
+margin-bottom:6px;
+
+}
+
+
+.form-group input{
+
+width:100%;
+padding:14px;
+border:1px solid #ddd;
+border-radius:6px;
+
+}
+
+
+
+.navy-btn{
+
+width:100%;
+padding:14px;
+background:#0c1e36;
+color:white;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+
+
+.navy-btn:hover{
+
+background:#c5a059;
+
+}
+
+
+
+.alert{
+
+display:none;
+padding:12px;
+margin-bottom:15px;
+border-radius:6px;
+
+}
+
+
+.alert.success{
+
+background:#dcfce7;
+color:#166534;
+
+}
+
+
+.alert.error{
+
+background:#fee2e2;
+color:#991b1b;
+
+}
+
+
+.back-home{
+
+text-align:center;
+margin-top:20px;
+
+}
+
+
+.back-home a{
+
+color:#0c1e36;
+text-decoration:none;
+
+}
+
+
+</style>
+
 </head>
+
+
+
 <body class="auth-page">
 
+
 <div class="auth-card">
-    <div style="text-align:center; margin-bottom:24px;">
-        <h2 style="color:var(--navy); font-size:1.5rem;"><i class="fas fa-gavel" style="color:var(--gold);"></i> Apex Legal</h2>
-        <p style="color:#64748b; font-size:0.85rem; margin-top:4px;">Staff & Admin Portal</p>
-    </div>
 
-    <div class="role-selector">
-        <div class="role-pill active" onclick="setRole('advocate', this)">Advocate</div>
-        <div class="role-pill" onclick="setRole('admin', this)">Administrator</div>
-    </div>
 
-    <div id="loginAlert" class="alert"></div>
+<h2>
+<i class="fa-solid fa-scale-balanced"></i>
+Apex Legal
+</h2>
 
-    <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="loginEmail" required placeholder="you@apexlegal.co.ke">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="loginPassword" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="navy-btn" id="loginBtn">
-            <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-    </form>
 
-    <div class="back-home">
-        <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Website</a>
-    </div>
+<p style="text-align:center;color:#666;margin-bottom:30px;">
+Staff Portal
+</p>
+
+
+
+<div id="loginAlert" class="alert"></div>
+
+
+
+<form onsubmit="handleLogin(event)">
+
+
+<div class="form-group">
+
+<label>Email Address</label>
+
+<input 
+type="email"
+id="email"
+placeholder="staff@apexlegal.co.ke"
+required>
+
 </div>
 
+
+
+<div class="form-group">
+
+<label>Password</label>
+
+<input
+type="password"
+id="password"
+placeholder="Password"
+required>
+
+</div>
+
+
+
+
+<button class="navy-btn" id="loginBtn">
+
+<i class="fa-solid fa-right-to-bracket"></i>
+Login
+
+</button>
+
+
+</form>
+
+
+
+<div class="back-home">
+
+<a href="index.html">
+<i class="fa-solid fa-arrow-left"></i>
+Back to Website
+</a>
+
+</div>
+
+
+</div>
+
+
+
+
+
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
 <script src="auth.js"></script>
 <script>
-    let currentRole = 'advocate';
 
-    function setRole(role, el) {
-        currentRole = role;
-        document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('loginEmail').placeholder = role === 'admin' ? 'admin@apexlegal.co.ke' : 'you@apexlegal.co.ke';
-    }
+function showAlert(message,error=false){
 
-    function showAlert(msg, isError) {
-        const el = document.getElementById('loginAlert');
-        el.textContent = msg;
-        el.className = 'alert ' + (isError ? 'error' : 'success');
-        el.style.display = 'block';
-    }
+const box=document.getElementById("loginAlert");
 
-    async function handleLogin(e) {
-        e.preventDefault();
-        const btn = document.getElementById('loginBtn');
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value;
+box.textContent=message;
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in...';
+box.className =
+"alert "+(error?"error":"success");
 
-        try {
-            let result;
-            if (currentRole === 'admin') {
-                result = await ApexAuth.loginAdmin(email, password);
-            } else {
-                result = await ApexAuth.loginAdvocate(email, password);
-            }
+box.style.display="block";
 
-            showAlert('Login successful! Redirecting...', false);
+}
 
-            setTimeout(() => {
-                // FIXED: admin-dashboard.html instead of admin.html
-                if (result.role === 'admin') window.location.href = 'admin-dashboard.html';
-                else window.location.href = 'staff-dashboard.html';
-            }, 800);
 
-        } catch (err) {
-            showAlert(err.message || 'Login failed', true);
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-        }
-    }
+
+
+
+async function handleLogin(e){
+
+e.preventDefault();
+
+
+const btn=document.getElementById("loginBtn");
+
+btn.disabled=true;
+
+btn.innerHTML="Logging in...";
+
+
+
+const email =
+document.getElementById("email")
+.value.trim()
+.toLowerCase();
+
+
+
+const password =
+document.getElementById("password")
+.value;
+
+
+
+try{
+
+
+let result;
+
+
+try{
+
+result =
+await ApexAuth.loginAdmin(
+email,
+password
+);
+
+
+}
+
+catch{
+
+result =
+await ApexAuth.loginAdvocate(
+email,
+password
+);
+
+}
+
+
+
+
+showAlert(
+"Login successful"
+);
+
+
+
+setTimeout(()=>{
+
+
+if(result.role==="admin"){
+
+window.location.href=
+"admin-dashboard.html";
+
+}
+
+else{
+
+window.location.href=
+"advocate-dashboard.html";
+
+}
+
+
+},800);
+
+
+
+}
+
+catch(err){
+
+
+showAlert(
+err.message,
+true
+);
+
+
+btn.disabled=false;
+
+btn.innerHTML="Login";
+
+
+}
+
+
+}
+
+
 </script>
+
+
 </body>
+
+
 </html>

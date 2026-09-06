@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Legal Insights | Apex Legal Advocates</title>
+
+<link rel="stylesheet" href="home.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+.blog-page{
+    max-width:1150px;
+    margin:auto;
+    padding:70px 20px;
+}
+
+.blog-header{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.blog-header h1{
+    color:#0c1e36;
+    font-size:38px;
+    margin-bottom:12px;
+}
+
+.blog-header p{
+    color:#64748b;
+}
+
+.blog-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+    gap:28px;
+}
+
+.article{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+}
+
+.article-image{
+    width:100%;
+    height:210px;
+    object-fit:cover;
+}
+
+.article-body{
+    padding:24px;
+}
+
+.category{
+    color:#c5a059;
+    font-size:11px;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+
+.article h2{
+    color:#0c1e36;
+    font-size:21px;
+    margin:8px 0;
+}
+
+.date{
+    color:#94a3b8;
+    font-size:12px;
+    margin-bottom:12px;
+}
+
+.excerpt{
+    color:#64748b;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.read{
+    margin-top:18px;
+    border:0;
+    background:#0c1e36;
+    color:white;
+    padding:10px 16px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.full-article{
+    display:none;
+    max-width:850px;
+    margin:40px auto;
+    background:white;
+    padding:35px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+}
+
+.full-article.active{
+    display:block;
+}
+
+.full-article h1{
+    color:#0c1e36;
+    margin-bottom:10px;
+}
+
+.full-content{
+    margin-top:25px;
+    color:#334155;
+    line-height:1.8;
+    white-space:pre-wrap;
+}
+
+.back{
+    display:inline-block;
+    margin-bottom:20px;
+    color:#0c1e36;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.message{
+    text-align:center;
+    color:#64748b;
+    padding:30px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<nav>
+
+<div class="logo">
+<a href="index.html">Apex Legal</a>
+</div>
+
+<div class="nav-links">
+
+<a href="index.html">Home</a>
+
+<a href="index.html#about">About Us</a>
+
+<a href="index.html#services">Practice Areas</a>
+
+<a href="blog.html">Blog</a>
+
+<a href="contact.html">Book Consultation</a>
+
+<a href="login.html">Staff Login</a>
+
+</div>
+
+</nav>
+
+</header>
+
+<main class="blog-page">
+
+<div class="blog-header">
+
+<h1>Legal Insights</h1>
+
+<p>
+Practical legal information and insights from Apex Legal Advocates.
+</p>
+
+</div>
+
+<div id="articleList" class="blog-grid">
+
+<div class="message">
+Loading articles...
+</div>
+
+</div>
+
+<article id="fullArticle" class="full-article">
+
+<a href="blog.html" class="back">
+← Back to Articles
+</a>
+
+<h1 id="fullTitle"></h1>
+
+<div id="fullDate" class="date"></div>
+
+<div id="fullContent" class="full-content"></div>
+
+</article>
+
+</main>
+
+<footer>
+
+<p>
+© <span id="year"></span> Apex Legal Advocates.
+All Rights Reserved.
+</p>
+
+</footer>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL=
+"https://hjbrllpbpajzmgpgkadf.supabase.co";
+
+const SUPABASE_KEY=
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFxem1ncGdrYWRmIiwiaWF0IjoxNzg2Njk2MTkyLCJleHAiOjIxMDIyNzIxOTJ9.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4";
+
+const db=supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+let articles=[];
+
+document.getElementById("year").textContent=
+new Date().getFullYear();
+
+async function loadArticles(){
+
+    const {data,error}=await db
+        .from("blogs")
+        .select("*")
+        .eq("status","published")
+        .order("created_at",{ascending:false});
+
+    const list=
+        document.getElementById("articleList");
+
+    if(error){
+
+        console.error(error);
+
+        list.innerHTML=
+        `<div class="message">
+        Unable to load articles at this time.
+        </div>`;
+
+        return;
+    }
+
+    articles=data||[];
+
+    if(!articles.length){
+
+        list.innerHTML=
+        `<div class="message">
+        No published articles yet.
+        </div>`;
+
+        return;
+    }
+
+    list.innerHTML=articles.map(article=>`
+
+    <article class="article" id="${escapeAttr(article.slug)}">
+
+        ${
+            article.image_url
+            ? `<img class="article-image"
+                src="${escapeAttr(article.image_url)}"
+                alt="${escapeAttr(article.title)}">`
+            :""
+        }
+
+        <div class="article-body">
+
+            <div class="category">
+                ${escapeHtml(article.category||"Legal Insights")}
+            </div>
+
+            <h2>${escapeHtml(article.title)}</h2>
+
+            <div class="date">
+                ${formatDate(article.created_at)}
+                · ${escapeHtml(article.author||"Apex Legal Advocates")}
+            </div>
+
+            <p class="excerpt">
+                ${escapeHtml(article.excerpt||"")}
+            </p>
+
+            <button class="read"
+            onclick="openArticle('${escapeAttr(article.slug)}')">
+                Read Article
+            </button>
+
+        </div>
+
+    </article>
+
+    `).join("");
+
+    openHashArticle();
+}
+
+function openArticle(slug){
+
+    const article=
+        articles.find(a=>a.slug===slug);
+
+    if(!article)return;
+
+    document.getElementById("articleList")
+        .style.display="none";
+
+    const full=
+        document.getElementById("fullArticle");
+
+    document.getElementById("fullTitle")
+        .textContent=article.title;
+
+    document.getElementById("fullDate")
+        .textContent=
+        formatDate(article.created_at)+
+        " · "+
+        (article.author||"Apex Legal Advocates");
+
+    document.getElementById("fullContent")
+        .textContent=article.content;
+
+    full.classList.add("active");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+function openHashArticle(){
+
+    const slug=
+        window.location.hash.substring(1);
+
+    if(slug){
+        setTimeout(()=>{
+            openArticle(slug);
+        },100);
+    }
+}
+
+window.addEventListener(
+"hashchange",
+openHashArticle
+);
+
+function formatDate(value){
+
+    if(!value)return "";
+
+    const d=new Date(value);
+
+    return isNaN(d)
+        ? ""
+        : d.toLocaleDateString(
+            undefined,
+            {
+                year:"numeric",
+                month:"long",
+                day:"numeric"
+            }
+        );
+}
+
+function escapeHtml(value){
+
+    return String(value||"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function escapeAttr(value){
+    return escapeHtml(value);
+}
+
+loadArticles();
+
+</script>
+
+</body>
+</html>
+

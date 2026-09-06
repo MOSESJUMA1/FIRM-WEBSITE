@@ -1,84 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Apex Legal Advocates — Corporate, Conveyancing and Dispute Resolution counsel based in Kisumu, Kenya.">
-    <title>Apex Legal Advocates | Premier Law Firm in Kenya</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="home.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Apex Legal Advocates | Kenya</title>
+
+<link rel="stylesheet" href="home.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+.blog-preview{
+    padding:70px 20px;
+    background:#f7f5ef;
+}
+
+.blog-preview-inner{
+    max-width:1150px;
+    margin:auto;
+}
+
+.section-heading{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.section-heading h2{
+    color:#0c1e36;
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.section-heading p{
+    color:#64748b;
+}
+
+.blog-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.blog-card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid #e5e7eb;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+}
+
+.blog-card img{
+    width:100%;
+    height:190px;
+    object-fit:cover;
+}
+
+.blog-body{
+    padding:22px;
+}
+
+.blog-category{
+    font-size:11px;
+    font-weight:bold;
+    color:#c5a059;
+    text-transform:uppercase;
+}
+
+.blog-body h3{
+    color:#0c1e36;
+    margin:8px 0;
+}
+
+.blog-body p{
+    color:#64748b;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.blog-link{
+    display:inline-block;
+    margin-top:15px;
+    color:#0c1e36;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.blog-link:hover{
+    color:#c5a059;
+}
+
+.blog-button{
+    text-align:center;
+    margin-top:35px;
+}
+
+.blog-button a{
+    display:inline-block;
+    background:#0c1e36;
+    color:white;
+    padding:13px 25px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.empty-blog{
+    text-align:center;
+    color:#64748b;
+}
+
+</style>
+
 </head>
+
 <body>
 
-    <div class="top-bar">
-        <div class="container">
-            <span><i class="fa-solid fa-location-dot"></i> Lakebasin Mall, Kisumu-Kakamega Road, Kisumu</span>
-            <span><i class="fa-solid fa-phone"></i> +254 741801897</span>
+<header>
+
+<nav>
+
+<div class="logo">
+<a href="index.html">Apex Legal</a>
+</div>
+
+<div class="nav-links">
+
+<a href="index.html">Home</a>
+
+<a href="index.html#about">About Us</a>
+
+<a href="index.html#services">Practice Areas</a>
+
+<a href="blog.html">Blog</a>
+
+<a href="contact.html">Book Consultation</a>
+
+<a href="login.html">Staff Login</a>
+
+</div>
+
+</nav>
+
+</header>
+
+<main>
+
+<section class="hero">
+
+<div class="hero-content">
+
+<h1>Trusted Legal Counsel.<br>Practical Solutions.</h1>
+
+<p>
+Apex Legal Advocates provides professional,
+client-focused legal services with integrity,
+clarity and commitment.
+</p>
+
+<a href="contact.html" class="btn">
+Book a Consultation
+</a>
+
+</div>
+
+</section>
+
+<section id="about" class="section">
+
+<div class="container">
+
+<h2>About Apex Legal</h2>
+
+<p>
+We are committed to providing reliable and practical
+legal representation while protecting the interests
+of our clients.
+</p>
+
+</div>
+
+</section>
+
+<section id="services" class="section">
+
+<div class="container">
+
+<h2>Our Practice Areas</h2>
+
+<div class="cards">
+
+<div class="card">
+<i class="fa-solid fa-building"></i>
+<h3>Corporate Law</h3>
+<p>Legal support for businesses, companies and commercial transactions.</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-house"></i>
+<h3>Conveyancing</h3>
+<p>Professional assistance with property transactions and documentation.</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-scale-balanced"></i>
+<h3>Dispute Resolution</h3>
+<p>Strategic representation and resolution of legal disputes.</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-people-roof"></i>
+<h3>Family Law</h3>
+<p>Practical legal guidance on family and related matters.</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- BLOG -->
+
+<section class="blog-preview">
+
+<div class="blog-preview-inner">
+
+<div class="section-heading">
+
+<h2>Legal Insights</h2>
+
+<p>
+Stay informed with practical legal information
+from Apex Legal Advocates.
+</p>
+
+</div>
+
+<div id="latestBlogs" class="blog-grid">
+
+<p class="empty-blog">Loading articles...</p>
+
+</div>
+
+<div class="blog-button">
+
+<a href="blog.html">
+View All Articles
+<i class="fa-solid fa-arrow-right"></i>
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="container">
+
+<h2>Need Legal Assistance?</h2>
+
+<p>
+Speak with our team about your legal matter.
+</p>
+
+<br>
+
+<a href="contact.html" class="btn">
+Book a Consultation
+</a>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+
+<p>
+© <span id="year"></span> Apex Legal Advocates.
+All Rights Reserved.
+</p>
+
+</footer>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL=
+"https://hjbrllpbpajzmgpgkadf.supabase.co";
+
+const SUPABASE_KEY=
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFxem1ncGdrYWRmIiwiaWF0IjoxNzg2Njk2MTkyLCJleHAiOjIxMDIyNzIxOTJ9.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4";
+
+const db=supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+document.getElementById("year").textContent=
+new Date().getFullYear();
+
+async function loadLatestBlogs(){
+
+    const {data,error}=await db
+        .from("blogs")
+        .select("*")
+        .eq("status","published")
+        .order("created_at",{ascending:false})
+        .limit(3);
+
+    const container=
+        document.getElementById("latestBlogs");
+
+    if(error){
+        console.error(error);
+
+        container.innerHTML=
+        `<p class="empty-blog">
+        Our latest legal insights will appear here.
+        </p>`;
+
+        return;
+    }
+
+    if(!data || !data.length){
+
+        container.innerHTML=
+        `<p class="empty-blog">
+        Our latest legal insights will appear here.
+        </p>`;
+
+        return;
+    }
+
+    container.innerHTML=data.map(post=>`
+
+    <article class="blog-card">
+
+        ${
+            post.image_url
+            ? `<img src="${escapeAttr(post.image_url)}"
+                alt="${escapeAttr(post.title)}">`
+            :""
+        }
+
+        <div class="blog-body">
+
+            <span class="blog-category">
+                ${escapeHtml(post.category||"Legal Insights")}
+            </span>
+
+            <h3>${escapeHtml(post.title)}</h3>
+
+            <p>
+                ${escapeHtml(post.excerpt||"")}
+            </p>
+
+            <a class="blog-link"
+            href="blog.html#${escapeAttr(post.slug)}">
+                Read Article →
+            </a>
+
         </div>
-    </div>
 
-    <header>
-        <div class="container navbar">
-            <div class="logo">
-                <a href="index.html">Apex<span>Legal</span></a>
-            </div>
-            <nav data-apex-nav>
-                <ul da>
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="index.html#services">Practice Areas</a></li>
-                    <li><a href="team.html">Our Team</a></li>
-                    <li><a href="contact.html" class="btn-nav active">Book Consultation</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    </article>
 
-    <section id="home" class="hero">
-        <div class="container hero-content">
-            <h1>Trusted Legal Counsel & Advocacy in Kenya</h1>
-            <p>Providing expert legal solutions in Corporate Law, Conveyancing, and Dispute Resolution with integrity and excellence.</p>
-            <a href="contact.html" class="btn-primary">Schedule a Consultation</a>
-        </div>
-    </section>
+    `).join("");
+}
 
-    <section id="services" class="services">
-        <div class="container">
-            <h2>Our Practice Areas</h2>
-            <div class="services-grid">
-                <div class="service-card" data-matter="MATTER — CORP/01">
-                    <i class="fa-solid fa-building-shield"></i>
-                    <h3>Corporate & Commercial Law</h3>
-                    <p>Business setups, compliance, contract drafting, and intellectual property protection.</p>
-                </div>
-                <div class="service-card" data-matter="MATTER — LAND/02">
-                    <i class="fa-solid fa-house-chimney-user"></i>
-                    <h3>Conveyancing & Real Estate</h3>
-                    <p>Assisting with land searches, property transfers, title deeds, and commercial leasing.</p>
-                </div>
-                <div class="service-card" data-matter="MATTER — DISP/03">
-                    <i class="fa-solid fa-gavel"></i>
-                    <h3>Dispute Resolution</h3>
-                    <p>Civil litigation, commercial arbitration, and alternative mediation processes.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+function escapeHtml(value){
 
-    <footer>
-        <div class="container">
-            <p class="disclaimer"><strong>Disclaimer:</strong> The information provided on this website does not, and is not intended to, constitute formal legal advice. All content, text, and materials available on this site are for general informational purposes only. Transmission or receipt of these materials does not create an Advocate-Client relationship.</p>
-            <hr>
-            <p class="copyright">&copy; 2026 Apex Legal Advocates. All Rights Reserved. Regulated by the Law Society of Kenya.</p>
-        </div>
-    </footer>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    return String(value||"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
 
-    <script>
-        window.NEXT_PUBLIC_BASE_URL = "https://hjbrllpbpajzmgpgkadf.supabase.co/rest/v1/";
-        window.NEXT_PUBLIC_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFqem1ncGdrYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2OTYxOTIsImV4cCI6MjEwMjI3MjE5Mn0.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4";
-    </script>
+function escapeAttr(value){
+    return escapeHtml(value);
+}
 
-    <script src="script.js"></script>
+loadLatestBlogs();
+
+</script>
+
 </body>
 </html>
+```

@@ -1,729 +1,1395 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal | Apex Legal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --navy: #1a3a52;
-            --navy-light: #2a4a6a;
-            --olive: #c5d1b9;
-            --olive-light: #e8ede3;
-            --olive-dark: #a8b5a0;
-            --white: #ffffff;
-            --cream: #f7f9f4;
-            --gold: #b8a88a;
-            --shadow: 0 8px 32px rgba(26,58,82,0.12), 0 2px 8px rgba(168,181,160,0.2);
-            --shadow-hover: 0 16px 48px rgba(26,58,82,0.15), 0 4px 12px rgba(168,181,160,0.3);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--cream); color: var(--navy); min-height: 100vh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Apex Legal</title>
 
-        /* Wavy Header */
-        .wave-header {
-            background: var(--navy);
-            color: white;
-            padding: 32px 24px 60px;
-            position: relative;
-            text-align: center;
-        }
-        .wave-header h1 { font-size: 26px; margin-bottom: 6px; }
-        .wave-header p { opacity: 0.8; font-size: 13px; }
-        .wave-divider {
-            position: absolute;
-            bottom: -1px; left: 0; width: 100%;
-            overflow: hidden; line-height: 0;
-        }
-        .wave-divider svg { display: block; width: 100%; height: 48px; }
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-        /* Login */
-        .login-container {
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; background: var(--cream); padding: 20px;
-        }
-        .floating-login {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 40px;
-            width: 100%; max-width: 420px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--olive);
-            position: relative;
-            z-index: 2;
-            margin-top: -30px;
-        }
-        .form-group { margin-bottom: 18px; }
-        .form-group label {
-            display: block; margin-bottom: 6px;
-            font-size: 12px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            color: var(--navy);
-        }
-        .form-group input, .form-group select {
-            width: 100%; padding: 12px 14px;
-            border: 2px solid var(--olive);
-            border-radius: 12px;
-            font-size: 14px; background: var(--cream);
-            transition: all 0.2s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--navy);
-            box-shadow: 0 0 0 4px rgba(26,58,82,0.08);
-        }
-        .navy-btn {
-            width: 100%; padding: 14px;
-            background: var(--navy); color: white;
-            border: none; border-radius: 50px;
-            font-size: 15px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-            box-shadow: 0 4px 16px rgba(26,58,82,0.3);
-        }
-        .navy-btn:hover { transform: translateY(-2px); background: var(--navy-light); }
+<style>
+:root{
+    --navy:#0c1e36;
+    --gold:#c5a059;
+    --cream:#f7f5ef;
+    --white:#fff;
+    --border:#e5e7eb;
+    --muted:#64748b;
+    --green:#166534;
+    --red:#991b1b;
+}
 
-        /* Dashboard Layout */
-        .dashboard { display: none; }
-        .dash-wrapper { display: flex; min-height: 100vh; }
-        .sidebar {
-            width: 260px; background: var(--navy); color: white;
-            position: fixed; height: 100vh; left: 0; top: 0;
-            display: flex; flex-direction: column; z-index: 100;
-            border-right: 3px solid var(--olive-dark);
-        }
-        .sidebar-brand {
-            padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .sidebar-brand h2 { font-size: 18px; display: flex; align-items: center; gap: 10px; }
-        .sidebar-brand p { font-size: 11px; opacity: 0.7; margin-top: 4px; padding-left: 30px; }
-        .sidebar-nav { flex: 1; padding: 16px 12px; list-style: none; }
-        .sidebar-nav li { margin-bottom: 6px; }
-        .sidebar-nav a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; color: rgba(255,255,255,0.8);
-            text-decoration: none; border-radius: 12px;
-            font-size: 14px; transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .sidebar-nav a:hover, .sidebar-nav a.active {
-            background: rgba(197,209,185,0.15);
-            color: white; border-color: var(--olive-dark);
-            transform: translateX(4px);
-        }
-        .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .logout-btn {
-            width: 100%; padding: 10px;
-            background: rgba(255,255,255,0.1);
-            color: white; border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px; cursor: pointer; font-size: 14px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: all 0.2s;
-        }
-        .logout-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+*{box-sizing:border-box;margin:0;padding:0}
 
-        .main-content { flex: 1; margin-left: 260px; padding: 24px 32px; }
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f8;
+    color:#1e293b;
+}
 
-        /* Floating Stats */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px; margin-bottom: 28px;
-        }
-        .stat-float {
-            background: var(--white);
-            border-radius: 16px; padding: 22px;
-            border: 2px solid var(--olive);
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            display: flex; align-items: center; gap: 16px;
-        }
-        .stat-float:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--olive-dark);
-        }
-        .stat-icon {
-            width: 50px; height: 50px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; background: var(--olive-light);
-            color: var(--navy); border: 2px solid var(--olive);
-        }
-        .stat-info h3 { font-size: 26px; margin-bottom: 2px; color: var(--navy); }
-        .stat-info p { font-size: 12px; color: var(--olive-dark); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:250px;
+    background:var(--navy);
+    color:white;
+    padding:25px 15px;
+    z-index:10;
+}
 
-        /* Floating Cards */
-        .float-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 28px;
-            border: 2px solid var(--olive);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-        }
-        .float-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hover);
-        }
-        .float-card h2 {
-            font-size: 18px; margin-bottom: 20px;
-            padding-bottom: 14px; border-bottom: 2px solid var(--olive-light);
-            display: flex; align-items: center; gap: 10px;
-            color: var(--navy);
-        }
+.brand{
+    padding:10px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+    margin-bottom:20px;
+}
 
-        /* Tables */
-        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
-        .data-table th {
-            text-align: left; padding: 14px;
-            color: var(--olive-dark); font-weight: 700;
-            font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--olive);
-        }
-        .data-table td { padding: 14px; border-bottom: 1px solid var(--olive-light); }
-        .data-table tr:hover td { background: var(--olive-light); }
-        .badge {
-            display: inline-block; padding: 5px 12px;
-            border-radius: 50px; font-size: 11px; font-weight: 700;
-        }
-        .badge-pending { background: #fef3c7; color: #92400e; }
-        .badge-active { background: var(--olive-light); color: var(--navy); border: 1px solid var(--olive); }
-        .badge-completed { background: var(--navy); color: white; }
+.brand h2{font-size:20px}
+.brand p{font-size:12px;opacity:.7;margin-top:5px}
 
-        /* Buttons */
-        .btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border: none; border-radius: 50px;
-            font-size: 12px; font-weight: 700; cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn:hover { transform: translateY(-2px); }
-        .btn-olive { background: var(--olive-dark); color: var(--navy); }
-        .btn-olive:hover { background: var(--olive); }
-        .btn-navy { background: var(--navy); color: white; }
-        .btn-navy:hover { background: var(--navy-light); }
-        .btn-danger { background: #fee2e2; color: #991b1b; }
-        .btn-danger:hover { background: #fecaca; }
+.nav button{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:white;
+    text-align:left;
+    padding:13px 15px;
+    margin-bottom:5px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:14px;
+}
 
-        /* Modal */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(26,58,82,0.4); backdrop-filter: blur(4px);
-            justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-float {
-            background: var(--white);
-            border-radius: 24px; padding: 32px;
-            width: 90%; max-width: 500px;
-            border: 3px solid var(--olive);
-            box-shadow: var(--shadow-hover);
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 2px solid var(--olive-light);
-        }
-        .modal-header h3 { color: var(--navy); font-size: 18px; }
-        .close-x {
-            background: var(--olive-light); border: none;
-            width: 32px; height: 32px; border-radius: 50%;
-            cursor: pointer; font-size: 18px; color: var(--navy);
-            transition: all 0.2s;
-        }
-        .close-x:hover { background: var(--olive); transform: rotate(90deg); }
+.nav button:hover,
+.nav button.active{
+    background:rgba(255,255,255,.12);
+}
 
-        /* Token Generator */
-        .token-box {
-            background: var(--olive-light);
-            border: 2px dashed var(--olive-dark);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 16px;
-        }
-        .token-display {
-            font-family: monospace;
-            font-size: 16px;
-            color: var(--navy);
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 10px 0;
-            word-break: break-all;
-        }
+.logout{
+    position:absolute;
+    bottom:20px;
+    left:15px;
+    width:220px;
+    padding:12px;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.08);
+    color:white;
+    border-radius:7px;
+    cursor:pointer;
+}
 
-        /* Empty State */
-        .empty-state { text-align: center; padding: 40px; color: var(--olive-dark); }
-        .empty-state i { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+.main{
+    margin-left:250px;
+    padding:30px;
+}
 
-        /* Topbar */
-        .topbar {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 28px;
-        }
-        .topbar h2 { font-size: 22px; color: var(--navy); }
-        .user-pill {
-            display: flex; align-items: center; gap: 10px;
-            background: var(--white); padding: 8px 18px;
-            border-radius: 50px; box-shadow: var(--shadow);
-            font-size: 14px; font-weight: 700;
-            border: 2px solid var(--olive);
-        }
-        .user-pill i { color: var(--olive-dark); }
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .main-content { margin-left: 0; }
-        }
-    </style>
-<base target="_blank">
+.topbar h1{
+    color:var(--navy);
+    font-size:25px;
+}
+
+.user{
+    background:white;
+    padding:10px 15px;
+    border-radius:30px;
+    box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+
+.section{display:none}
+.section.active{display:block}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:white;
+    padding:22px;
+    border-radius:10px;
+    border:1px solid var(--border);
+}
+
+.stat i{
+    color:var(--gold);
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+.stat h2{
+    font-size:28px;
+    color:var(--navy);
+}
+
+.stat p{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:22px;
+    margin-bottom:22px;
+    border:1px solid var(--border);
+}
+
+.card h3{
+    color:var(--navy);
+    margin-bottom:18px;
+}
+
+.table-wrap{overflow-x:auto}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+th{
+    text-align:left;
+    background:#f8fafc;
+    color:var(--muted);
+    padding:12px;
+    white-space:nowrap;
+}
+
+td{
+    padding:12px;
+    border-top:1px solid var(--border);
+    vertical-align:top;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:10px;
+    border:1px solid #d1d5db;
+    border-radius:6px;
+    font:inherit;
+}
+
+textarea{min-height:100px;resize:vertical}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.field label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.btn{
+    padding:10px 15px;
+    border:0;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{background:var(--navy);color:white}
+.btn-gold{background:var(--gold);color:white}
+.btn-danger{background:#fee2e2;color:var(--red)}
+.btn-small{padding:6px 9px;font-size:12px}
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.badge-green{background:#dcfce7;color:#166534}
+.badge-yellow{background:#fef3c7;color:#92400e}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-blue{background:#dbeafe;color:#1e40af}
+
+.actions{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+}
+
+.message{
+    padding:12px;
+    border-radius:7px;
+    margin-bottom:15px;
+    display:none;
+}
+
+.success{background:#dcfce7;color:#166534}
+.error{background:#fee2e2;color:#991b1b}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:650px;
+    max-height:90vh;
+    overflow:auto;
+    padding:25px;
+    border-radius:10px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.close{
+    border:0;
+    background:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.token-box{
+    background:#f8fafc;
+    border:2px dashed var(--gold);
+    padding:20px;
+    text-align:center;
+    border-radius:8px;
+    margin-top:15px;
+}
+
+.token{
+    font-size:28px;
+    font-weight:bold;
+    letter-spacing:3px;
+    color:var(--navy);
+    margin:10px;
+}
+
+@media(max-width:800px){
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
+
+    .logout{
+        position:static;
+        margin-top:15px;
+        width:100%;
+    }
+
+    .main{
+        margin-left:0;
+        padding:15px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<!-- LOGIN -->
-<div id="loginSection" class="login-container">
-    <div style="width:100%;max-width:420px;">
-        <div class="wave-header" style="border-radius:20px 20px 0 0;">
-            <h1><i class="fas fa-crown"></i> Admin Portal</h1>
-            <p>Apex Legal Administration</p>
-            <div class="wave-divider">
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                    <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="#f7f9f4"></path>
-                </svg>
-            </div>
-        </div>
-        <div class="floating-login">
-            <div id="errorMessage" style="display:none; background:#fee2e2; color:#991b1b; padding:12px; border-radius:12px; margin-bottom:16px; font-size:13px;"></div>
-            <form onsubmit="handleAdminLogin(event)">
-                <div class="form-group">
-                    <label>Admin Password</label>
-                    <input type="password" id="adminPassword" required placeholder="Enter admin password">
-                </div>
-                <button type="submit" class="navy-btn"><i class="fas fa-lock"></i> Login</button>
-            </form>
-            <p style="margin-top:16px; font-size:12px; color:var(--olive-dark); text-align:center;">
-                Demo password: <strong>admin123</strong>
-            </p>
-        </div>
+<aside class="sidebar">
+    <div class="brand">
+        <h2><i class="fa-solid fa-scale-balanced"></i> Apex Legal</h2>
+        <p>Administrator Portal</p>
+    </div>
+
+    <div class="nav">
+        <button class="active" onclick="showSection('overview',this)">
+            <i class="fa-solid fa-chart-line"></i> Overview
+        </button>
+
+        <button onclick="showSection('bookings',this)">
+            <i class="fa-solid fa-calendar-check"></i> Consultations
+        </button>
+
+        <button onclick="showSection('advocates',this)">
+            <i class="fa-solid fa-users"></i> Advocates
+        </button>
+
+        <button onclick="showSection('tokens',this)">
+            <i class="fa-solid fa-key"></i> Client Tokens
+        </button>
+
+        <button onclick="showSection('blogs',this)">
+            <i class="fa-solid fa-newspaper"></i> Blog Management
+        </button>
+    </div>
+
+    <button class="logout" onclick="ApexAuth.logout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </button>
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+    <h1 id="pageTitle">Overview</h1>
+    <div class="user">
+        <i class="fa-solid fa-user-shield"></i>
+        <span id="adminName">Administrator</span>
     </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="dashboard">
-    <div class="dash-wrapper">
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <h2><i class="fas fa-gavel"></i> Apex Admin</h2>
-                <p>System Control</p>
-            </div>
-            <ul class="sidebar-nav">
-                <li><a href="#" class="active" onclick="switchView('overview', this)"><i class="fas fa-chart-line"></i> Overview</a></li>
-                <li><a href="#" onclick="switchView('cases', this)"><i class="fas fa-briefcase"></i> All Cases</a></li>
-                <li><a href="#" onclick="switchView('advocates', this)"><i class="fas fa-users"></i> Advocates</a></li>
-                <li><a href="#" onclick="switchView('tokens', this)"><i class="fas fa-key"></i> Client Tokens</a></li>
-                <li><a href="advocate.html" target="_blank"><i class="fas fa-external-link-alt"></i> Advocate Portal</a></li>
-            </ul>
-            <div class="sidebar-footer">
-                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
-        </aside>
+<!-- OVERVIEW -->
+<section id="overview" class="section active">
 
-        <main class="main-content">
-            <div class="topbar">
-                <h2 id="pageTitle">Overview</h2>
-                <div class="user-pill"><i class="fas fa-user-shield"></i> Administrator</div>
-            </div>
+<div class="stats">
+    <div class="stat">
+        <i class="fa-solid fa-calendar-check"></i>
+        <h2 id="totalBookings">0</h2>
+        <p>Total Consultations</p>
+    </div>
 
-            <!-- OVERVIEW -->
-            <div id="overview" class="content-section active">
-                <div class="stats-grid">
-                    <div class="stat-float">
-                        <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                        <div class="stat-info"><h3 id="totalCases">0</h3><p>Total Cases</p></div>
-                    </div>
-                    <div class="stat-float">
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="stat-info"><h3 id="totalAdvocates">0</h3><p>Advocates</p></div>
-                    </div>
-                    <div class="stat-float">
-                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                        <div class="stat-info"><h3 id="pendingCases">0</h3><p>Pending</p></div>
-                    </div>
-                    <div class="stat-float">
-                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-info"><h3 id="completedCases">0</h3><p>Completed</p></div>
-                    </div>
-                </div>
+    <div class="stat">
+        <i class="fa-solid fa-hourglass-half"></i>
+        <h2 id="pendingBookings">0</h2>
+        <p>Pending</p>
+    </div>
 
-                <div class="float-card">
-                    <h2><i class="fas fa-list"></i> Recent Cases</h2>
-                    <div id="recentCasesContainer"></div>
-                </div>
-            </div>
+    <div class="stat">
+        <i class="fa-solid fa-user-tie"></i>
+        <h2 id="totalAdvocates">0</h2>
+        <p>Active Advocates</p>
+    </div>
 
-            <!-- CASES -->
-            <div id="cases" class="content-section">
-                <div class="float-card">
-                    <h2><i class="fas fa-briefcase"></i> All Cases</h2>
-                    <div style="margin-bottom:16px;">
-                        <input type="text" id="caseSearch" placeholder="Search by client name or email..."
-                            style="padding:10px 16px; border:2px solid var(--olive); border-radius:50px; width:100%; max-width:320px; background:var(--cream);">
-                    </div>
-                    <div id="allCasesContainer"></div>
-                </div>
-            </div>
-
-            <!-- ADVOCATES -->
-            <div id="advocates" class="content-section">
-                <div class="float-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                        <h2 style="margin:0;"><i class="fas fa-users"></i> Advocates</h2>
-                        <button class="btn btn-navy" onclick="openAddAdvocateModal()"><i class="fas fa-plus"></i> Add Advocate</button>
-                    </div>
-                    <div id="advocatesContainer"></div>
-                </div>
-            </div>
-
-            <!-- TOKENS -->
-            <div id="tokens" class="content-section">
-                <div class="float-card">
-                    <h2><i class="fas fa-key"></i> Generate Client Access Token</h2>
-                    <p style="color:#666; font-size:13px; margin-bottom:16px;">Create a secure link for clients to view their case status.</p>
-                    <div class="form-group">
-                        <label>Select Case</label>
-                        <select id="tokenCaseSelect"><option value="">-- Choose a case --</option></select>
-                    </div>
-                    <button class="btn btn-navy" onclick="generateToken()"><i class="fas fa-magic"></i> Generate Token Link</button>
-                    <div id="tokenResult" class="token-box" style="display:none;">
-                        <div style="font-size:12px; color:var(--olive-dark); margin-bottom:8px;">Share this link with the client:</div>
-                        <div class="token-display" id="tokenLink"></div>
-                        <button class="btn btn-olive" onclick="copyToken()" style="margin-top:10px;"><i class="fas fa-copy"></i> Copy</button>
-                    </div>
-                </div>
-            </div>
-        </main>
+    <div class="stat">
+        <i class="fa-solid fa-newspaper"></i>
+        <h2 id="publishedBlogs">0</h2>
+        <p>Published Articles</p>
     </div>
 </div>
 
-<!-- Add Advocate Modal -->
-<div id="advocateModal" class="modal-overlay">
-    <div class="modal-float">
-        <div class="modal-header">
-            <h3><i class="fas fa-user-plus"></i> Add Advocate</h3>
-            <button class="close-x" onclick="closeModal('advocateModal')"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="form-group"><label>Full Name</label><input type="text" id="advocateName"></div>
-        <div class="form-group"><label>Email</label><input type="email" id="advocateEmail"></div>
-        <div class="form-group"><label>Phone</label><input type="tel" id="advocatePhone"></div>
-        <div class="form-group">
-            <label>Specialization</label>
-            <select id="advocateSpecialization">
-                <option>Corporate Law</option><option>Conveyancing</option>
-                <option>Dispute Resolution</option><option>Family Law</option><option>Criminal Law</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Status</label>
-            <select id="advocateStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select>
-        </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn btn-navy" onclick="saveAdvocate()" style="flex:1;">Save</button>
-            <button class="btn btn-olive" onclick="closeModal('advocateModal')" style="flex:1;">Cancel</button>
-        </div>
+<div class="card">
+    <h3>Recent Consultations</h3>
+    <div id="recentBookings"></div>
+</div>
+
+</section>
+
+<!-- BOOKINGS -->
+<section id="bookings" class="section">
+
+<div class="card">
+    <h3>Consultation Requests</h3>
+
+    <div id="bookingMessage" class="message"></div>
+
+    <div class="table-wrap">
+    <table>
+    <thead>
+    <tr>
+        <th>Client</th>
+        <th>Contact</th>
+        <th>Service</th>
+        <th>Date</th>
+        <th>Payment</th>
+        <th>Assigned Advocate</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="bookingsTable"></tbody>
+    </table>
     </div>
 </div>
 
-<!-- Assign Case Modal -->
-<div id="assignCaseModal" class="modal-overlay">
-    <div class="modal-float">
-        <div class="modal-header">
-            <h3><i class="fas fa-user-check"></i> Assign Case</h3>
-            <button class="close-x" onclick="closeModal('assignCaseModal')"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="form-group"><label>Client Name</label><input type="text" id="caseClientName" readonly></div>
-        <div class="form-group">
-            <label>Select Advocate</label>
-            <select id="advocateSelect"><option value="">-- Choose an advocate --</option></select>
-        </div>
-        <div class="form-group">
-            <label>Case Status</label>
-            <select id="assignCaseStatus">
-                <option>Pending</option><option>Assigned</option><option>In Progress</option><option>Completed</option>
-            </select>
-        </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn btn-navy" onclick="assignCaseToAdvocate()" style="flex:1;">Assign</button>
-            <button class="btn btn-olive" onclick="closeModal('assignCaseModal')" style="flex:1;">Cancel</button>
-        </div>
+</section>
+
+<!-- ADVOCATES -->
+<section id="advocates" class="section">
+
+<div class="card">
+    <h3>Advocates</h3>
+
+    <div class="table-wrap">
+    <table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Specialization</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="advocatesTable"></tbody>
+    </table>
     </div>
+</div>
+
+<div class="card">
+    <h3>Add Advocate</h3>
+
+    <div id="advocateMessage" class="message"></div>
+
+    <form onsubmit="addAdvocate(event)">
+
+        <div class="form-grid">
+
+            <div class="field">
+                <label>Full Name</label>
+                <input id="advName" required>
+            </div>
+
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="advEmail" required>
+            </div>
+
+            <div class="field">
+                <label>Phone</label>
+                <input id="advPhone">
+            </div>
+
+            <div class="field">
+                <label>Specialization</label>
+                <input id="advSpecialization">
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="advPassword" required>
+            </div>
+
+            <div class="field">
+                <label>Status</label>
+                <select id="advStatus">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="field">
+            <label>Bio</label>
+            <textarea id="advBio"></textarea>
+        </div>
+
+        <br>
+
+        <button class="btn btn-primary">
+            <i class="fa-solid fa-user-plus"></i> Add Advocate
+        </button>
+
+    </form>
+</div>
+
+</section>
+
+<!-- TOKENS -->
+<section id="tokens" class="section">
+
+<div class="card">
+
+    <h3>Generate Client Consultation Token</h3>
+
+    <p style="color:#64748b;font-size:13px;margin-bottom:18px;">
+        Generate a token for a consultation request and send it manually
+        to the client by email or SMS.
+    </p>
+
+    <div class="form-grid">
+
+        <div class="field">
+            <label>Select Client</label>
+            <select id="tokenBooking"></select>
+        </div>
+
+        <div class="field" style="display:flex;align-items:end">
+            <button class="btn btn-gold" onclick="generateClientToken()">
+                <i class="fa-solid fa-key"></i> Generate Token
+            </button>
+        </div>
+
+    </div>
+
+    <div id="tokenResult"></div>
+
+</div>
+
+<div class="card">
+    <h3>Existing Client Tokens</h3>
+    <div class="table-wrap">
+    <table>
+    <thead>
+    <tr>
+        <th>Client</th>
+        <th>Email</th>
+        <th>Token</th>
+        <th>Status</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody id="tokensTable"></tbody>
+    </table>
+    </div>
+</div>
+
+</section>
+
+<!-- BLOGS -->
+<section id="blogs" class="section">
+
+<div class="card">
+
+<h3>Create Blog Article</h3>
+
+<div id="blogMessage" class="message"></div>
+
+<form onsubmit="createBlog(event)">
+
+<div class="form-grid">
+
+<div class="field">
+<label>Title</label>
+<input id="blogTitle" required>
+</div>
+
+<div class="field">
+<label>Category</label>
+<input id="blogCategory" value="Legal Insights">
+</div>
+
+<div class="field">
+<label>Author</label>
+<input id="blogAuthor" value="Apex Legal Advocates">
+</div>
+
+<div class="field">
+<label>Image URL</label>
+<input id="blogImage" placeholder="https://...">
+</div>
+
+</div>
+
+<br>
+
+<div class="field">
+<label>Excerpt</label>
+<textarea id="blogExcerpt" required></textarea>
+</div>
+
+<br>
+
+<div class="field">
+<label>Article Content</label>
+<textarea id="blogContent" style="min-height:220px" required></textarea>
+</div>
+
+<br>
+
+<div class="field">
+<label>Status</label>
+<select id="blogStatus">
+<option value="draft">Save as Draft</option>
+<option value="published">Publish</option>
+</select>
+</div>
+
+<br>
+
+<button class="btn btn-primary">
+<i class="fa-solid fa-pen"></i> Save Article
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<h3>Articles</h3>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Title</th>
+<th>Category</th>
+<th>Status</th>
+<th>Date</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="blogsTable"></tbody>
+</table>
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+<!-- BOOKING MODAL -->
+<div class="modal" id="bookingModal">
+
+<div class="modal-box">
+
+<div class="modal-header">
+<h3>Consultation Details</h3>
+<button class="close" onclick="closeModal()">&times;</button>
+</div>
+
+<div id="bookingDetails"></div>
+
+<br>
+
+<div class="form-grid">
+
+<div class="field">
+<label>Assigned Advocate</label>
+<select id="assignAdvocate"></select>
+</div>
+
+<div class="field">
+<label>Status</label>
+<select id="bookingStatus">
+<option value="pending">Pending</option>
+<option value="assigned">Assigned</option>
+<option value="in progress">In Progress</option>
+<option value="completed">Completed</option>
+<option value="closed">Closed</option>
+</select>
+</div>
+
+<div class="field">
+<label>Next Date</label>
+<input type="date" id="nextDate">
+</div>
+
+</div>
+
+<br>
+
+<div class="field">
+<label>Case Notes</label>
+<textarea id="caseNotes"></textarea>
+</div>
+
+<br>
+
+<button class="btn btn-primary" onclick="saveBooking()">
+<i class="fa-solid fa-save"></i> Save Changes
+</button>
+
+</div>
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
 <script>
-    // FIXED: Correct Supabase Anon Key
-    const sb = supabase.createClient('https://hjbrllpbpajzmgpgkadf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqYnJsbHBicGFqem1ncGdrYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2OTYxOTIsImV4cCI6MjEwMjI3MjE5Mn0.MeUv7ugRF0QMXamvgVdJ0oFvpdnxBAgH3efi8Hnszv4');
-    let allCases = [], allAdvocates = [], currentCaseId = null;
-    const ADMIN_PASSWORD = 'admin123';
 
-    // FIXED: Hash helper for advocate passwords
-    async function hashPassword(pw) {
-        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+let sb;
+let bookings=[];
+let advocates=[];
+let blogs=[];
+let currentBooking=null;
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+    if(!ApexAuth.guard(["admin"])) return;
+
+    const session=ApexAuth.getSession();
+
+    document.getElementById("adminName").textContent=
+        session?.name || "Administrator";
+
+    sb=ApexAuth.supabase ? ApexAuth.supabase() : null;
+
+    if(!sb){
+        document.body.innerHTML=
+        "<h2 style='padding:40px'>Database unavailable.</h2>";
+        return;
     }
 
-    function handleAdminLogin(e) {
-        e.preventDefault();
-        if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
-            sessionStorage.setItem('admin', 'true');
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            loadDashboard();
-        } else {
-            const err = document.getElementById('errorMessage');
-            err.textContent = 'Invalid password'; err.style.display = 'block';
-            setTimeout(() => err.style.display = 'none', 3000);
-        }
-    }
-    function handleLogout() {
-        sessionStorage.removeItem('admin');
-        location.reload();
-    }
+    await loadEverything();
+});
 
-    // FIXED: Only affect internal nav links, not external ones
-    function switchView(view, el) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.sidebar-nav a[onclick^="switchView"]').forEach(a => a.classList.remove('active'));
-        document.getElementById(view).classList.add('active');
-        if (el) el.classList.add('active');
-        const titles = {overview:'Overview', cases:'All Cases', advocates:'Advocates', tokens:'Client Tokens'};
-        document.getElementById('pageTitle').textContent = titles[view];
-    }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+async function loadEverything(){
 
-    async function loadDashboard() {
-        try {
-            const { data: cases } = await sb.from('bookings').select('*').order('created_at', {ascending:false});
-            allCases = cases || [];
-            const { data: advocates } = await sb.from('advocates').select('*');
-            allAdvocates = advocates || [];
-            updateStats(); renderRecentCases(); renderAllCases(allCases); renderAdvocates(); populateTokenSelect();
-        } catch (err) { console.error(err); alert('Failed to load data'); }
-    }
-    function updateStats() {
-        document.getElementById('totalCases').textContent = allCases.length;
-        document.getElementById('totalAdvocates').textContent = allAdvocates.length;
-        document.getElementById('pendingCases').textContent = allCases.filter(c => (c.payment_status||'').toLowerCase() === 'pending').length;
-        document.getElementById('completedCases').textContent = allCases.filter(c => (c.payment_status||'').toLowerCase() === 'completed').length;
-    }
-    function getBadge(status) {
-        const s = (status||'Pending').toLowerCase();
-        if (s==='completed') return 'badge-completed';
-        if (s==='active'||s==='assigned'||s==='in progress') return 'badge-active';
-        return 'badge-pending';
-    }
-    function renderRecentCases() {
-        const container = document.getElementById('recentCasesContainer');
-        const recent = allCases.slice(0,5);
-        if (!recent.length) { container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases yet</p></div>'; return; }
-        let html = '<table class="data-table"><thead><tr><th>Client</th><th>Service</th><th>Status</th><th>Date</th></tr></thead><tbody>';
-        recent.forEach(c => {
-            html += `<tr><td>${c.full_name||'N/A'}</td><td>${c.service_requested||'N/A'}</td>
-                <td><span class="badge ${getBadge(c.payment_status)}">${c.payment_status||'Pending'}</span></td>
-                <td>${c.created_at?new Date(c.created_at).toLocaleDateString():'-'}</td></tr>`;
-        });
-        container.innerHTML = html + '</tbody></table>';
-    }
-    function renderAllCases(list) {
-        const container = document.getElementById('allCasesContainer');
-        const cases = list || allCases;
-        if (!cases.length) { container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No cases found</p></div>'; return; }
-        let html = '<table class="data-table"><thead><tr><th>Client</th><th>Email</th><th>Service</th><th>Status</th><th>Assigned</th><th>Actions</th></tr></thead><tbody>';
-        cases.forEach(c => {
-            html += `<tr><td>${c.full_name||'N/A'}</td><td>${c.email||'N/A'}</td><td>${c.service_requested||'N/A'}</td>
-                <td><span class="badge ${getBadge(c.payment_status)}">${c.payment_status||'Pending'}</span></td>
-                <td>${c.assigned_advocate||'Unassigned'}</td>
-                <td><button class="btn btn-olive" onclick="openAssignCaseModal('${c.id}','${(c.full_name||'').replace(/'/g,"\'")}')">Assign</button></td></tr>`;
-        });
-        container.innerHTML = html + '</tbody></table>';
-    }
-    function renderAdvocates() {
-        const container = document.getElementById('advocatesContainer');
-        if (!allAdvocates.length) { container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No advocates yet</p></div>'; return; }
-        let html = '<table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Specialization</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
-        allAdvocates.forEach(a => {
-            html += `<tr><td>${a.name||'N/A'}</td><td>${a.email||'N/A'}</td><td>${a.specialization||'N/A'}</td>
-                <td><span class="badge badge-active">${a.status||'active'}</span></td>
-                <td><button class="btn btn-danger" onclick="deleteAdvocate('${a.id}')">Delete</button></td></tr>`;
-        });
-        container.innerHTML = html + '</tbody></table>';
-    }
-    function populateTokenSelect() {
-        const sel = document.getElementById('tokenCaseSelect');
-        sel.innerHTML = '<option value="">-- Choose a case --</option>';
-        allCases.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.id; opt.textContent = `${c.full_name||'Unknown'} — ${c.service_requested||'No service'}`;
-            sel.appendChild(opt);
-        });
+    await Promise.all([
+        loadBookings(),
+        loadAdvocates(),
+        loadBlogs()
+    ]);
+
+    updateOverview();
+}
+
+function showSection(id,button){
+
+    document.querySelectorAll(".section")
+        .forEach(s=>s.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".nav button")
+        .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    const titles={
+        overview:"Overview",
+        bookings:"Consultations",
+        advocates:"Advocates",
+        tokens:"Client Tokens",
+        blogs:"Blog Management"
+    };
+
+    document.getElementById("pageTitle").textContent=titles[id];
+}
+
+async function loadBookings(){
+
+    const {data,error}=await sb
+        .from("bookings")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+    if(error){
+        console.error(error);
+        return;
     }
 
-    // FIXED: Use the existing booking token so the database lookup works
-    function generateToken() {
-        const caseId = document.getElementById('tokenCaseSelect').value;
-        if (!caseId) { alert('Select a case first'); return; }
-        const c = allCases.find(x => x.id === caseId);
-        if (!c) return;
+    bookings=data||[];
 
-        // Use the existing token from the booking so the database lookup works
-        const token = c.token || 'ALX-' + Math.random().toString(36).substr(2,8).toUpperCase();
+    renderBookings();
+    populateTokenBookings();
+}
 
-        // If this booking somehow has no token, save one now
-        if (!c.token) {
-            sb.from('bookings').update({ token: token }).eq('id', caseId).then(() => {
-                c.token = token; // Update local cache
-            });
-        }
+async function loadAdvocates(){
 
-        const baseUrl = window.location.origin + '/client-case.html';
-        const params = new URLSearchParams({
-            token: token, 
-            name: c.full_name, 
-            email: c.email, 
-            phone: c.phone || '', 
-            service: c.service_requested || '', 
-            date: c.created_at || ''
-        });
-        const url = `${baseUrl}?${params.toString()}`;
-        document.getElementById('tokenLink').textContent = url;
-        document.getElementById('tokenResult').style.display = 'block';
-    }
-    function copyToken() {
-        const text = document.getElementById('tokenLink').textContent;
-        navigator.clipboard.writeText(text).then(() => alert('Link copied!'));
+    const {data,error}=await sb
+        .from("advocates")
+        .select("*")
+        .order("name");
+
+    if(error){
+        console.error(error);
+        return;
     }
 
-    function openAddAdvocateModal() {
-        document.getElementById('advocateName').value = '';
-        document.getElementById('advocateEmail').value = '';
-        document.getElementById('advocatePhone').value = '';
-        document.getElementById('advocateModal').classList.add('active');
+    advocates=data||[];
+
+    renderAdvocates();
+    populateAdvocateSelect();
+}
+
+async function loadBlogs(){
+
+    const {data,error}=await sb
+        .from("blogs")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+    if(error){
+        console.error(error);
+        return;
     }
 
-    // FIXED: Hash password before saving so advocates can actually log in
-    async function saveAdvocate() {
-        const name = document.getElementById('advocateName').value.trim();
-        const email = document.getElementById('advocateEmail').value.trim();
-        const phone = document.getElementById('advocatePhone').value.trim();
-        const specialization = document.getElementById('advocateSpecialization').value;
-        const status = document.getElementById('advocateStatus').value;
+    blogs=data||[];
 
-        if (!name || !email) { alert('Fill required fields'); return; }
+    renderBlogs();
+}
 
-        try {
-            const hashedPassword = await hashPassword('temppass123');
-            const {error} = await sb.from('advocates').insert([{
-                name, 
-                email, 
-                phone, 
-                specialization, 
-                status, 
-                password: hashedPassword
-            }]);
+function updateOverview(){
 
-            if (error) throw error;
-            closeModal('advocateModal'); 
-            loadDashboard();
-        } catch (err) { 
-            alert('Error: ' + err.message); 
-        }
+    document.getElementById("totalBookings").textContent=
+        bookings.length;
+
+    document.getElementById("pendingBookings").textContent=
+        bookings.filter(b=>
+            (b.status||"pending").toLowerCase()==="pending"
+        ).length;
+
+    document.getElementById("totalAdvocates").textContent=
+        advocates.filter(a=>a.status==="active").length;
+
+    document.getElementById("publishedBlogs").textContent=
+        blogs.filter(b=>b.status==="published").length;
+
+    const recent=bookings.slice(0,5);
+
+    document.getElementById("recentBookings").innerHTML=
+        recent.length ?
+        `<div class="table-wrap"><table>
+        <tr><th>Client</th><th>Service</th><th>Date</th><th>Status</th></tr>
+        ${recent.map(b=>`
+        <tr>
+        <td>${esc(b.full_name)}</td>
+        <td>${esc(b.service_requested)}</td>
+        <td>${formatDate(b.created_at)}</td>
+        <td>${statusBadge(b.status)}</td>
+        </tr>`).join("")}
+        </table></div>` :
+        "<p>No consultations yet.</p>";
+}
+
+function renderBookings(){
+
+    const tbody=document.getElementById("bookingsTable");
+
+    if(!bookings.length){
+        tbody.innerHTML=
+        `<tr><td colspan="8">No consultation requests.</td></tr>`;
+        return;
     }
 
-    async function deleteAdvocate(id) {
-        if (!confirm('Delete this advocate?')) return;
-        try { await sb.from('advocates').delete().eq('id', id); loadDashboard(); }
-        catch (err) { alert('Error: ' + err.message); }
-    }
-    function openAssignCaseModal(caseId, clientName) {
-        currentCaseId = caseId;
-        document.getElementById('caseClientName').value = clientName;
-        const sel = document.getElementById('advocateSelect');
-        sel.innerHTML = '<option value="">-- Choose an advocate --</option>';
-        allAdvocates.forEach(a => { const o=document.createElement('option'); o.value=a.name; o.textContent=a.name; sel.appendChild(o); });
-        document.getElementById('assignCaseModal').classList.add('active');
-    }
+    tbody.innerHTML=bookings.map(b=>`
 
-    // FIXED: Creates a cases row so the client page can find it after assignment
-    async function assignCaseToAdvocate() {
-        const advocate = document.getElementById('advocateSelect').value;
-        const status = document.getElementById('assignCaseStatus').value;
-        if (!advocate) { alert('Select an advocate'); return; }
+    <tr>
 
-        try {
-            // 1. Update the booking
-            const {error: bookingError} = await sb.from('bookings').update({
-                assigned_advocate: advocate, 
-                payment_status: status, 
-                updated_at: new Date().toISOString()
-            }).eq('id', currentCaseId);
+    <td><strong>${esc(b.full_name)}</strong></td>
 
-            if (bookingError) throw bookingError;
+    <td>
+        ${esc(b.email)}<br>
+        ${esc(b.phone)}
+    </td>
 
-            // 2. Create or update the cases table (this is what client-case.html reads)
-            const { data: existingCase } = await sb.from('cases')
-                .select('id')
-                .eq('booking_id', currentCaseId)
-                .maybeSingle();
+    <td>${esc(b.service_requested)}</td>
 
-            if (existingCase) {
-                await sb.from('cases').update({
-                    assigned_to: advocate,
-                    status: status,
-                    updated_at: new Date().toISOString()
-                }).eq('id', existingCase.id);
-            } else {
-                // Get the booking token to use as case_number
-                const { data: booking } = await sb.from('bookings')
-                    .select('token')
-                    .eq('id', currentCaseId)
-                    .single();
+    <td>${formatDate(b.preferred_date||b.created_at)}</td>
 
-                await sb.from('cases').insert([{
-                    booking_id: currentCaseId,
-                    case_number: booking?.token || 'ALX-' + Math.random().toString(36).substr(2,8).toUpperCase(),
-                    assigned_to: advocate,
-                    status: status,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                }]);
-            }
+    <td>
+        ${esc(b.payment_status||"Pending")}
+        ${b.amount ? "<br>KES "+esc(b.amount):""}
+    </td>
 
-            closeModal('assignCaseModal'); 
-            loadDashboard();
-        } catch (err) { 
-            alert('Error: ' + err.message); 
-        }
-    }
+    <td>${esc(b.assigned_advocate||"Unassigned")}</td>
 
-    // Search
-    document.getElementById('caseSearch')?.addEventListener('input', e => {
-        const term = e.target.value.toLowerCase().trim();
-        renderAllCases(term ? allCases.filter(c => (c.full_name||'').toLowerCase().includes(term) || (c.email||'').toLowerCase().includes(term)) : allCases);
+    <td>${statusBadge(b.status)}</td>
+
+    <td>
+        <button class="btn btn-primary btn-small"
+        onclick="openBooking('${b.id}')">
+        Manage
+        </button>
+    </td>
+
+    </tr>
+
+    `).join("");
+}
+
+function renderAdvocates(){
+
+    const tbody=document.getElementById("advocatesTable");
+
+    tbody.innerHTML=advocates.length ?
+    advocates.map(a=>`
+
+    <tr>
+
+    <td><strong>${esc(a.name)}</strong></td>
+    <td>${esc(a.email)}</td>
+    <td>${esc(a.phone||"-")}</td>
+    <td>${esc(a.specialization||"-")}</td>
+    <td>${a.status==="active"
+        ?'<span class="badge badge-green">Active</span>'
+        :'<span class="badge badge-red">Inactive</span>'}</td>
+
+    <td>
+        <button class="btn btn-small ${a.status==="active"?"btn-danger":"btn-primary"}"
+        onclick="toggleAdvocate('${a.id}','${a.status}')">
+        ${a.status==="active"?"Deactivate":"Activate"}
+        </button>
+    </td>
+
+    </tr>
+
+    `).join("") :
+    `<tr><td colspan="6">No advocates found.</td></tr>`;
+}
+
+function populateAdvocateSelect(){
+
+    const selects=[
+        document.getElementById("assignAdvocate")
+    ];
+
+    selects.forEach(select=>{
+        if(!select)return;
+
+        select.innerHTML=
+        '<option value="">Unassigned</option>'+
+        advocates
+        .filter(a=>a.status==="active")
+        .map(a=>`<option value="${escAttr(a.name)}">${esc(a.name)}</option>`)
+        .join("");
     });
+}
 
-    // Init
-    window.addEventListener('load', () => {
-        if (sessionStorage.getItem('admin')) {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            loadDashboard();
-        }
-    });
+function populateTokenBookings(){
+
+    const select=document.getElementById("tokenBooking");
+
+    select.innerHTML=
+    '<option value="">Select client...</option>'+
+    bookings.map(b=>`
+    <option value="${b.id}">
+        ${esc(b.full_name)} - ${esc(b.service_requested)}
+    </option>
+    `).join("");
+}
+
+async function addAdvocate(e){
+
+    e.preventDefault();
+
+    const password=
+        document.getElementById("advPassword").value;
+
+    const hashed=await ApexAuth.hashPassword(password);
+
+    const {error}=await sb.from("advocates").insert([{
+        name:document.getElementById("advName").value.trim(),
+        email:document.getElementById("advEmail").value.trim().toLowerCase(),
+        phone:document.getElementById("advPhone").value.trim(),
+        specialization:document.getElementById("advSpecialization").value.trim(),
+        bio:document.getElementById("advBio").value.trim(),
+        password:hashed,
+        status:document.getElementById("advStatus").value,
+        created_at:new Date().toISOString(),
+        updated_at:new Date().toISOString()
+    }]);
+
+    if(error){
+        showMessage("advocateMessage",error.message,true);
+        return;
+    }
+
+    showMessage("advocateMessage","Advocate added successfully.");
+
+    e.target.reset();
+
+    await loadAdvocates();
+    updateOverview();
+}
+
+async function toggleAdvocate(id,status){
+
+    const newStatus=status==="active"?"inactive":"active";
+
+    const {error}=await sb
+        .from("advocates")
+        .update({
+            status:newStatus,
+            updated_at:new Date().toISOString()
+        })
+        .eq("id",id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    await loadAdvocates();
+    updateOverview();
+}
+
+function openBooking(id){
+
+    currentBooking=bookings.find(b=>b.id===id);
+
+    if(!currentBooking)return;
+
+    document.getElementById("bookingDetails").innerHTML=`
+
+    <p><strong>Client:</strong> ${esc(currentBooking.full_name)}</p>
+    <p><strong>Email:</strong> ${esc(currentBooking.email)}</p>
+    <p><strong>Phone:</strong> ${esc(currentBooking.phone)}</p>
+    <p><strong>Service:</strong> ${esc(currentBooking.service_requested)}</p>
+    <p><strong>Requirements:</strong><br>${esc(currentBooking.requirements||"None")}</p>
+    <p><strong>Payment:</strong> ${esc(currentBooking.payment_status||"Pending")}</p>
+    <p><strong>M-Pesa Receipt:</strong> ${esc(currentBooking.mpesa_receipt_number||"None")}</p>
+    <p><strong>Amount:</strong> ${esc(currentBooking.amount||"0")}</p>
+    <p><strong>Client Token:</strong> ${esc(currentBooking.token||"Not generated")}</p>
+
+    `;
+
+    document.getElementById("assignAdvocate").value=
+        currentBooking.assigned_advocate||"";
+
+    document.getElementById("bookingStatus").value=
+        currentBooking.status||"pending";
+
+    document.getElementById("nextDate").value=
+        currentBooking.next_date||"";
+
+    document.getElementById("caseNotes").value=
+        currentBooking.case_notes||"";
+
+    document.getElementById("bookingModal").style.display="flex";
+}
+
+function closeModal(){
+    document.getElementById("bookingModal").style.display="none";
+}
+
+async function saveBooking(){
+
+    if(!currentBooking)return;
+
+    const update={
+        assigned_advocate:
+            document.getElementById("assignAdvocate").value||null,
+
+        status:
+            document.getElementById("bookingStatus").value,
+
+        next_date:
+            document.getElementById("nextDate").value||null,
+
+        case_notes:
+            document.getElementById("caseNotes").value,
+
+        updated_at:new Date().toISOString()
+    };
+
+    const {error}=await sb
+        .from("bookings")
+        .update(update)
+        .eq("id",currentBooking.id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    closeModal();
+
+    await loadBookings();
+    updateOverview();
+}
+
+function generateClientToken(){
+
+    const id=
+        document.getElementById("tokenBooking").value;
+
+    if(!id){
+        alert("Select a client first.");
+        return;
+    }
+
+    const booking=bookings.find(b=>b.id===id);
+
+    if(!booking)return;
+
+    const token=ApexAuth.generateToken();
+
+    saveToken(id,token);
+}
+
+async function saveToken(id,token){
+
+    const {error}=await sb
+        .from("bookings")
+        .update({
+            token:token,
+            updated_at:new Date().toISOString()
+        })
+        .eq("id",id);
+
+    if(error){
+        document.getElementById("tokenResult").innerHTML=
+        `<div class="message error" style="display:block">
+        ${esc(error.message)}
+        </div>`;
+        return;
+    }
+
+    const booking=bookings.find(b=>b.id===id);
+
+    document.getElementById("tokenResult").innerHTML=`
+
+    <div class="token-box">
+
+        <p>Client token generated</p>
+
+        <div class="token">${token}</div>
+
+        <p style="font-size:12px;color:#64748b">
+        Send this token manually to ${esc(booking.email)}.
+        </p>
+
+        <button class="btn btn-primary"
+        onclick="navigator.clipboard.writeText('${token}')">
+        <i class="fa-solid fa-copy"></i> Copy Token
+        </button>
+
+    </div>
+
+    `;
+
+    await loadBookings();
+    renderTokens();
+}
+
+function renderTokens(){
+
+    const withTokens=
+        bookings.filter(b=>b.token);
+
+    document.getElementById("tokensTable").innerHTML=
+        withTokens.length ?
+        withTokens.map(b=>`
+
+        <tr>
+        <td>${esc(b.full_name)}</td>
+        <td>${esc(b.email)}</td>
+        <td><strong>${esc(b.token)}</strong></td>
+        <td>${b.status==="closed"
+            ?'<span class="badge badge-red">Closed</span>'
+            :'<span class="badge badge-green">Active</span>'}</td>
+        <td>${formatDate(b.created_at)}</td>
+        </tr>
+
+        `).join("") :
+        `<tr><td colspan="5">No tokens generated yet.</td></tr>`;
+}
+
+async function createBlog(e){
+
+    e.preventDefault();
+
+    const title=
+        document.getElementById("blogTitle").value.trim();
+
+    const slug=slugify(title);
+
+    const {error}=await sb.from("blogs").insert([{
+
+        title:title,
+        slug:slug,
+
+        excerpt:
+            document.getElementById("blogExcerpt").value.trim(),
+
+        content:
+            document.getElementById("blogContent").value.trim(),
+
+        image_url:
+            document.getElementById("blogImage").value.trim()||null,
+
+        category:
+            document.getElementById("blogCategory").value.trim(),
+
+        author:
+            document.getElementById("blogAuthor").value.trim(),
+
+        status:
+            document.getElementById("blogStatus").value,
+
+        created_at:new Date().toISOString(),
+        updated_at:new Date().toISOString()
+
+    }]);
+
+    if(error){
+        showMessage("blogMessage",error.message,true);
+        return;
+    }
+
+    showMessage("blogMessage","Article saved successfully.");
+
+    e.target.reset();
+
+    document.getElementById("blogCategory").value="Legal Insights";
+    document.getElementById("blogAuthor").value="Apex Legal Advocates";
+
+    await loadBlogs();
+    updateOverview();
+}
+
+function renderBlogs(){
+
+    document.getElementById("blogsTable").innerHTML=
+        blogs.length ?
+        blogs.map(b=>`
+
+        <tr>
+
+        <td><strong>${esc(b.title)}</strong></td>
+        <td>${esc(b.category||"-")}</td>
+
+        <td>
+        ${b.status==="published"
+            ?'<span class="badge badge-green">Published</span>'
+            :'<span class="badge badge-yellow">Draft</span>'}
+        </td>
+
+        <td>${formatDate(b.created_at)}</td>
+
+        <td class="actions">
+
+        <button class="btn btn-small ${
+            b.status==="published"?"btn-danger":"btn-primary"
+        }"
+        onclick="toggleBlog('${b.id}','${b.status}')">
+
+        ${b.status==="published"?"Unpublish":"Publish"}
+
+        </button>
+
+        <button class="btn btn-danger btn-small"
+        onclick="deleteBlog('${b.id}')">
+        Delete
+        </button>
+
+        </td>
+
+        </tr>
+
+        `).join("") :
+        `<tr><td colspan="5">No articles yet.</td></tr>`;
+
+}
+
+async function toggleBlog(id,status){
+
+    const newStatus=
+        status==="published"?"draft":"published";
+
+    const {error}=await sb
+        .from("blogs")
+        .update({
+            status:newStatus,
+            updated_at:new Date().toISOString()
+        })
+        .eq("id",id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    await loadBlogs();
+    updateOverview();
+}
+
+async function deleteBlog(id){
+
+    if(!confirm("Delete this article permanently?"))return;
+
+    const {error}=await sb
+        .from("blogs")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    await loadBlogs();
+    updateOverview();
+}
+
+function showMessage(id,text,error=false){
+
+    const el=document.getElementById(id);
+
+    el.textContent=text;
+    el.className="message "+(error?"error":"success");
+    el.style.display="block";
+
+    setTimeout(()=>{
+        el.style.display="none";
+    },5000);
+}
+
+function statusBadge(status){
+
+    status=(status||"pending").toLowerCase();
+
+    let cls="badge-yellow";
+
+    if(status==="completed"||status==="assigned")
+        cls="badge-green";
+
+    if(status==="in progress")
+        cls="badge-blue";
+
+    if(status==="closed")
+        cls="badge-red";
+
+    return `<span class="badge ${cls}">${esc(status)}</span>`;
+}
+
+function formatDate(value){
+
+    if(!value)return "-";
+
+    const d=new Date(value);
+
+    if(isNaN(d))return esc(value);
+
+    return d.toLocaleDateString();
+}
+
+function slugify(text){
+
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g,"-")
+        .replace(/^-+|-+$/g,"");
+}
+
+function esc(value){
+
+    if(value===null||value===undefined)return "";
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function escAttr(value){
+    return esc(value);
+}
+
 </script>
+
 </body>
 </html>
+```

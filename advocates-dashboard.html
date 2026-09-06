@@ -1,0 +1,535 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Advocate Dashboard | Apex Legal</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --navy:#0c1e36;
+    --gold:#c5a059;
+    --cream:#f7f5ef;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f8;
+    color:#1e293b;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:240px;
+    background:var(--navy);
+    color:white;
+    padding:25px 15px;
+}
+
+.brand{
+    padding:10px;
+    margin-bottom:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.brand h2{font-size:20px}
+.brand p{font-size:12px;opacity:.7;margin-top:5px}
+
+.nav button{
+    width:100%;
+    background:transparent;
+    color:white;
+    border:0;
+    text-align:left;
+    padding:13px;
+    border-radius:7px;
+    cursor:pointer;
+    margin-bottom:5px;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:rgba(255,255,255,.12);
+}
+
+.logout{
+    position:absolute;
+    bottom:20px;
+    left:15px;
+    width:210px;
+    padding:11px;
+    border-radius:7px;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.08);
+    color:white;
+    cursor:pointer;
+}
+
+.main{
+    margin-left:240px;
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:25px;
+}
+
+.topbar h1{
+    color:var(--navy);
+}
+
+.user{
+    background:white;
+    padding:10px 15px;
+    border-radius:25px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:white;
+    padding:22px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+}
+
+.stat i{
+    color:var(--gold);
+    font-size:22px;
+}
+
+.stat h2{
+    color:var(--navy);
+    margin:8px 0;
+}
+
+.stat p{
+    color:#64748b;
+    font-size:13px;
+}
+
+.card{
+    background:white;
+    padding:22px;
+    border-radius:10px;
+    margin-bottom:20px;
+    border:1px solid #e5e7eb;
+}
+
+.card h3{
+    color:var(--navy);
+    margin-bottom:18px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+}
+
+th{
+    color:#64748b;
+    background:#f8fafc;
+}
+
+.badge{
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.section{display:none}
+.section.active{display:block}
+
+@media(max-width:800px){
+    .sidebar{
+        position:relative;
+        width:100%;
+    }
+
+    .logout{
+        position:static;
+        width:100%;
+        margin-top:15px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="brand">
+<h2><i class="fa-solid fa-scale-balanced"></i> Apex Legal</h2>
+<p>Advocate Portal</p>
+</div>
+
+<div class="nav">
+
+<button class="active" onclick="showView('dashboard',this)">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</button>
+
+<button onclick="showView('cases',this)">
+<i class="fa-solid fa-briefcase"></i> My Cases
+</button>
+
+<button onclick="showView('schedule',this)">
+<i class="fa-solid fa-calendar"></i> Schedule
+</button>
+
+</div>
+
+<button class="logout" onclick="ApexAuth.logout()">
+<i class="fa-solid fa-right-from-bracket"></i> Logout
+</button>
+
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+<h1 id="pageTitle">Dashboard</h1>
+
+<div class="user">
+<i class="fa-solid fa-user"></i>
+<span id="advocateName">Advocate</span>
+</div>
+</div>
+
+<section id="dashboard" class="section active">
+
+<div class="stats">
+
+<div class="stat">
+<i class="fa-solid fa-folder"></i>
+<h2 id="total">0</h2>
+<p>Total Cases</p>
+</div>
+
+<div class="stat">
+<i class="fa-solid fa-spinner"></i>
+<h2 id="active">0</h2>
+<p>Active Cases</p>
+</div>
+
+<div class="stat">
+<i class="fa-solid fa-clock"></i>
+<h2 id="pending">0</h2>
+<p>Pending Cases</p>
+</div>
+
+<div class="stat">
+<i class="fa-solid fa-calendar-check"></i>
+<h2 id="hearings">0</h2>
+<p>Upcoming Dates</p>
+</div>
+
+</div>
+
+<div class="card">
+<h3>My Recent Cases</h3>
+<div id="recentCases"></div>
+</div>
+
+</section>
+
+<section id="cases" class="section">
+
+<div class="card">
+
+<h3>My Cases</h3>
+
+<div style="overflow-x:auto">
+
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Service</th>
+<th>Phone</th>
+<th>Status</th>
+<th>Preferred Date</th>
+<th>Next Date</th>
+</tr>
+</thead>
+
+<tbody id="casesTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="schedule" class="section">
+
+<div class="card">
+
+<h3>Upcoming Schedule</h3>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+<tr>
+<th>Client</th>
+<th>Service</th>
+<th>Next Date</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="scheduleTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
+<script>
+
+let sb;
+let session;
+let cases=[];
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+    /*
+       THIS IS THE PERMISSION LOCK.
+       Only users whose auth.js session role is "advocate"
+       can access this page.
+    */
+
+    if(!ApexAuth.guard(["advocate"])) return;
+
+    session=ApexAuth.getSession();
+
+    document.getElementById("advocateName").textContent=
+        session.name || "Advocate";
+
+    sb=ApexAuth.supabase ? ApexAuth.supabase() : null;
+
+    if(!sb){
+        document.getElementById("recentCases").innerHTML=
+        "<p>Database unavailable.</p>";
+        return;
+    }
+
+    await loadCases();
+});
+
+async function loadCases(){
+
+    const {data,error}=await sb
+        .from("bookings")
+        .select("*")
+        .eq("assigned_advocate",session.name)
+        .order("created_at",{ascending:false});
+
+    if(error){
+        console.error(error);
+        document.getElementById("recentCases").innerHTML=
+        "<p>Unable to load cases.</p>";
+        return;
+    }
+
+    cases=data||[];
+
+    render();
+}
+
+function render(){
+
+    document.getElementById("total").textContent=cases.length;
+
+    document.getElementById("active").textContent=
+        cases.filter(c=>
+            ["assigned","in progress"].includes(
+                (c.status||"").toLowerCase()
+            )
+        ).length;
+
+    document.getElementById("pending").textContent=
+        cases.filter(c=>
+            (c.status||"pending").toLowerCase()==="pending"
+        ).length;
+
+    document.getElementById("hearings").textContent=
+        cases.filter(c=>c.next_date).length;
+
+    renderTable(
+        cases.slice(0,5),
+        "recentCases",
+        true
+    );
+
+    renderTable(
+        cases,
+        "casesTable",
+        false
+    );
+
+    const scheduled=
+        cases
+        .filter(c=>c.next_date)
+        .sort((a,b)=>
+            new Date(a.next_date)-new Date(b.next_date)
+        );
+
+    document.getElementById("scheduleTable").innerHTML=
+        scheduled.length ?
+        scheduled.map(c=>`
+
+        <tr>
+        <td>${esc(c.full_name)}</td>
+        <td>${esc(c.service_requested)}</td>
+        <td>${formatDate(c.next_date)}</td>
+        <td>${status(c.status)}</td>
+        </tr>
+
+        `).join("") :
+        `<tr><td colspan="4">No upcoming dates.</td></tr>`;
+}
+
+function renderTable(list,container,small){
+
+    if(small){
+
+        document.getElementById(container).innerHTML=
+        list.length ?
+        `<table>
+        <thead>
+        <tr>
+        <th>Client</th>
+        <th>Service</th>
+        <th>Status</th>
+        <th>Next Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        ${list.map(c=>`
+
+        <tr>
+        <td>${esc(c.full_name)}</td>
+        <td>${esc(c.service_requested)}</td>
+        <td>${status(c.status)}</td>
+        <td>${formatDate(c.next_date)}</td>
+        </tr>
+
+        `).join("")}
+        </tbody>
+        </table>` :
+        "<p>No cases assigned to you.</p>";
+
+    }else{
+
+        document.getElementById(container).innerHTML=
+        list.length ?
+        list.map(c=>`
+
+        <tr>
+        <td>${esc(c.full_name)}</td>
+        <td>${esc(c.service_requested)}</td>
+        <td>${esc(c.phone)}</td>
+        <td>${status(c.status)}</td>
+        <td>${formatDate(c.preferred_date)}</td>
+        <td>${formatDate(c.next_date)}</td>
+        </tr>
+
+        `).join("") :
+        `<tr><td colspan="6">No cases assigned to you.</td></tr>`;
+    }
+}
+
+function showView(id,button){
+
+    document.querySelectorAll(".section")
+        .forEach(s=>s.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".nav button")
+        .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    document.getElementById("pageTitle").textContent=
+        id==="dashboard"?"Dashboard":
+        id==="cases"?"My Cases":"Schedule";
+}
+
+function status(value){
+
+    return `<span class="badge">${esc(value||"Pending")}</span>`;
+}
+
+function formatDate(value){
+
+    if(!value)return "-";
+
+    const d=new Date(value);
+
+    return isNaN(d) ? esc(value) : d.toLocaleDateString();
+}
+
+function esc(value){
+
+    if(value===null||value===undefined)return "";
+
+    return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+</script>
+
+</body>
+</html>
+```
