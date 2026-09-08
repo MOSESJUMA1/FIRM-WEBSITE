@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard | Apex Legal</title>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 :root{
@@ -311,6 +310,7 @@ textarea{min-height:100px;resize:vertical}
     }
 }
 </style>
+<base target="_blank">
 </head>
 
 <body>
@@ -719,47 +719,78 @@ let advocates=[];
 let blogs=[];
 let currentBooking=null;
 
+/* ---------- UTILITIES ---------- */
+
+function esc(str){
+    if(str==null) return "";
+    return String(str)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function formatDate(iso){
+    if(!iso) return "-";
+    const d=new Date(iso);
+    if(isNaN(d)) return "-";
+    return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+
+function statusBadge(status){
+    const s=(status||"pending").toLowerCase();
+    const map={
+        pending:'badge-yellow',
+        assigned:'badge-blue',
+        "in progress":'badge-blue',
+        completed:'badge-green',
+        closed:'badge-red',
+        draft:'badge-yellow',
+        published:'badge-green',
+        active:'badge-green',
+        inactive:'badge-red',
+        used:'badge-red',
+        expired:'badge-red'
+    };
+    return `<span class="badge ${map[s]||'badge-yellow'}">${esc(s)}</span>`;
+}
+
+/* ---------- INIT ---------- */
+
 document.addEventListener("DOMContentLoaded",async()=>{
 
     if(!ApexAuth.guard(["admin"])) return;
 
     const session=ApexAuth.getSession();
+    document.getElementById("adminName").textContent=session?.name||"Administrator";
 
-    document.getElementById("adminName").textContent=
-        session?.name || "Administrator";
-
-    sb=ApexAuth.supabase ? ApexAuth.supabase() : null;
+    sb=ApexAuth.supabase?ApexAuth.supabase():null;
 
     if(!sb){
-        document.body.innerHTML=
-        "<h2 style='padding:40px'>Database unavailable.</h2>";
+        document.body.innerHTML="<h2 style='padding:40px;text-align:center'>Database unavailable.<br><small>Check auth.js and Supabase connection.</small></h2>";
         return;
     }
 
     await loadEverything();
 });
 
-async function loadEverything(){
+/* ---------- LOADERS ---------- */
 
+async function loadEverything(){
     await Promise.all([
         loadBookings(),
         loadAdvocates(),
-        loadBlogs()
+        loadBlogs(),
+        loadTokens()
     ]);
-
     updateOverview();
 }
 
 function showSection(id,button){
-
-    document.querySelectorAll(".section")
-        .forEach(s=>s.classList.remove("active"));
-
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
-
-    document.querySelectorAll(".nav button")
-        .forEach(b=>b.classList.remove("active"));
-
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
     button.classList.add("active");
 
     const titles={
@@ -769,83 +800,65 @@ function showSection(id,button){
         tokens:"Client Tokens",
         blogs:"Blog Management"
     };
-
     document.getElementById("pageTitle").textContent=titles[id];
 }
 
 async function loadBookings(){
-
-    const {data,error}=await sb
-        .from("bookings")
-        .select("*")
-        .order("created_at",{ascending:false});
-
-    if(error){
-        console.error(error);
-        return;
-    }
-
+    const {data,error}=await sb.from("bookings").select("*").order("created_at",{ascending:false});
+    if(error){console.error(error);return;}
     bookings=data||[];
-
     renderBookings();
     populateTokenBookings();
 }
 
 async function loadAdvocates(){
-
-    const {data,error}=await sb
-        .from("advocates")
-        .select("*")
-        .order("name");
-
-    if(error){
-        console.error(error);
-        return;
-    }
-
+    const {data,error}=await sb.from("advocates").select("*").order("name");
+    if(error){console.error(error);return;}
     advocates=data||[];
-
     renderAdvocates();
     populateAdvocateSelect();
 }
 
 async function loadBlogs(){
-
-    const {data,error}=await sb
-        .from("blogs")
-        .select("*")
-        .order("created_at",{ascending:false});
-
-    if(error){
-        console.error(error);
-        return;
-    }
-
+    const {data,error}=await sb.from("blogs").select("*").order("created_at",{ascending:false});
+    if(error){console.error(error);return;}
     blogs=data||[];
-
     renderBlogs();
 }
 
+async function loadTokens(){
+    const {data,error}=await sb.from("tokens").select("*").order("created_at",{ascending:false});
+    if(error){console.error(error);return;}
+    const tokens=data||[];
+    const tbody=document.getElementById("tokensTable");
+    if(!tokens.length){
+        tbody.innerHTML='<tr><td colspan="5">No tokens generated yet.</td></tr>';
+        return;
+    }
+    tbody.innerHTML=tokens.map(t=>`
+        <tr>
+            <td>${esc(t.client_name||'-')}</td>
+            <td>${esc(t.email||'-')}</td>
+            <td><code>${esc(t.token)}</code></td>
+            <td>${statusBadge(t.status)}</td>
+            <td>${formatDate(t.created_at)}</td>
+        </tr>
+    `).join('');
+}
+
+/* ---------- OVERVIEW ---------- */
+
 function updateOverview(){
-
-    document.getElementById("totalBookings").textContent=
-        bookings.length;
-
+    document.getElementById("totalBookings").textContent=bookings.length;
     document.getElementById("pendingBookings").textContent=
-        bookings.filter(b=>
-            (b.status||"pending").toLowerCase()==="pending"
-        ).length;
-
+        bookings.filter(b=>(b.status||"pending").toLowerCase()==="pending").length;
     document.getElementById("totalAdvocates").textContent=
         advocates.filter(a=>a.status==="active").length;
-
     document.getElementById("publishedBlogs").textContent=
         blogs.filter(b=>b.status==="published").length;
 
     const recent=bookings.slice(0,5);
-
-    document.getElementById("recentBookings").innerHTML=
-        recent.length ?
+    document.getElementById("recentBookings").innerHTML=recent.length?
         `<div class="table-wrap"><table>
         <tr><th>Client</th><th>Service</th><th>Date</th><th>Status</th></tr>
         ${recent.map(b=>`
@@ -855,540 +868,262 @@ function updateOverview(){
         <td>${formatDate(b.created_at)}</td>
         <td>${statusBadge(b.status)}</td>
         </tr>`).join("")}
-        </table></div>` :
+        </table></div>`:
         "<p>No consultations yet.</p>";
 }
 
+/* ---------- RENDERERS ---------- */
+
 function renderBookings(){
-
     const tbody=document.getElementById("bookingsTable");
-
     if(!bookings.length){
-        tbody.innerHTML=
-        `<tr><td colspan="8">No consultation requests.</td></tr>`;
+        tbody.innerHTML=`<tr><td colspan="8">No consultation requests.</td></tr>`;
         return;
     }
-
     tbody.innerHTML=bookings.map(b=>`
-
     <tr>
-
     <td><strong>${esc(b.full_name)}</strong></td>
-
-    <td>
-        ${esc(b.email)}<br>
-        ${esc(b.phone)}
-    </td>
-
+    <td>${esc(b.email)}<br>${esc(b.phone)}</td>
     <td>${esc(b.service_requested)}</td>
-
     <td>${formatDate(b.preferred_date||b.created_at)}</td>
-
-    <td>
-        ${esc(b.payment_status||"Pending")}
-        ${b.amount ? "<br>KES "+esc(b.amount):""}
-    </td>
-
+    <td>${esc(b.payment_status||"Pending")}${b.amount?"<br>KES "+esc(b.amount):""}</td>
     <td>${esc(b.assigned_advocate||"Unassigned")}</td>
-
     <td>${statusBadge(b.status)}</td>
-
     <td>
-        <button class="btn btn-primary btn-small"
-        onclick="openBooking('${b.id}')">
-        Manage
-        </button>
+        <button class="btn btn-primary btn-small" onclick="openBooking('${b.id}')">Manage</button>
     </td>
-
     </tr>
-
     `).join("");
 }
 
 function renderAdvocates(){
-
     const tbody=document.getElementById("advocatesTable");
-
-    tbody.innerHTML=advocates.length ?
-    advocates.map(a=>`
-
+    tbody.innerHTML=advocates.length?advocates.map(a=>`
     <tr>
-
     <td><strong>${esc(a.name)}</strong></td>
     <td>${esc(a.email)}</td>
     <td>${esc(a.phone||"-")}</td>
     <td>${esc(a.specialization||"-")}</td>
-    <td>${a.status==="active"
-        ?'<span class="badge badge-green">Active</span>'
-        :'<span class="badge badge-red">Inactive</span>'}</td>
-
+    <td>${a.status==="active"?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Inactive</span>'}</td>
     <td>
         <button class="btn btn-small ${a.status==="active"?"btn-danger":"btn-primary"}"
         onclick="toggleAdvocate('${a.id}','${a.status}')">
         ${a.status==="active"?"Deactivate":"Activate"}
         </button>
     </td>
-
     </tr>
-
-    `).join("") :
+    `).join(""):
     `<tr><td colspan="6">No advocates found.</td></tr>`;
 }
 
+function renderBlogs(){
+    const tbody=document.getElementById("blogsTable");
+    if(!blogs.length){
+        tbody.innerHTML='<tr><td colspan="5">No articles found.</td></tr>';
+        return;
+    }
+    tbody.innerHTML=blogs.map(b=>`
+        <tr>
+            <td><strong>${esc(b.title)}</strong></td>
+            <td>${esc(b.category||'Legal Insights')}</td>
+            <td>${statusBadge(b.status)}</td>
+            <td>${formatDate(b.created_at)}</td>
+            <td>
+                <button class="btn btn-danger btn-small" onclick="deleteBlog('${b.id}')">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
 function populateAdvocateSelect(){
-
-    const selects=[
-        document.getElementById("assignAdvocate")
-    ];
-
-    selects.forEach(select=>{
-        if(!select)return;
-
-        select.innerHTML=
-        '<option value="">Unassigned</option>'+
-        advocates
-        .filter(a=>a.status==="active")
-        .map(a=>`<option value="${escAttr(a.name)}">${esc(a.name)}</option>`)
-        .join("");
-    });
+    const sel=document.getElementById('assignAdvocate');
+    if(!sel) return;
+    sel.innerHTML=advocates.filter(a=>a.status==='active').map(a=>
+        `<option value="${esc(a.name)}">${esc(a.name)}</option>`
+    ).join('');
+    if(sel.options.length===0) sel.innerHTML='<option value="">No active advocates</option>';
 }
 
 function populateTokenBookings(){
-
-    const select=document.getElementById("tokenBooking");
-
-    select.innerHTML=
-    '<option value="">Select client...</option>'+
-    bookings.map(b=>`
-    <option value="${b.id}">
-        ${esc(b.full_name)} - ${esc(b.service_requested)}
-    </option>
-    `).join("");
+    const sel=document.getElementById('tokenBooking');
+    if(!sel) return;
+    sel.innerHTML=bookings.map(b=>
+        `<option value="${esc(b.id)}">${esc(b.full_name)} — ${esc(b.service_requested)}</option>`
+    ).join('');
+    if(sel.options.length===0) sel.innerHTML='<option value="">No bookings available</option>';
 }
 
+/* ---------- ACTIONS ---------- */
+
 async function addAdvocate(e){
-
     e.preventDefault();
+    const msg=document.getElementById('advocateMessage');
+    msg.style.display='none';
 
-    const password=
-        document.getElementById("advPassword").value;
+    try{
+        const name=document.getElementById('advName').value.trim();
+        const email=document.getElementById('advEmail').value.trim();
+        const phone=document.getElementById('advPhone').value.trim();
+        const specialization=document.getElementById('advSpecialization').value.trim();
+        const password=document.getElementById('advPassword').value;
+        const status=document.getElementById('advStatus').value;
+        const bio=document.getElementById('advBio').value.trim();
 
-    const hashed=await ApexAuth.hashPassword(password);
+        if(!name||!email||!password) throw new Error("Name, email and password are required.");
 
-    const {error}=await sb.from("advocates").insert([{
-        name:document.getElementById("advName").value.trim(),
-        email:document.getElementById("advEmail").value.trim().toLowerCase(),
-        phone:document.getElementById("advPhone").value.trim(),
-        specialization:document.getElementById("advSpecialization").value.trim(),
-        bio:document.getElementById("advBio").value.trim(),
-        password:hashed,
-        status:document.getElementById("advStatus").value,
-        created_at:new Date().toISOString(),
-        updated_at:new Date().toISOString()
-    }]);
+        const hashed=await ApexAuth.hashPassword(password);
 
-    if(error){
-        showMessage("advocateMessage",error.message,true);
-        return;
+        const {error}=await sb.from('advocates').insert({name,email,phone,specialization,password:hashed,status,bio});
+        if(error) throw error;
+
+        msg.className='message success';
+        msg.textContent='Advocate added successfully.';
+        msg.style.display='block';
+        e.target.reset();
+        await loadAdvocates();
+        updateOverview();
+    }catch(err){
+        msg.className='message error';
+        msg.textContent=err.message||'Failed to add advocate.';
+        msg.style.display='block';
     }
+}
 
-    showMessage("advocateMessage","Advocate added successfully.");
-
-    e.target.reset();
-
+async function toggleAdvocate(id,currentStatus){
+    const newStatus=currentStatus==='active'?'inactive':'active';
+    const {error}=await sb.from('advocates').update({status:newStatus}).eq('id',id);
+    if(error){alert('Error: '+error.message);return;}
     await loadAdvocates();
     updateOverview();
 }
 
-async function toggleAdvocate(id,status){
+async function createBlog(e){
+    e.preventDefault();
+    const msg=document.getElementById('blogMessage');
+    msg.style.display='none';
 
-    const newStatus=status==="active"?"inactive":"active";
+    try{
+        const title=document.getElementById('blogTitle').value.trim();
+        const category=document.getElementById('blogCategory').value.trim();
+        const author=document.getElementById('blogAuthor').value.trim();
+        const image_url=document.getElementById('blogImage').value.trim()||null;
+        const excerpt=document.getElementById('blogExcerpt').value.trim();
+        const content=document.getElementById('blogContent').value.trim();
+        const status=document.getElementById('blogStatus').value;
 
-    const {error}=await sb
-        .from("advocates")
-        .update({
-            status:newStatus,
-            updated_at:new Date().toISOString()
-        })
-        .eq("id",id);
+        if(!title||!excerpt||!content) throw new Error("Title, excerpt and content are required.");
 
-    if(error){
-        alert(error.message);
-        return;
+        const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+
+        const {error}=await sb.from('blogs').insert({title,slug,category,author,image_url,excerpt,content,status});
+        if(error) throw error;
+
+        msg.className='message success';
+        msg.textContent='Article saved successfully.';
+        msg.style.display='block';
+        e.target.reset();
+        await loadBlogs();
+        updateOverview();
+    }catch(err){
+        msg.className='message error';
+        msg.textContent=err.message||'Failed to save article.';
+        msg.style.display='block';
     }
+}
 
-    await loadAdvocates();
+async function deleteBlog(id){
+    if(!confirm('Delete this article permanently?')) return;
+    const {error}=await sb.from('blogs').delete().eq('id',id);
+    if(error){alert('Error: '+error.message);return;}
+    await loadBlogs();
     updateOverview();
 }
 
 function openBooking(id){
-
     currentBooking=bookings.find(b=>b.id===id);
+    if(!currentBooking) return;
 
-    if(!currentBooking)return;
-
-    document.getElementById("bookingDetails").innerHTML=`
-
-    <p><strong>Client:</strong> ${esc(currentBooking.full_name)}</p>
-    <p><strong>Email:</strong> ${esc(currentBooking.email)}</p>
-    <p><strong>Phone:</strong> ${esc(currentBooking.phone)}</p>
-    <p><strong>Service:</strong> ${esc(currentBooking.service_requested)}</p>
-    <p><strong>Requirements:</strong><br>${esc(currentBooking.requirements||"None")}</p>
-    <p><strong>Payment:</strong> ${esc(currentBooking.payment_status||"Pending")}</p>
-    <p><strong>M-Pesa Receipt:</strong> ${esc(currentBooking.mpesa_receipt_number||"None")}</p>
-    <p><strong>Amount:</strong> ${esc(currentBooking.amount||"0")}</p>
-    <p><strong>Client Token:</strong> ${esc(currentBooking.token||"Not generated")}</p>
-
+    const details=document.getElementById('bookingDetails');
+    details.innerHTML=`
+        <p><strong>Client:</strong> ${esc(currentBooking.full_name)}</p>
+        <p><strong>Email:</strong> ${esc(currentBooking.email)}</p>
+        <p><strong>Phone:</strong> ${esc(currentBooking.phone)}</p>
+        <p><strong>Service:</strong> ${esc(currentBooking.service_requested)}</p>
+        <p><strong>Preferred Date:</strong> ${formatDate(currentBooking.preferred_date)}</p>
+        <p><strong>Current Status:</strong> ${statusBadge(currentBooking.status)}</p>
+        ${currentBooking.notes?`<p><strong>Notes:</strong> ${esc(currentBooking.notes)}</p>`:''}
     `;
 
-    document.getElementById("assignAdvocate").value=
-        currentBooking.assigned_advocate||"";
+    populateAdvocateSelect();
+    document.getElementById('assignAdvocate').value=currentBooking.assigned_advocate||'';
+    document.getElementById('bookingStatus').value=currentBooking.status||'pending';
+    document.getElementById('nextDate').value=currentBooking.next_date?currentBooking.next_date.split('T')[0]:'';
+    document.getElementById('caseNotes').value=currentBooking.notes||'';
 
-    document.getElementById("bookingStatus").value=
-        currentBooking.status||"pending";
-
-    document.getElementById("nextDate").value=
-        currentBooking.next_date||"";
-
-    document.getElementById("caseNotes").value=
-        currentBooking.case_notes||"";
-
-    document.getElementById("bookingModal").style.display="flex";
+    document.getElementById('bookingModal').style.display='flex';
 }
 
 function closeModal(){
-    document.getElementById("bookingModal").style.display="none";
+    document.getElementById('bookingModal').style.display='none';
+    currentBooking=null;
 }
 
 async function saveBooking(){
-
-    if(!currentBooking)return;
-
-    const update={
-        assigned_advocate:
-            document.getElementById("assignAdvocate").value||null,
-
-        status:
-            document.getElementById("bookingStatus").value,
-
-        next_date:
-            document.getElementById("nextDate").value||null,
-
-        case_notes:
-            document.getElementById("caseNotes").value,
-
-        updated_at:new Date().toISOString()
+    if(!currentBooking) return;
+    const updates={
+        assigned_advocate:document.getElementById('assignAdvocate').value||null,
+        status:document.getElementById('bookingStatus').value,
+        next_date:document.getElementById('nextDate').value||null,
+        notes:document.getElementById('caseNotes').value.trim()||null
     };
-
-    const {error}=await sb
-        .from("bookings")
-        .update(update)
-        .eq("id",currentBooking.id);
-
-    if(error){
-        alert(error.message);
-        return;
-    }
-
+    const {error}=await sb.from('bookings').update(updates).eq('id',currentBooking.id);
+    if(error){alert('Error saving: '+error.message);return;}
     closeModal();
-
     await loadBookings();
     updateOverview();
 }
 
-function generateClientToken(){
+async function generateClientToken(){
+    const result=document.getElementById('tokenResult');
+    const bookingId=document.getElementById('tokenBooking').value;
 
-    const id=
-        document.getElementById("tokenBooking").value;
-
-    if(!id){
-        alert("Select a client first.");
+    if(!bookingId){
+        result.innerHTML='<p style="color:var(--red)">Please select a client.</p>';
         return;
-    }
+    }  
 
-    const booking=bookings.find(b=>b.id===id);
-
-    if(!booking)return;
-
+    const booking=bookings.find(b=>b.id===bookingId);
     const token=ApexAuth.generateToken();
 
-    saveToken(id,token);
-}
-
-async function saveToken(id,token){
-
-    const {error}=await sb
-        .from("bookings")
-        .update({
+    try{
+        const {error}=await sb.from('tokens').insert({
+            booking_id:bookingId,
             token:token,
-            updated_at:new Date().toISOString()
-        })
-        .eq("id",id);
+            client_name:booking?.full_name||'',
+            email:booking?.email||'',
+            status:'active'
+        });
+        if(error) throw error;
 
-    if(error){
-        document.getElementById("tokenResult").innerHTML=
-        `<div class="message error" style="display:block">
-        ${esc(error.message)}
-        </div>`;
-        return;
+        result.innerHTML=`
+            <div class="token-box">
+                <p>Token generated for <strong>${esc(booking?.full_name)}</strong></p>
+                <div class="token">${esc(token)}</div>
+                <p style="font-size:12px;color:var(--muted)">Send this to the client via email or SMS.</p>
+            </div>
+        `;
+        await loadTokens();
+    }catch(err){
+        result.innerHTML=`<p style="color:var(--red)">Error: ${esc(err.message)}</p>`;
     }
-
-    const booking=bookings.find(b=>b.id===id);
-
-    document.getElementById("tokenResult").innerHTML=`
-
-    <div class="token-box">
-
-        <p>Client token generated</p>
-
-        <div class="token">${token}</div>
-
-        <p style="font-size:12px;color:#64748b">
-        Send this token manually to ${esc(booking.email)}.
-        </p>
-
-        <button class="btn btn-primary"
-        onclick="navigator.clipboard.writeText('${token}')">
-        <i class="fa-solid fa-copy"></i> Copy Token
-        </button>
-
-    </div>
-
-    `;
-
-    await loadBookings();
-    renderTokens();
 }
 
-function renderTokens(){
-
-    const withTokens=
-        bookings.filter(b=>b.token);
-
-    document.getElementById("tokensTable").innerHTML=
-        withTokens.length ?
-        withTokens.map(b=>`
-
-        <tr>
-        <td>${esc(b.full_name)}</td>
-        <td>${esc(b.email)}</td>
-        <td><strong>${esc(b.token)}</strong></td>
-        <td>${b.status==="closed"
-            ?'<span class="badge badge-red">Closed</span>'
-            :'<span class="badge badge-green">Active</span>'}</td>
-        <td>${formatDate(b.created_at)}</td>
-        </tr>
-
-        `).join("") :
-        `<tr><td colspan="5">No tokens generated yet.</td></tr>`;
-}
-
-async function createBlog(e){
-
-    e.preventDefault();
-
-    const title=
-        document.getElementById("blogTitle").value.trim();
-
-    const slug=slugify(title);
-
-    const {error}=await sb.from("blogs").insert([{
-
-        title:title,
-        slug:slug,
-
-        excerpt:
-            document.getElementById("blogExcerpt").value.trim(),
-
-        content:
-            document.getElementById("blogContent").value.trim(),
-
-        image_url:
-            document.getElementById("blogImage").value.trim()||null,
-
-        category:
-            document.getElementById("blogCategory").value.trim(),
-
-        author:
-            document.getElementById("blogAuthor").value.trim(),
-
-        status:
-            document.getElementById("blogStatus").value,
-
-        created_at:new Date().toISOString(),
-        updated_at:new Date().toISOString()
-
-    }]);
-
-    if(error){
-        showMessage("blogMessage",error.message,true);
-        return;
-    }
-
-    showMessage("blogMessage","Article saved successfully.");
-
-    e.target.reset();
-
-    document.getElementById("blogCategory").value="Legal Insights";
-    document.getElementById("blogAuthor").value="Apex Legal Advocates";
-
-    await loadBlogs();
-    updateOverview();
-}
-
-function renderBlogs(){
-
-    document.getElementById("blogsTable").innerHTML=
-        blogs.length ?
-        blogs.map(b=>`
-
-        <tr>
-
-        <td><strong>${esc(b.title)}</strong></td>
-        <td>${esc(b.category||"-")}</td>
-
-        <td>
-        ${b.status==="published"
-            ?'<span class="badge badge-green">Published</span>'
-            :'<span class="badge badge-yellow">Draft</span>'}
-        </td>
-
-        <td>${formatDate(b.created_at)}</td>
-
-        <td class="actions">
-
-        <button class="btn btn-small ${
-            b.status==="published"?"btn-danger":"btn-primary"
-        }"
-        onclick="toggleBlog('${b.id}','${b.status}')">
-
-        ${b.status==="published"?"Unpublish":"Publish"}
-
-        </button>
-
-        <button class="btn btn-danger btn-small"
-        onclick="deleteBlog('${b.id}')">
-        Delete
-        </button>
-
-        </td>
-
-        </tr>
-
-        `).join("") :
-        `<tr><td colspan="5">No articles yet.</td></tr>`;
-
-}
-
-async function toggleBlog(id,status){
-
-    const newStatus=
-        status==="published"?"draft":"published";
-
-    const {error}=await sb
-        .from("blogs")
-        .update({
-            status:newStatus,
-            updated_at:new Date().toISOString()
-        })
-        .eq("id",id);
-
-    if(error){
-        alert(error.message);
-        return;
-    }
-
-    await loadBlogs();
-    updateOverview();
-}
-
-async function deleteBlog(id){
-
-    if(!confirm("Delete this article permanently?"))return;
-
-    const {error}=await sb
-        .from("blogs")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-        alert(error.message);
-        return;
-    }
-
-    await loadBlogs();
-    updateOverview();
-}
-
-function showMessage(id,text,error=false){
-
-    const el=document.getElementById(id);
-
-    el.textContent=text;
-    el.className="message "+(error?"error":"success");
-    el.style.display="block";
-
-    setTimeout(()=>{
-        el.style.display="none";
-    },5000);
-}
-
-function statusBadge(status){
-
-    status=(status||"pending").toLowerCase();
-
-    let cls="badge-yellow";
-
-    if(status==="completed"||status==="assigned")
-        cls="badge-green";
-
-    if(status==="in progress")
-        cls="badge-blue";
-
-    if(status==="closed")
-        cls="badge-red";
-
-    return `<span class="badge ${cls}">${esc(status)}</span>`;
-}
-
-function formatDate(value){
-
-    if(!value)return "-";
-
-    const d=new Date(value);
-
-    if(isNaN(d))return esc(value);
-
-    return d.toLocaleDateString();
-}
-
-function slugify(text){
-
-    return text
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g,"-")
-        .replace(/^-+|-+$/g,"");
-}
-
-function esc(value){
-
-    if(value===null||value===undefined)return "";
-
-    return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-}
-
-function escAttr(value){
-    return esc(value);
-}
+/* Close modal on outside click */
+window.onclick=function(e){
+    const modal=document.getElementById('bookingModal');
+    if(e.target===modal) closeModal();
+};
 
 </script>
-
 </body>
 </html>
-```
